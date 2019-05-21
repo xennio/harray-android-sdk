@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "902173982097",
+    "firebase_url": "https://xennwebpush.firebaseio.com",
+    "project_id": "xennwebpush",
+    "storage_bucket": "xennwebpush.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:902173982097:android:35c2d1f0dcd4e6b4",
+        "android_client_info": {
+          "package_name": "io.xenn"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "902173982097-4beifft8okgs4dpgmcacku55r6jr3mba.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCISdA1singPOcmCGt2uOws4JYQEbUzioA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "902173982097-4beifft8okgs4dpgmcacku55r6jr3mba.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:902173982097:android:ef17fd3911357971",
+        "android_client_info": {
+          "package_name": "io.xenn.demo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "902173982097-4beifft8okgs4dpgmcacku55r6jr3mba.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCISdA1singPOcmCGt2uOws4JYQEbUzioA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "902173982097-4beifft8okgs4dpgmcacku55r6jr3mba.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
