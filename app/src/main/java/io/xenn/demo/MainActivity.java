@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        XennioAPI.sessionStart("300", new HashMap<String, Object>());
+        XennioAPI.pageView("300", "homePage", new HashMap<String, Object>());
 
         FirebaseInstanceId.getInstance().getInstanceId()
                 .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
@@ -40,15 +40,11 @@ public class MainActivity extends AppCompatActivity {
                             Log.w("Xennio", "getInstanceId failed", task.getException());
                             return;
                         }
-
                         // Get new Instance ID token
                         String token = task.getResult().getToken();
                         XennioAPI.savePushToken("", token);
-
-                       
                     }
                 });
-
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
