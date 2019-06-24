@@ -3,6 +3,8 @@ package io.xenn.android.model;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.json.JSONObject;
+
 public class XennEvent {
 
     private final Map<String, Object> h = new HashMap<>();
@@ -24,11 +26,11 @@ public class XennEvent {
     }
 
 
-    public Map<String, Object> toMap() {
-        Map<String, Object> xennEvent = new HashMap<>();
-        xennEvent.put("h", h);
-        xennEvent.put("b", b);
-        return xennEvent;
+    public JSONObject toJSON() {
+        Map<String, JSONObject> xennEvent = new HashMap<>();
+        xennEvent.put("h", new JSONObject(h));
+        xennEvent.put("b", new JSONObject(b));
+        return new JSONObject(xennEvent);
     }
 
     public XennEvent memberId(String memberId) {

@@ -7,8 +7,6 @@ import android.os.Build;
 import android.util.Base64;
 import android.util.Log;
 
-import org.json.JSONObject;
-
 import java.io.DataOutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -164,7 +162,7 @@ public class XennioAPI {
                 @Override
                 protected Void doInBackground(Void... voids) {
                     try {
-                        String jsonXennEvent = new JSONObject(xennEvent.toMap()).toString();
+                        String jsonXennEvent = xennEvent.toJSON().toString();
                         String urlEncodedXennEvent = URLEncoder.encode(jsonXennEvent, "UTF-8");
                         String encodedEvent = Base64.encodeToString(urlEncodedXennEvent.getBytes(), Base64.DEFAULT);
 
