@@ -9,10 +9,6 @@ archivesBaseName = 'android-sdk'
 group = "io.xenn"
 version = "1.0"
 
-repositories {
-    mavenCentral()
-}
-
 android {
     compileSdkVersion 27
 
