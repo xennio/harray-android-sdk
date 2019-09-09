@@ -1,1 +1,1 @@
-include ':app', ':xennio', ':android'
+include ':app', ':xennio', ':android-sdk'
