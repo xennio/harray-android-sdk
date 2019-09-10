@@ -1,12 +1,13 @@
-//plugins {
-//    id "com.bmuschko.nexus" version "2.3.1"
-//}
+plugins {
+    id "com.bmuschko.nexus" version "2.3.1"
+}
 apply plugin: 'com.android.library'
-//apply plugin: 'com.bmuschko.nexus'
+apply plugin: 'maven-publish'
+apply plugin: 'com.bmuschko.nexus'
 
 archivesBaseName = 'android-sdk'
 group = "io.xenn"
-version = "1.1"
+version = "1.0"
 
 android {
     compileSdkVersion 27
@@ -25,9 +26,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-//    lintOptions {
-//        abortOnError false
-//    }
 }
 
 dependencies {
@@ -39,30 +37,41 @@ dependencies {
     testImplementation "org.json:json:20180813"
 }
 
-//modifyPom {
-//    project {
-//        name 'android-sdk'
-//        description 'Xenn.io Android SDK'
-//        url 'https://xenn.io'
-//        inceptionYear '2019'
-//        developers {
-//            developer {
-//                id 'devxenn'
-//                name 'Xenn Developer'
-//                email 'developer@xenn.io'
-//            }
-//        }
-//    }
-//}
+modifyPom {
+    project {
+        name 'android-sdk'
+        description 'Xenn.io Android SDK'
+        url 'https://xenn.io'
+        inceptionYear '2019'
+        developers {
+            developer {
+                id 'devxenn'
+                name 'Xenn Developer'
+                email 'developer@xenn.io'
+            }
+        }
+    }
+}
 
-//extraArchive {
-//    sources = true
-//    tests = false
-//    javadoc = true
-//}
+publishing {
+    publications {
+        androidSdk(MavenPublication) {
+            groupId "io.xenn"
+            artifactId "android-sdk"
+            version "1.0"
+            artifact "$buildDir/outputs/aar/android-sdk-release.aar"
+        }
+    }
+}
 
-//nexus {
-//    sign = true
-//    repositoryUrl = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
-//    snapshotRepositoryUrl = 'https://oss.sonatype.org/content/repositories/snapshots/'
-//}
+extraArchive {
+    sources = true
+    tests = false
+    javadoc = true
+}
+
+nexus {
+    sign = true
+    repositoryUrl = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
+    snapshotRepositoryUrl = 'https://oss.sonatype.org/content/repositories/snapshots/'
+}
