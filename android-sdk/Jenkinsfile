@@ -5,7 +5,7 @@ node {
         checkout scm
     }
     stage('build') {
-        sh "./gradlew build"
+        sh "./gradlew build -x lint"
     }
     stage('publish to Sonatype OSS Stage') {
         sh "./gradlew uploadArchives"
