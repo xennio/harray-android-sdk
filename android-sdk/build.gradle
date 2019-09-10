@@ -2,7 +2,6 @@ plugins {
     id "com.bmuschko.nexus" version "2.3.1"
 }
 apply plugin: 'com.android.library'
-apply plugin: 'maven-publish'
 apply plugin: 'com.bmuschko.nexus'
 
 archivesBaseName = 'android-sdk'
@@ -52,17 +51,6 @@ modifyPom {
                 name 'Xenn Developer'
                 email 'developer@xenn.io'
             }
-        }
-    }
-}
-
-publishing {
-    publications {
-        androidSdk(MavenPublication) {
-            groupId "io.xenn"
-            artifactId "android-sdk"
-            version "1.0"
-            artifact "$buildDir/outputs/aar/android-sdk-release.aar"
         }
     }
 }
