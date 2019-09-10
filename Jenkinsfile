@@ -5,6 +5,6 @@ node {
         checkout scm
     }
     stage('build') {
-        sh "./gradlew build -x lint"
+        sh "./gradlew build"
     }
 }
