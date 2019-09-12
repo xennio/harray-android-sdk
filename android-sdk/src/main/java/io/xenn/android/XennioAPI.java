@@ -13,7 +13,6 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
 import java.util.Timer;
@@ -123,8 +122,6 @@ public class XennioAPI {
                 .appendExtra(params);
 
         post(xennEvent);
-
-
     }
 
     public static void savePushToken(String memberId, String deviceToken) {
