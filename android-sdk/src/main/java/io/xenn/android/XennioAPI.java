@@ -1,5 +1,9 @@
 package io.xenn.android;
 
+import android.arch.lifecycle.Lifecycle;
+import android.arch.lifecycle.LifecycleObserver;
+import android.arch.lifecycle.OnLifecycleEvent;
+import android.arch.lifecycle.ProcessLifecycleOwner;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -45,7 +49,24 @@ public class XennioAPI {
         XennioAPI.collectorUrl = COLLECTOR_URL + sdkKey;
         XennioAPI.isInitialized = true;
         Log.d("Xennio", "Xenn.io SDK intialized with " + sdkKey);
-        sessionStart();
+
+        ProcessLifecycleOwner.get().getLifecycle().addObserver(
+                new LifecycleObserver() {
+                    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+                    void onMoveToForeground() {
+                        sessionStart();
+                    }
+
+                    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+                    void onMoveToBackground() {
+                        sessionEnd();
+                    }
+                });
+    }
+
+    private static void sessionEnd() {
+        timer.purge();
+        timer.cancel();
     }
 
     private static void scheduleTimer() {
