@@ -103,6 +103,18 @@ public class XennioAPI {
         post(xennEvent);
     }
 
+    public static void impression (String memberId, String pageType, Map<String, Object> params) {
+        XennEvent xennEvent = new XennEvent();
+        xennEvent
+                .name("IM")
+                .memberId(memberId)
+                .addHeader("s", getSid())
+                .addHeader("p", pid)
+                .addBody("pageType", pageType)
+                .appendExtra(params);
+        post(xennEvent);
+    }
+
     private static String getSid() {
         if (lastEventTime + EXPIRE_TIME < System.currentTimeMillis()) {
             sid = UUID.randomUUID().toString();
