@@ -7,7 +7,7 @@ apply plugin: 'com.bmuschko.nexus'
 
 archivesBaseName = 'android-sdk'
 group = "io.xenn"
-version = "1.2"
+version = "1.3"
 
 android {
     compileSdkVersion 27
@@ -16,7 +16,7 @@ android {
         minSdkVersion 19
         targetSdkVersion 27
         versionCode 1
-        versionName "1.2"
+        versionName "1.3"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
@@ -68,7 +68,7 @@ publishing {
         androidSdk(MavenPublication) {
             groupId "io.xenn"
             artifactId "android-sdk"
-            version "1.2"
+            version "1.3"
             artifact "$buildDir/outputs/aar/android-sdk-release.aar"
         }
     }
