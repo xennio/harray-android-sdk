@@ -28,6 +28,7 @@ public class XennioAPI {
     private static String collectorUrl;
     private static String pid;
     private static String sid;
+    private static String deeplinkUrl;
     private static final Long HEART_BEAT_INTERVAL = 55 * 1000L;
     private static final Long EXPIRE_TIME = 30 * 60 * 1000L;
     private static Long lastEventTime;
@@ -100,6 +101,10 @@ public class XennioAPI {
                 .addBody("pageType", pageType)
                 .appendExtra(params);
 
+        if (XennioAPI.deeplinkUrl != null && !"".equalsIgnoreCase(XennioAPI.deeplinkUrl)) {
+            xennEvent.addBody("deeplink", XennioAPI.deeplinkUrl);
+        }
+
         post(xennEvent);
     }
 
@@ -118,6 +123,7 @@ public class XennioAPI {
     private static String getSid() {
         if (lastEventTime + EXPIRE_TIME < System.currentTimeMillis()) {
             sid = UUID.randomUUID().toString();
+            deeplinkUrl = null;
             Log.d("Xennio", "Session expired new session id will be created");
         }
         return sid;
@@ -128,7 +134,7 @@ public class XennioAPI {
         xennEvent
                 .name("AR")
                 .memberId(memberId)
-                .addHeader("s", sid)
+                .addHeader("s", getSid())
                 .addHeader("p", pid)
                 .addBody("type", type)
                 .appendExtra(params);
@@ -141,7 +147,7 @@ public class XennioAPI {
         xennEvent
                 .name("Collection")
                 .memberId(memberId)
-                .addHeader("s", sid)
+                .addHeader("s", getSid())
                 .addHeader("p", pid)
                 .addBody("name", "pushToken")
                 .addBody("type", "fcmToken")
@@ -149,6 +155,10 @@ public class XennioAPI {
                 .addBody("deviceToken", deviceToken);
 
         post(xennEvent);
+    }
+
+    public static void putDeeplinkURL(String deeplinkUrl) {
+        XennioAPI.deeplinkUrl = deeplinkUrl;
     }
 
     private static String getSharedPrefValue(String key, Context context) {
