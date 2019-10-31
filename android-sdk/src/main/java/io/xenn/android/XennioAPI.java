@@ -108,14 +108,14 @@ public class XennioAPI {
         post(xennEvent);
     }
 
-    public static void impression (String memberId, String pageType, Map<String, Object> params) {
+    public static void impression (String memberId, String type, Map<String, Object> params) {
         XennEvent xennEvent = new XennEvent();
         xennEvent
                 .name("IM")
                 .memberId(memberId)
                 .addHeader("s", getSid())
                 .addHeader("p", pid)
-                .addBody("pageType", pageType)
+                .addBody("type", type)
                 .appendExtra(params);
         post(xennEvent);
     }
