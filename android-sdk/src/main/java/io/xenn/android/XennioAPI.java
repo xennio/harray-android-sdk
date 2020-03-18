@@ -6,29 +6,23 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Base64;
 import android.util.Log;
+import io.xenn.android.model.XennEvent;
 
 import java.io.DataOutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.Map;
-import java.util.TimeZone;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
-
-import io.xenn.android.model.XennEvent;
 
 public class XennioAPI {
 
     private static final String COLLECTOR_URL = "https://c.xenn.io:443/";
+    private static final List<String> deeplinkKeys = Collections.unmodifiableList(Arrays.asList("campaignId", "pushId", "url", "utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"));
     private static String collectorUrl;
     private static String pid;
     private static String sid;
-    private static String deeplinkUrl;
+    private static Map<String, Object> deeplink;
     private static final Long HEART_BEAT_INTERVAL = 55 * 1000L;
     private static final Long EXPIRE_TIME = 30 * 60 * 1000L;
     private static Long lastEventTime;
@@ -101,14 +95,14 @@ public class XennioAPI {
                 .addBody("pageType", pageType)
                 .appendExtra(params);
 
-        if (XennioAPI.deeplinkUrl != null && !"".equalsIgnoreCase(XennioAPI.deeplinkUrl)) {
-            xennEvent.addBody("deeplink", XennioAPI.deeplinkUrl);
+        if (deeplink != null && !deeplink.isEmpty()) {
+            xennEvent.appendExtra(deeplink);
         }
 
         post(xennEvent);
     }
 
-    public static void impression (String memberId, String type, Map<String, Object> params) {
+    public static void impression(String memberId, String type, Map<String, Object> params) {
         XennEvent xennEvent = new XennEvent();
         xennEvent
                 .name("IM")
@@ -123,7 +117,7 @@ public class XennioAPI {
     private static String getSid() {
         if (lastEventTime + EXPIRE_TIME < System.currentTimeMillis()) {
             sid = UUID.randomUUID().toString();
-            deeplinkUrl = null;
+            deeplink = null;
             Log.d("Xennio", "Session expired new session id will be created");
         }
         return sid;
@@ -157,8 +151,40 @@ public class XennioAPI {
         post(xennEvent);
     }
 
-    public static void putDeeplinkURL(String deeplinkUrl) {
-        XennioAPI.deeplinkUrl = deeplinkUrl;
+    public static void putPushDeeplink(Map<String, String> data) {
+        if (deeplink == null) {
+            deeplink = new HashMap<>();
+        }
+
+        for (String key : deeplinkKeys) {
+            if (data.containsKey(key)) {
+                deeplink.put(key, data.get(key));
+            }
+        }
+    }
+
+    public static void pushReceived() {
+        XennEvent xennEvent = new XennEvent();
+        xennEvent
+                .name("Feedback")
+                .addHeader("s", getSid())
+                .addHeader("p", pid)
+                .addBody("type", "pushReceived")
+                .appendExtra(deeplink);
+
+        post(xennEvent);
+    }
+
+    public static void pushOpened() {
+        XennEvent xennEvent = new XennEvent();
+        xennEvent
+                .name("Feedback")
+                .addHeader("s", getSid())
+                .addHeader("p", pid)
+                .addBody("type", "pushOpened")
+                .appendExtra(deeplink);
+
+        post(xennEvent);
     }
 
     private static String getSharedPrefValue(String key, Context context) {
