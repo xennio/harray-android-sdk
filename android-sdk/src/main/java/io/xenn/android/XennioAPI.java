@@ -1,12 +1,12 @@
 package io.xenn.android;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Base64;
 import android.util.Log;
-import io.xenn.android.model.XennEvent;
 
 import java.io.DataOutputStream;
 import java.net.HttpURLConnection;
@@ -14,6 +14,8 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+
+import io.xenn.android.model.XennEvent;
 
 public class XennioAPI {
 
@@ -175,16 +177,35 @@ public class XennioAPI {
         post(xennEvent);
     }
 
-    public static void pushOpened() {
+    public static void pushOpened(Intent intent) {
         XennEvent xennEvent = new XennEvent();
         xennEvent
                 .name("Feedback")
                 .addHeader("s", getSid())
                 .addHeader("p", pid)
                 .addBody("type", "pushOpened")
-                .appendExtra(deeplink);
+                .appendExtra(deeplink)
+                .appendExtra(deeplinkExtrasFrom(intent));
 
         post(xennEvent);
+    }
+
+    public static boolean isPushNotificationOpened(Intent intent) {
+        return intent != null && intent.getBooleanExtra("isPushNotification", false);
+    }
+
+    private static Map<String, Object> deeplinkExtrasFrom(Intent intent) {
+        if (intent == null) {
+            return null;
+        }
+
+        Map<String, Object> extras = new HashMap<>();
+        for (String key : deeplinkKeys) {
+            if (intent.hasExtra(key)) {
+                extras.put(key, intent.getStringExtra(key));
+            }
+        }
+        return extras;
     }
 
     private static String getSharedPrefValue(String key, Context context) {

@@ -41,7 +41,9 @@ public class XennEvent {
     }
 
     public XennEvent appendExtra(Map<String, Object> params) {
-        this.b.putAll(params);
+        if (params != null) {
+            this.b.putAll(params);
+        }
         return this;
     }
 }
