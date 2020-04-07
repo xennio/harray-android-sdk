@@ -20,7 +20,7 @@ import io.xenn.android.model.XennEvent;
 public class XennioAPI {
 
     private static final String COLLECTOR_URL = "https://c.xenn.io:443/";
-    private static final List<String> deeplinkKeys = Collections.unmodifiableList(Arrays.asList("campaignId", "pushId", "url", "utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"));
+    private static final List<String> deeplinkKeys = Collections.unmodifiableList(Arrays.asList("campaignId", "campaignDate", "pushId", "url", "utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"));
     private static String collectorUrl;
     private static String pid;
     private static String sid;
