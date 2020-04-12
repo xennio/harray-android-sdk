@@ -1,21 +1,40 @@
 package io.xenn.android;
 
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.support.v4.app.NotificationCompat;
 import android.util.Base64;
 import android.util.Log;
+
+import com.google.firebase.messaging.RemoteMessage;
 
 import java.io.DataOutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TimeZone;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import io.xenn.android.common.Constants;
+import io.xenn.android.common.PushMessageDataWrapper;
 import io.xenn.android.model.XennEvent;
+import io.xenn.android.notification.NotificationChannelBuilder;
+import io.xenn.android.notification.NotificationCompatBuilder;
+import io.xenn.android.utils.XennioLogger;
 
 public class XennioAPI {
 
@@ -32,6 +51,7 @@ public class XennioAPI {
     private static Timer timer = new Timer();
     private static boolean isInitialized = false;
 
+
     private XennioAPI() {
     }
 
@@ -41,7 +61,7 @@ public class XennioAPI {
         XennioAPI.pid = getSharedPrefValue("pid", context);
         XennioAPI.collectorUrl = COLLECTOR_URL + sdkKey;
         XennioAPI.isInitialized = true;
-        Log.d("Xennio", "Xenn.io SDK intialized with " + sdkKey);
+        XennioLogger.debugLog("Xenn.io SDK initialized with " + sdkKey);
         sessionStart();
     }
 
@@ -100,7 +120,6 @@ public class XennioAPI {
         if (deeplink != null && !deeplink.isEmpty()) {
             xennEvent.appendExtra(deeplink);
         }
-
         post(xennEvent);
     }
 
@@ -120,7 +139,7 @@ public class XennioAPI {
         if (lastEventTime + EXPIRE_TIME < System.currentTimeMillis()) {
             sid = UUID.randomUUID().toString();
             deeplink = null;
-            Log.d("Xennio", "Session expired new session id will be created");
+            XennioLogger.debugLog("Xenn.io Session expired new session id will be created");
         }
         return sid;
     }
@@ -190,8 +209,43 @@ public class XennioAPI {
         post(xennEvent);
     }
 
-    public static boolean isPushNotificationOpened(Intent intent) {
-        return intent != null && intent.getBooleanExtra("isPushNotification", false);
+    public static void handlePushOpen(Intent intent, List<String> pushProviders) {
+        if (intent != null && pushProviders.contains(intent.getStringExtra(Constants.PUSH_PAYLOAD_SOURCE))) {
+            XennioAPI.pushOpened(intent);
+        }
+    }
+
+    public static void handlePushNotification(Context applicationContext, RemoteMessage remoteMessage) {
+        try {
+            Map<String, String> data = remoteMessage.getData();
+            PushMessageDataWrapper pushMessageDataWrapper = PushMessageDataWrapper.from(data);
+            XennioAPI.putPushDeeplink(data);
+            XennioAPI.pushReceived();
+
+            if (pushMessageDataWrapper.isSilent()) {
+                XennioAPI.pushOpened(null);
+                return;
+            }
+
+            String notificationChannelId = pushMessageDataWrapper.buildChannelId();
+            NotificationManager notificationManager = (NotificationManager) applicationContext.getSystemService(Context.NOTIFICATION_SERVICE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && notificationManager != null) {
+                NotificationChannelBuilder.create(applicationContext).withChannelId(notificationChannelId).withSound(pushMessageDataWrapper.getSound()).createIn(notificationManager);
+            }
+            NotificationCompat.Builder notificationCompatBuilder = NotificationCompatBuilder.create(applicationContext)
+                    .withChannelId(notificationChannelId)
+                    .withTitle(pushMessageDataWrapper.getTitle())
+                    .withMessage(pushMessageDataWrapper.getMessage())
+                    .withBadge(pushMessageDataWrapper.getBadge())
+                    .withSound(pushMessageDataWrapper.getSound())
+                    .withImage(pushMessageDataWrapper.getImageUrl(), pushMessageDataWrapper.getMessage())
+                    .withIntent(data)
+                    .build();
+
+            notificationManager.notify(12, notificationCompatBuilder.build());
+        } catch (Exception e) {
+            XennioLogger.debugLog("Xenn Push handle error:" + e.getMessage());
+        }
     }
 
     private static Map<String, Object> deeplinkExtrasFrom(Intent intent) {
@@ -249,16 +303,16 @@ public class XennioAPI {
                         dStream.flush();
                         dStream.close();
                         int responseCode = urlConnection.getResponseCode();
-                        Log.d("Xennio", "Server request completed with status code:" + responseCode);
+                        XennioLogger.debugLog("Xenn API " + xennEvent.getName() + " request completed with status code:" + responseCode);
                     } catch (Exception e) {
-                        Log.e("Xennio", "Error occurred" + e.getMessage());
+                        XennioLogger.debugLog("Xenn API " + xennEvent.getName() + " request failed" + e.getMessage());
                     }
                     return null;
 
                 }
             }.execute();
         } else {
-            Log.d("Xennio", "Xenn.io SDK not initialized yet. Call XennApi.init method before sending events.");
+            XennioLogger.debugLog("Xenn.io SDK not initialized yet. Call XennApi.init method before sending events.");
         }
 
     }

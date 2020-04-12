@@ -9,8 +9,10 @@ public class XennEvent {
 
     private final Map<String, Object> h = new HashMap<>();
     private final Map<String, Object> b = new HashMap<>();
+    private String name;
 
     public XennEvent name(String name) {
+        this.name = name;
         h.put("n", name);
         return this;
     }
@@ -45,5 +47,9 @@ public class XennEvent {
             this.b.putAll(params);
         }
         return this;
+    }
+
+    public String getName() {
+        return name;
     }
 }

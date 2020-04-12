@@ -80,6 +80,7 @@ public class XennioFirebaseMessagingService extends FirebaseMessagingService {
         notificationManager.notify((int) System.currentTimeMillis(), builder.build());
     }
 
+
     private PendingIntent createPendingIntent(Map<String, String> data) {
         Intent intent = new Intent(this, this.intentClass);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

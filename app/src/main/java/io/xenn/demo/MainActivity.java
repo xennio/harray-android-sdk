@@ -1,5 +1,6 @@
 package io.xenn.demo;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -17,29 +18,21 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
 import io.xenn.android.XennioAPI;
+import io.xenn.android.common.Constants;
 
 public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (XennioAPI.isPushNotificationOpened(getIntent())) {
-            Log.d("Xennio", "Notification opened");
-            XennioAPI.pushOpened(getIntent());
-
-            if (getIntent().hasExtra("toast")) {
-                Toast.makeText(this, "Push Notification clicked", Toast.LENGTH_LONG).show();
-            }
-
-            if (getIntent().hasExtra("unread_message")) {
-                Log.d("Xennio", "There is an unread message, open messages activity");
-            }
-        }
-
+        Intent intent = getIntent();
+        XennioAPI.handlePushOpen(intent, Arrays.asList("Insider", "xennio"));
+        Log.d("Xennio", "Source:" + intent.getStringExtra("source"));
+        Log.d("Xennio", "Url:" + intent.getStringExtra("realty_list"));
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -56,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                         // Get new Instance ID token
                         String token = task.getResult().getToken();
-                        XennioAPI.savePushToken("", token);
+                        XennioAPI.savePushToken("300", token);
                     }
                 });
 
@@ -65,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 XennioAPI.actionResult("300", "click", new HashMap<String, Object>());
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "Replace with your own action 2", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });

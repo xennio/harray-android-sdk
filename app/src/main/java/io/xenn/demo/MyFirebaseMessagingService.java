@@ -1,13 +1,22 @@
 package io.xenn.demo;
 
 
-import android.app.NotificationManager;
+import com.google.firebase.messaging.FirebaseMessagingService;
+import com.google.firebase.messaging.RemoteMessage;
 
-import io.xenn.android.XennioFirebaseMessagingService;
+import io.xenn.android.XennioAPI;
 
-public class MyFirebaseMessagingService extends XennioFirebaseMessagingService {
+public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
-    public MyFirebaseMessagingService() {
-        super(MainActivity.class, "demo-app", R.drawable.ic_xenn_logo_white, NotificationManager.IMPORTANCE_HIGH);
+    @Override
+    public void onMessageReceived(RemoteMessage remoteMessage) {
+        super.onMessageReceived(remoteMessage);
+        XennioAPI.handlePushNotification(this, remoteMessage);
+    }
+
+    @Override
+    public void onNewToken(String s) {
+        super.onNewToken(s);
+        XennioAPI.savePushToken("", s);
     }
 }
