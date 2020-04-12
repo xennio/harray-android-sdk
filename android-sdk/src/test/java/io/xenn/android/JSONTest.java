@@ -1,9 +1,10 @@
 package io.xenn.android;
 
-import io.xenn.android.model.XennEvent;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import io.xenn.android.model.XennEvent;
+
+import static org.junit.Assert.assertEquals;
 
 public class JSONTest {
     @Test

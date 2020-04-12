@@ -1,9 +1,9 @@
 package io.xenn.android.model;
 
+import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import org.json.JSONObject;
 
 public class XennEvent {
 

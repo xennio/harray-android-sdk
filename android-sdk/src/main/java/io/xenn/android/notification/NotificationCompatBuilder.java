@@ -11,7 +11,6 @@ import android.media.RingtoneManager;
 import android.support.v4.app.NotificationCompat;
 
 import java.util.Map;
-import java.util.Set;
 
 import io.xenn.android.common.DeviceUtils;
 import io.xenn.android.utils.ImageDownloadManager;
