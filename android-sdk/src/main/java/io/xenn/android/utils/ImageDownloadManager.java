@@ -27,7 +27,7 @@ public class ImageDownloadManager {
         try {
             return BitmapFactory.decodeStream(new URL(urlString).openConnection().getInputStream());
         } catch (Exception e) {
-            XennioLogger.debugLog(e.getMessage());
+            XennioLogger.log(e.getMessage());
             return null;
         }
     }

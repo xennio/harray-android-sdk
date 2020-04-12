@@ -2,7 +2,6 @@ package io.xenn.android.common;
 
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -11,104 +10,23 @@ import android.net.Uri;
 import android.os.Build;
 import android.telephony.TelephonyManager;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.util.UUID;
 
 public final class DeviceUtils {
     private DeviceUtils() {
     }
 
-    private static String sID = null;
-    private static final String INSTALLATION = "INSTALLATION";
+    public static String getDeviceUniqueId() {
+        String m_szDevIDShort = "35" + (Build.BOARD.length() % 10) + (Build.BRAND.length() % 10) + (Build.CPU_ABI.length() % 10) + (Build.DEVICE.length() % 10) + (Build.MANUFACTURER.length() % 10) + (Build.MODEL.length() % 10) + (Build.PRODUCT.length() % 10);
 
-    public synchronized static String id(Context context) {
-        if (sID == null) {
-            File installation = new File(context.getFilesDir(), INSTALLATION);
-            try {
-                if (!installation.exists()) {
-                    writeInstallationFile(installation);
-                }
-                sID = readInstallationFile(installation);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-        return sID;
-    }
-
-    private static String readInstallationFile(File installation) throws IOException {
-        RandomAccessFile f = null;
+        String serial;
         try {
-            f = new RandomAccessFile(installation, "r");
-            byte[] bytes = new byte[(int) f.length()];
-            f.readFully(bytes);
-            return new String(bytes);
-        } finally {
-            if (f != null) {
-                try {
-                    f.close();
-                } catch (IOException e) {
-                    throw e;
-                }
-            }
+            serial = android.os.Build.class.getField("SERIAL").get(null).toString();
+            return new UUID(m_szDevIDShort.hashCode(), serial.hashCode()).toString();
+        } catch (Exception exception) {
+            serial = "serial";
         }
-    }
-
-    private static void writeInstallationFile(File installation)
-            throws IOException {
-        FileOutputStream out = new FileOutputStream(installation);
-        String id = UUID.randomUUID().toString();
-        out.write(id.getBytes());
-        out.close();
-    }
-
-    public static String savePrefString(Context context, String key, String value) {
-        String appName = context.getPackageName();
-        SharedPreferences sp = context.getSharedPreferences(appName, Context.MODE_PRIVATE);
-        SharedPreferences.Editor spEditor = sp.edit();
-        spEditor.putString(key, value);
-        spEditor.apply();
-        return value;
-    }
-
-    public static void savePrefBoolean(Context context, String key,
-                                       boolean value) {
-        String appName = context.getPackageName();
-        SharedPreferences sp = context.getSharedPreferences(appName, Context.MODE_PRIVATE);
-        SharedPreferences.Editor spEditor = sp.edit();
-        spEditor.putBoolean(key, value);
-        spEditor.apply();
-    }
-
-    public static void savePrefLong(Context context, String key, long value) {
-        String appName = context.getPackageName();
-        SharedPreferences sp = context.getSharedPreferences(appName, Context.MODE_PRIVATE);
-        SharedPreferences.Editor spEditor = sp.edit();
-        spEditor.putLong(key, value);
-        spEditor.apply();
-    }
-
-    public static boolean hasPrefString(Context context, String key) {
-        String appName = context.getPackageName();
-        SharedPreferences sp = context.getSharedPreferences(appName,
-                Context.MODE_PRIVATE);
-        return sp.contains(key);
-    }
-
-    public static String getPrefString(Context context, String key) {
-        String appName = context.getPackageName();
-        SharedPreferences sp = context.getSharedPreferences(appName, Context.MODE_PRIVATE);
-        return sp.getString(key, "");
-    }
-
-    public static long getPrefLong(Context context, String key) {
-        String appName = context.getPackageName();
-        SharedPreferences sp = context.getSharedPreferences(appName,
-                Context.MODE_PRIVATE);
-        return sp.getLong(key, 0);
+        return new UUID(m_szDevIDShort.hashCode(), serial.hashCode()).toString();
     }
 
     public static String appVersion(Context context) {
@@ -120,61 +38,38 @@ public final class DeviceUtils {
         return null;
     }
 
-    public static String osVersion() {
-        return Build.VERSION.RELEASE;
-    }
-
-    public static String osType() {
-        return "Android";
-    }
-
-    public static String deviceName() {
-        String manufacturer = Build.MANUFACTURER;
-        String model = Build.MODEL;
-        if (model.startsWith(manufacturer)) {
-            return model;
-        } else {
-            return manufacturer + " " + model;
-        }
-    }
-
     public static String carrier(Context context) {
         TelephonyManager manager = (TelephonyManager) context
                 .getSystemService(Context.TELEPHONY_SERVICE);
         return manager.getNetworkOperator();
     }
 
-    public static String local(Context context) {
-        return context.getResources().getConfiguration().locale.getLanguage();
+
+    public static String osVersion() {
+        return Build.VERSION.RELEASE;
     }
 
-
-    private static String convertToHex(byte[] data) {
-        StringBuilder buf = new StringBuilder();
-        for (byte b : data) {
-            int halfbyte = (b >>> 4) & 0x0F;
-            int two_halfs = 0;
-            do {
-                buf.append((0 <= halfbyte) && (halfbyte <= 9) ? (char) ('0' + halfbyte)
-                        : (char) ('a' + (halfbyte - 10)));
-                halfbyte = b & 0x0F;
-            } while (two_halfs++ < 1);
-        }
-        return buf.toString();
+    public static String model() {
+        return Build.MODEL;
     }
 
-    public static String deviceType() {
-        return android.os.Build.MANUFACTURER + " : " + android.os.Build.MODEL;
+    public static String manufacturer() {
+        return Build.MANUFACTURER;
     }
+
+    public static String brand() {
+        return Build.BRAND;
+    }
+
 
     public static String getAppLabel(Context pContext, String defaultText) {
-        PackageManager lPackageManager = pContext.getPackageManager();
-        ApplicationInfo lApplicationInfo = null;
+        PackageManager packageManager = pContext.getPackageManager();
+        ApplicationInfo applicationInfo = null;
         try {
-            lApplicationInfo = lPackageManager.getApplicationInfo(pContext.getApplicationInfo().packageName, 0);
+            applicationInfo = packageManager.getApplicationInfo(pContext.getApplicationInfo().packageName, 0);
         } catch (final PackageManager.NameNotFoundException e) {
         }
-        return (String) (lApplicationInfo != null ? lPackageManager.getApplicationLabel(lApplicationInfo) : defaultText);
+        return (String) (applicationInfo != null ? packageManager.getApplicationLabel(applicationInfo) : defaultText);
     }
 
     public static Uri getSound(Context context, String sound) {

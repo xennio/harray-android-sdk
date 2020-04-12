@@ -12,8 +12,8 @@ public class XennEventTest {
     @Test
     public void it_should_construct_json_properly() {
         String eventName = "test";
-        XennEvent xennEvent = new XennEvent()
-                .name(eventName)
+        XennEvent xennEvent = XennEvent
+                .create(eventName)
                 .addHeader("header2", "value1")
                 .addHeader("header1", "value2")
                 .addBody("body1", 1)
@@ -28,8 +28,8 @@ public class XennEventTest {
         String eventName = "testEvent";
         extraParams.put("body3", "extra1");
         extraParams.put("body4", "extra2");
-        XennEvent xennEvent = new XennEvent()
-                .name(eventName)
+        XennEvent xennEvent = XennEvent
+                .create(eventName)
                 .addHeader("header2", "value1")
                 .addHeader("header1", "value2")
                 .addBody("body1", 1)
@@ -42,8 +42,8 @@ public class XennEventTest {
     @Test
     public void it_should_construct_json_properly_with_memberId() {
         String eventName = "test";
-        XennEvent xennEvent = new XennEvent()
-                .name(eventName)
+        XennEvent xennEvent = XennEvent
+                .create(eventName)
                 .addHeader("header2", "value1")
                 .addHeader("header1", "value2")
                 .addBody("body1", 1)

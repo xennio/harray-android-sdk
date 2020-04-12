@@ -6,7 +6,7 @@ import android.util.Log;
 import io.xenn.android.common.Constants;
 
 public class XennioLogger {
-    public static void debugLog(@NonNull String message) {
+    public static void log(@NonNull String message) {
         Log.d(Constants.LOG_TAG, message);
     }
 }

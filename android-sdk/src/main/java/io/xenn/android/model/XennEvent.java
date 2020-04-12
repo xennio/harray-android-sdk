@@ -11,10 +11,14 @@ public class XennEvent {
     private final Map<String, Object> b = new HashMap<>();
     private String name;
 
-    public XennEvent name(String name) {
+    private XennEvent(String name) {
         this.name = name;
-        h.put("n", name);
-        return this;
+    }
+
+    public static XennEvent create(String name) {
+        XennEvent xennEvent = new XennEvent(name);
+        xennEvent.h.put("n", name);
+        return xennEvent;
     }
 
     public XennEvent addHeader(String key, Object value) {

@@ -39,7 +39,7 @@ public class NotificationCompatBuilder {
             final ApplicationInfo applicationInfo = packageManager.getApplicationInfo(applicationContext.getPackageName(), PackageManager.GET_META_DATA);
             appIconResId = applicationInfo.icon;
         } catch (PackageManager.NameNotFoundException e) {
-            XennioLogger.debugLog(e.getMessage());
+            XennioLogger.log(e.getMessage());
         }
         notificationCompat = new NotificationCompat.Builder(applicationContext, notificationChannelId)
                 .setVibrate(new long[]{0, 100, 100, 100, 100, 100})
