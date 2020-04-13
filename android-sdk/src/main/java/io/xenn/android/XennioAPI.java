@@ -1,24 +1,45 @@
 package io.xenn.android;
 
+import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
+import androidx.core.app.NotificationCompat;
 import android.util.Base64;
-import android.util.Log;
-import io.xenn.android.model.XennEvent;
+
+import com.google.firebase.messaging.RemoteMessage;
 
 import java.io.DataOutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TimeZone;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+
+import io.xenn.android.common.Constants;
+import io.xenn.android.common.DeviceUtils;
+import io.xenn.android.common.PushMessageDataWrapper;
+import io.xenn.android.model.XennEvent;
+import io.xenn.android.notification.NotificationChannelBuilder;
+import io.xenn.android.notification.NotificationCompatBuilder;
+import io.xenn.android.utils.XennioLogger;
 
 public class XennioAPI {
 
     private static final String COLLECTOR_URL = "https://c.xenn.io:443/";
-    private static final List<String> deeplinkKeys = Collections.unmodifiableList(Arrays.asList("campaignId", "pushId", "url", "utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"));
+    private static final List<String> deeplinkKeys = Collections.unmodifiableList(Arrays.asList("campaignId", "campaignDate", "pushId", "url", "utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"));
     private static String collectorUrl;
     private static String pid;
     private static String sid;
@@ -29,6 +50,10 @@ public class XennioAPI {
     private static TimerTask heartBeatTask;
     private static Timer timer = new Timer();
     private static boolean isInitialized = false;
+    private static String appVersion;
+    private static String carrier;
+    private static String sdkVersion = "1.1";
+
 
     private XennioAPI() {
     }
@@ -36,10 +61,12 @@ public class XennioAPI {
     public static void init(Context context, String sdkKey) {
         lastEventTime = System.currentTimeMillis();
         XennioAPI.sid = UUID.randomUUID().toString();
-        XennioAPI.pid = getSharedPrefValue("pid", context);
+        XennioAPI.pid = getOrCreatePersistentId(context);
+        XennioAPI.carrier = DeviceUtils.carrier(context);
+        XennioAPI.appVersion = DeviceUtils.appVersion(context);
         XennioAPI.collectorUrl = COLLECTOR_URL + sdkKey;
         XennioAPI.isInitialized = true;
-        Log.d("Xennio", "Xenn.io SDK intialized with " + sdkKey);
+        XennioLogger.log("Xenn.io SDK initialized with " + sdkKey);
         sessionStart();
     }
 
@@ -61,51 +88,44 @@ public class XennioAPI {
         TimeZone mTimeZone = mCalendar.getTimeZone();
         int mGMTOffset = mTimeZone.getRawOffset();
         String timeZone = Long.toString(TimeUnit.HOURS.convert(mGMTOffset, TimeUnit.MILLISECONDS));
-        XennEvent xennEvent = new XennEvent();
-        xennEvent
-                .name("SS")
+        XennEvent xennEvent = XennEvent.create("SS")
                 .addHeader("s", getSid())
                 .addHeader("p", pid)
-                .addBody("os", "Android " + Build.VERSION.RELEASE)
-                .addBody("md", Build.MODEL)
-                .addBody("mn", Build.MANUFACTURER)
-                .addBody("br", Build.BRAND)
-                .addBody("id", getDeviceUniqueId())
-                .addBody("zn", timeZone);
+                .addHeader("sv", sdkVersion)
+                .addBody("os", "Android " + DeviceUtils.osVersion())
+                .addBody("md", DeviceUtils.model())
+                .addBody("mn", DeviceUtils.manufacturer())
+                .addBody("br", DeviceUtils.brand())
+                .addBody("id", DeviceUtils.getDeviceUniqueId())
+                .addBody("op", carrier)
+                .addBody("av", appVersion)
+                .addBody("zn", timeZone)
+                .appendExtra(deeplink);
+
         post(xennEvent);
     }
 
     public static void hearthBeat() {
-        XennEvent xennEvent = new XennEvent();
-        xennEvent
-                .name("HB")
+        XennEvent xennEvent = XennEvent.create("HB")
                 .addHeader("s", getSid())
                 .addHeader("p", pid);
-
         post(xennEvent);
     }
 
     public static void pageView(String memberId, String pageType, Map<String, Object> params) {
-        XennEvent xennEvent = new XennEvent();
-        xennEvent
-                .name("PV")
+        XennEvent xennEvent = XennEvent.create("PV")
                 .memberId(memberId)
                 .addHeader("s", getSid())
                 .addHeader("p", pid)
                 .addBody("pageType", pageType)
-                .appendExtra(params);
-
-        if (deeplink != null && !deeplink.isEmpty()) {
-            xennEvent.appendExtra(deeplink);
-        }
+                .appendExtra(params)
+                .appendExtra(deeplink);
 
         post(xennEvent);
     }
 
     public static void impression(String memberId, String type, Map<String, Object> params) {
-        XennEvent xennEvent = new XennEvent();
-        xennEvent
-                .name("IM")
+        XennEvent xennEvent = XennEvent.create("IM")
                 .memberId(memberId)
                 .addHeader("s", getSid())
                 .addHeader("p", pid)
@@ -118,15 +138,14 @@ public class XennioAPI {
         if (lastEventTime + EXPIRE_TIME < System.currentTimeMillis()) {
             sid = UUID.randomUUID().toString();
             deeplink = null;
-            Log.d("Xennio", "Session expired new session id will be created");
+            XennioLogger.log("Xenn.io Session expired new session id will be created");
         }
         return sid;
     }
 
     public static void actionResult(String memberId, String type, Map<String, Object> params) {
-        XennEvent xennEvent = new XennEvent();
-        xennEvent
-                .name("AR")
+        XennEvent xennEvent = XennEvent
+                .create("AR")
                 .memberId(memberId)
                 .addHeader("s", getSid())
                 .addHeader("p", pid)
@@ -137,9 +156,7 @@ public class XennioAPI {
     }
 
     public static void savePushToken(String memberId, String deviceToken) {
-        XennEvent xennEvent = new XennEvent();
-        xennEvent
-                .name("Collection")
+        XennEvent xennEvent = XennEvent.create("Collection")
                 .memberId(memberId)
                 .addHeader("s", getSid())
                 .addHeader("p", pid)
@@ -164,9 +181,7 @@ public class XennioAPI {
     }
 
     public static void pushReceived() {
-        XennEvent xennEvent = new XennEvent();
-        xennEvent
-                .name("Feedback")
+        XennEvent xennEvent = XennEvent.create("Feedback")
                 .addHeader("s", getSid())
                 .addHeader("p", pid)
                 .addBody("type", "pushReceived")
@@ -175,25 +190,77 @@ public class XennioAPI {
         post(xennEvent);
     }
 
-    public static void pushOpened() {
-        XennEvent xennEvent = new XennEvent();
-        xennEvent
-                .name("Feedback")
+    public static void pushOpened(Intent intent) {
+        XennEvent xennEvent = XennEvent.create("Feedback")
                 .addHeader("s", getSid())
                 .addHeader("p", pid)
                 .addBody("type", "pushOpened")
-                .appendExtra(deeplink);
+                .appendExtra(deeplink)
+                .appendExtra(deeplinkExtrasFrom(intent));
 
         post(xennEvent);
     }
 
-    private static String getSharedPrefValue(String key, Context context) {
+    public static void handlePushOpen(Intent intent, List<String> pushProviders) {
+        if (intent != null && pushProviders.contains(intent.getStringExtra(Constants.PUSH_PAYLOAD_SOURCE))) {
+            XennioAPI.pushOpened(intent);
+        }
+    }
+
+    public static void handlePushNotification(Context applicationContext, RemoteMessage remoteMessage) {
+        try {
+            Map<String, String> data = remoteMessage.getData();
+            PushMessageDataWrapper pushMessageDataWrapper = PushMessageDataWrapper.from(data);
+            XennioAPI.putPushDeeplink(data);
+            XennioAPI.pushReceived();
+
+            if (pushMessageDataWrapper.isSilent()) {
+                XennioAPI.pushOpened(null);
+                return;
+            }
+
+            String notificationChannelId = pushMessageDataWrapper.buildChannelId();
+            NotificationManager notificationManager = (NotificationManager) applicationContext.getSystemService(Context.NOTIFICATION_SERVICE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && notificationManager != null) {
+                NotificationChannelBuilder.create(applicationContext).withChannelId(notificationChannelId).withSound(pushMessageDataWrapper.getSound()).createIn(notificationManager);
+            }
+            NotificationCompat.Builder notificationCompatBuilder = NotificationCompatBuilder.create(applicationContext)
+                    .withChannelId(notificationChannelId)
+                    .withTitle(pushMessageDataWrapper.getTitle())
+                    .withMessage(pushMessageDataWrapper.getMessage())
+                    .withBadge(pushMessageDataWrapper.getBadge())
+                    .withSound(pushMessageDataWrapper.getSound())
+                    .withImage(pushMessageDataWrapper.getImageUrl(), pushMessageDataWrapper.getMessage())
+                    .withIntent(data)
+                    .build();
+
+            notificationManager.notify(12, notificationCompatBuilder.build());
+        } catch (Exception e) {
+            XennioLogger.log("Xenn Push handle error:" + e.getMessage());
+        }
+    }
+
+    private static Map<String, Object> deeplinkExtrasFrom(Intent intent) {
+        if (intent == null) {
+            return null;
+        }
+
+        Map<String, Object> extras = new HashMap<>();
+        for (String key : deeplinkKeys) {
+            if (intent.hasExtra(key)) {
+                extras.put(key, intent.getStringExtra(key));
+            }
+        }
+        return extras;
+    }
+
+    private static String getOrCreatePersistentId(Context context) {
         SharedPreferences xennio_prefs = context.getSharedPreferences("XENNIO_PREFS", Context.MODE_PRIVATE);
-        String value = xennio_prefs.getString(key, null);
+        String value = xennio_prefs.getString(Constants.SDK_PERSISTENT_ID_KEY, null);
         if (value == null) {
             value = UUID.randomUUID().toString();
             SharedPreferences.Editor editor = xennio_prefs.edit();
-            editor.putString(key, value);
+            editor.putString(Constants.SDK_PERSISTENT_ID_KEY, value);
             editor.apply();
         }
         return value;
@@ -228,30 +295,18 @@ public class XennioAPI {
                         dStream.flush();
                         dStream.close();
                         int responseCode = urlConnection.getResponseCode();
-                        Log.d("Xennio", "Server request completed with status code:" + responseCode);
+                        XennioLogger.log("Xenn API " + xennEvent.getName() + " request completed with status code:" + responseCode);
                     } catch (Exception e) {
-                        Log.e("Xennio", "Error occurred" + e.getMessage());
+                        XennioLogger.log("Xenn API " + xennEvent.getName() + " request failed" + e.getMessage());
                     }
                     return null;
 
                 }
             }.execute();
         } else {
-            Log.d("Xennio", "Xenn.io SDK not initialized yet. Call XennApi.init method before sending events.");
+            XennioLogger.log("Xenn.io SDK not initialized yet. Call XennApi.init method before sending events.");
         }
 
     }
 
-    private static String getDeviceUniqueId() {
-        String m_szDevIDShort = "35" + (Build.BOARD.length() % 10) + (Build.BRAND.length() % 10) + (Build.CPU_ABI.length() % 10) + (Build.DEVICE.length() % 10) + (Build.MANUFACTURER.length() % 10) + (Build.MODEL.length() % 10) + (Build.PRODUCT.length() % 10);
-
-        String serial;
-        try {
-            serial = android.os.Build.class.getField("SERIAL").get(null).toString();
-            return new UUID(m_szDevIDShort.hashCode(), serial.hashCode()).toString();
-        } catch (Exception exception) {
-            serial = "serial";
-        }
-        return new UUID(m_szDevIDShort.hashCode(), serial.hashCode()).toString();
-    }
 }

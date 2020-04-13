@@ -1,18 +1,24 @@
 package io.xenn.android.model;
 
+import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import org.json.JSONObject;
 
 public class XennEvent {
 
     private final Map<String, Object> h = new HashMap<>();
     private final Map<String, Object> b = new HashMap<>();
+    private String name;
 
-    public XennEvent name(String name) {
-        h.put("n", name);
-        return this;
+    private XennEvent(String name) {
+        this.name = name;
+    }
+
+    public static XennEvent create(String name) {
+        XennEvent xennEvent = new XennEvent(name);
+        xennEvent.h.put("n", name);
+        return xennEvent;
     }
 
     public XennEvent addHeader(String key, Object value) {
@@ -41,7 +47,13 @@ public class XennEvent {
     }
 
     public XennEvent appendExtra(Map<String, Object> params) {
-        this.b.putAll(params);
+        if (params != null) {
+            this.b.putAll(params);
+        }
         return this;
+    }
+
+    public String getName() {
+        return name;
     }
 }
