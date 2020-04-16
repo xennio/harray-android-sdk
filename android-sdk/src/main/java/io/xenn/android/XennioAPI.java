@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
+
 import androidx.core.app.NotificationCompat;
+
 import android.util.Base64;
 
 import com.google.firebase.messaging.RemoteMessage;
@@ -39,11 +41,11 @@ import io.xenn.android.utils.XennioLogger;
 public class XennioAPI {
 
     private static final String COLLECTOR_URL = "https://c.xenn.io:443/";
-    private static final List<String> deeplinkKeys = Collections.unmodifiableList(Arrays.asList("campaignId", "campaignDate", "pushId", "url", "utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"));
+    private static final List<String> deepLinkKeys = Collections.unmodifiableList(Arrays.asList("campaignId", "campaignDate", "pushId", "url", "utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"));
     private static String collectorUrl;
     private static String pid;
     private static String sid;
-    private static Map<String, Object> deeplink;
+    private static Map<String, Object> deepLink = new HashMap<>();
     private static final Long HEART_BEAT_INTERVAL = 55 * 1000L;
     private static final Long EXPIRE_TIME = 30 * 60 * 1000L;
     private static Long lastEventTime;
@@ -100,7 +102,7 @@ public class XennioAPI {
                 .addBody("op", carrier)
                 .addBody("av", appVersion)
                 .addBody("zn", timeZone)
-                .appendExtra(deeplink);
+                .appendExtra(deepLink);
 
         post(xennEvent);
     }
@@ -119,7 +121,7 @@ public class XennioAPI {
                 .addHeader("p", pid)
                 .addBody("pageType", pageType)
                 .appendExtra(params)
-                .appendExtra(deeplink);
+                .appendExtra(deepLink);
 
         post(xennEvent);
     }
@@ -137,7 +139,7 @@ public class XennioAPI {
     private static String getSid() {
         if (lastEventTime + EXPIRE_TIME < System.currentTimeMillis()) {
             sid = UUID.randomUUID().toString();
-            deeplink = null;
+            deepLink = null;
             XennioLogger.log("Xenn.io Session expired new session id will be created");
         }
         return sid;
@@ -168,16 +170,23 @@ public class XennioAPI {
         post(xennEvent);
     }
 
-    public static void putPushDeeplink(Map<String, String> data) {
-        if (deeplink == null) {
-            deeplink = new HashMap<>();
+    public static void putPushDeepLink(Map<String, String> data) {
+        if (deepLink == null) {
+            deepLink = new HashMap<>();
         }
 
-        for (String key : deeplinkKeys) {
+        for (String key : deepLinkKeys) {
             if (data.containsKey(key)) {
-                deeplink.put(key, data.get(key));
+                deepLink.put(key, data.get(key));
             }
         }
+    }
+
+    public static String getDeepLink(String key) {
+        if (deepLink != null) {
+            deepLink.get(key);
+        }
+        return null;
     }
 
     public static void pushReceived() {
@@ -185,7 +194,7 @@ public class XennioAPI {
                 .addHeader("s", getSid())
                 .addHeader("p", pid)
                 .addBody("type", "pushReceived")
-                .appendExtra(deeplink);
+                .appendExtra(deepLink);
 
         post(xennEvent);
     }
@@ -195,7 +204,7 @@ public class XennioAPI {
                 .addHeader("s", getSid())
                 .addHeader("p", pid)
                 .addBody("type", "pushOpened")
-                .appendExtra(deeplink)
+                .appendExtra(deepLink)
                 .appendExtra(deeplinkExtrasFrom(intent));
 
         post(xennEvent);
@@ -211,7 +220,7 @@ public class XennioAPI {
         try {
             Map<String, String> data = remoteMessage.getData();
             PushMessageDataWrapper pushMessageDataWrapper = PushMessageDataWrapper.from(data);
-            XennioAPI.putPushDeeplink(data);
+            XennioAPI.putPushDeepLink(data);
             XennioAPI.pushReceived();
 
             if (pushMessageDataWrapper.isSilent()) {
@@ -246,7 +255,7 @@ public class XennioAPI {
         }
 
         Map<String, Object> extras = new HashMap<>();
-        for (String key : deeplinkKeys) {
+        for (String key : deepLinkKeys) {
             if (intent.hasExtra(key)) {
                 extras.put(key, intent.getStringExtra(key));
             }
