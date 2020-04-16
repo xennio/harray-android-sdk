@@ -15,7 +15,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 28
         versionCode 1
-        versionName "2.0"
+        versionName "2.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
@@ -68,7 +68,7 @@ publishing {
         androidSdk(MavenPublication) {
             groupId "io.xenn"
             artifactId "android-sdk"
-            version "2.0"
+            version "2.1"
             artifact "$buildDir/outputs/aar/android-sdk-release.aar"
         }
     }
