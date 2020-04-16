@@ -7,7 +7,7 @@ apply plugin: 'com.bmuschko.nexus'
 
 archivesBaseName = 'android-sdk'
 group = "io.xenn"
-version = "2.1"
+version = "2.2"
 
 android {
     compileSdkVersion 28
@@ -15,7 +15,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 28
         versionCode 1
-        versionName "2.1"
+        versionName "2.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 

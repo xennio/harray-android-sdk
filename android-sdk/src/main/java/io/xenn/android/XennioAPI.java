@@ -170,23 +170,14 @@ public class XennioAPI {
         post(xennEvent);
     }
 
-    public static void putPushDeepLink(Map<String, String> data) {
-        if (deepLink == null) {
-            deepLink = new HashMap<>();
-        }
-
-        for (String key : deepLinkKeys) {
-            if (data.containsKey(key)) {
-                deepLink.put(key, data.get(key));
-            }
+    private static void putPushDeepLink(Map<String, String> data) {
+        for (Map.Entry<String, String> each : data.entrySet()) {
+            deepLink.put(each.getKey(), each.getValue());
         }
     }
 
     public static String getDeepLink(String key) {
-        if (deepLink != null) {
-            deepLink.get(key);
-        }
-        return null;
+        return deepLink.containsKey(key) ? deepLink.get(key).toString() : null;
     }
 
     public static void pushReceived() {
