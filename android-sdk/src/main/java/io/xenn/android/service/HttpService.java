@@ -1,7 +1,7 @@
 package io.xenn.android.service;
 
 import io.xenn.android.http.PostFormUrlEncodedTask;
-import io.xenn.android.service.http.HttpRequestFactory;
+import io.xenn.android.http.HttpRequestFactory;
 
 public class HttpService {
 

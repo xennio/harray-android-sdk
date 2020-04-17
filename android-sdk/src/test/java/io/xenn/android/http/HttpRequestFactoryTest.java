@@ -1,7 +1,8 @@
-package io.xenn.android.service.http;
+package io.xenn.android.http;
 
 import org.junit.Test;
 
+import io.xenn.android.http.HttpRequestFactory;
 import io.xenn.android.http.PostFormUrlEncodedTask;
 
 import static org.junit.Assert.*;

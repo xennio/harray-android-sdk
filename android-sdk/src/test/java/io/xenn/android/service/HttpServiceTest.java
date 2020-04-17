@@ -6,7 +6,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import io.xenn.android.http.PostFormUrlEncodedTask;
-import io.xenn.android.service.http.HttpRequestFactory;
+import io.xenn.android.http.HttpRequestFactory;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
