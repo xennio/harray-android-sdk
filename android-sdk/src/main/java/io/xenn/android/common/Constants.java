@@ -13,4 +13,5 @@ public class Constants {
     public static final String PUSH_PAYLOAD_SOURCE = "source";
     public static final String SDK_PERSISTENT_ID_KEY = "pid";
     public static final String PREF_COLLECTION_NAME = "XENNIO_PREFS";
+    public static final long SESSION_DURATION = 30 * 60 * 1000L;
 }

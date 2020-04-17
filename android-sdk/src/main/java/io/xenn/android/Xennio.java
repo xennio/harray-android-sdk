@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 
 import io.xenn.android.common.Constants;
 import io.xenn.android.context.ApplicationContextHolder;
+import io.xenn.android.context.SessionContextHolder;
 
 public final class Xennio {
 
@@ -12,6 +13,7 @@ public final class Xennio {
     private SharedPreferences sharedPreferences;
     private final String sdkKey;
     private final ApplicationContextHolder applicationContextHolder;
+    private final SessionContextHolder sessionContextHolder;
 
     public static Xennio instance;
 
@@ -21,6 +23,7 @@ public final class Xennio {
         this.sharedPreferences = context.getSharedPreferences(Constants.PREF_COLLECTION_NAME, Context.MODE_PRIVATE);
         this.sdkKey = sdkKey;
         this.applicationContextHolder = new ApplicationContextHolder(this.sharedPreferences);
+        this.sessionContextHolder = new SessionContextHolder();
     }
 
     public static void configure(Context context, String sdkKey) {
