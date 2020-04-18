@@ -44,4 +44,17 @@ public class SDKEventProcessorHandler {
             XennioLogger.log("Session start error: " + e.getMessage());
         }
     }
+
+    public void heartBeat() {
+        try {
+            Map<String, Object> event = XennEvent.create("HB", applicationContextHolder.getPersistentId(), sessionContextHolder.getSessionIdAndExtendSession())
+                    .memberId(sessionContextHolder.getMemberId())
+                    .toMap();
+            String serializedEntity = entitySerializerService.serialize(event);
+            httpService.postFormUrlEncoded(serializedEntity);
+
+        } catch (Exception e) {
+            XennioLogger.log("Heart beat error: " + e.getMessage());
+        }
+    }
 }

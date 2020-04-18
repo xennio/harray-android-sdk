@@ -1,6 +1,9 @@
 package io.xenn.android.context;
 
 
+import java.util.HashMap;
+import java.util.Map;
+
 import io.xenn.android.common.Constants;
 import io.xenn.android.utils.ClockUtils;
 import io.xenn.android.utils.RandomValueUtils;
@@ -11,6 +14,8 @@ public class SessionContextHolder {
     private String memberId;
     private long sessionStartTime;
     private long lastActivityTime;
+    private Map<String, Object> externalParameters = new HashMap<>();
+    private Map<String, Object> intentParameters = new HashMap<>();
 
 
     public SessionContextHolder() {
@@ -52,5 +57,13 @@ public class SessionContextHolder {
 
     public void logout() {
         this.memberId = null;
+    }
+
+    public Map<String, Object> getExternalParameters() {
+        return externalParameters;
+    }
+
+    public Map<String, Object> getIntentParameters() {
+        return intentParameters;
     }
 }

@@ -74,5 +74,28 @@ public class SDKEventProcessorHandlerTest {
         verify(httpService).postFormUrlEncoded("serializedEntity");
     }
 
+    @Test
+    public void it_should_construct_heart_beat_event_and_make_api_call() throws UnsupportedEncodingException {
+
+        ArgumentCaptor<Map<String, Object>> xennEventArgumentCaptor = ArgumentCaptor.forClass(Map.class);
+        when(applicationContextHolder.getPersistentId()).thenReturn("persistentId");
+        when(sessionContextHolder.getSessionIdAndExtendSession()).thenReturn("sessionId");
+        when(sessionContextHolder.getMemberId()).thenReturn("memberId");
+        when(entitySerializerService.serialize(xennEventArgumentCaptor.capture())).thenReturn("serializedEntity");
+
+        sdkEventProcessorHandler.heartBeat();
+
+        Map<String, Object> xennEventMap = xennEventArgumentCaptor.getValue();
+        Map<String, Object> header = (Map<String, Object>) xennEventMap.get("h");
+        Map<String, Object> body = (Map<String, Object>) xennEventMap.get("b");
+
+        assertEquals(header.get("n"), "HB");
+        assertEquals(header.get("s"), "sessionId");
+        assertEquals(header.get("p"), "persistentId");
+        assertEquals(body.get("memberId"), "memberId");
+
+        verify(httpService).postFormUrlEncoded("serializedEntity");
+    }
+
 
 }

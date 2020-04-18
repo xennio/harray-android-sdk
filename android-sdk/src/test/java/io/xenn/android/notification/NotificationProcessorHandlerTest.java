@@ -8,6 +8,8 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 
 import io.xenn.android.context.ApplicationContextHolder;
@@ -61,6 +63,52 @@ public class NotificationProcessorHandlerTest {
         assertEquals(body.get("type"), "fcmToken");
         assertEquals(body.get("appType"), "fcmAppPush");
         assertEquals(body.get("deviceToken"), "device token");
+
+        verify(httpService).postFormUrlEncoded("serializedEntity");
+    }
+
+    @Test
+    public void it_should_construct_push_message_receive_event_and_make_api_call() throws UnsupportedEncodingException {
+
+        ArgumentCaptor<Map<String, Object>> xennEventArgumentCaptor = ArgumentCaptor.forClass(Map.class);
+        when(applicationContextHolder.getPersistentId()).thenReturn("persistentId");
+        when(sessionContextHolder.getSessionIdAndExtendSession()).thenReturn("sessionId");
+        Map<String, Object> externalParameters = new HashMap<>();
+        externalParameters.put("pushId", "pushId");
+        externalParameters.put("campaignId", "campaignId");
+        externalParameters.put("campaignDate", "campaignDate");
+        externalParameters.put("url", "url");
+        externalParameters.put("utm_source", "xennio");
+        externalParameters.put("utm_medium", "utm_medium");
+        externalParameters.put("utm_campaign", "utm_campaign");
+        externalParameters.put("utm_term", "utm_term");
+        externalParameters.put("utm_content", "utm_content");
+
+        when(sessionContextHolder.getExternalParameters()).thenReturn(externalParameters);
+        when(sessionContextHolder.getMemberId()).thenReturn("memberId");
+        when(entitySerializerService.serialize(xennEventArgumentCaptor.capture())).thenReturn("serializedEntity");
+
+        notificationProcessorHandler.pushMessageReceived();
+
+        Map<String, Object> xennEventMap = xennEventArgumentCaptor.getValue();
+        Map<String, Object> header = (Map<String, Object>) xennEventMap.get("h");
+        Map<String, Object> body = (Map<String, Object>) xennEventMap.get("b");
+
+        assertEquals(header.get("n"), "Feedback");
+        assertEquals(header.get("s"), "sessionId");
+        assertEquals(header.get("p"), "persistentId");
+        assertEquals(body.get("memberId"), "memberId");
+        assertEquals(body.get("type"), "pushOpened");
+        assertEquals(body.get("appType"), "fcmAppPush");
+        assertEquals(body.get("utm_content"), "utm_content");
+        assertEquals(body.get("utm_term"), "utm_term");
+        assertEquals(body.get("utm_medium"), "utm_medium");
+        assertEquals(body.get("utm_campaign"), "utm_campaign");
+        assertEquals(body.get("utm_source"), "xennio");
+        assertEquals(body.get("url"), "url");
+        assertEquals(body.get("campaignDate"), "campaignDate");
+        assertEquals(body.get("campaignId"), "campaignId");
+        assertEquals(body.get("pushId"), "pushId");
 
         verify(httpService).postFormUrlEncoded("serializedEntity");
     }
