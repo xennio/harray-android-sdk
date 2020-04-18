@@ -30,7 +30,7 @@ public class ApplicationContextHolderTest {
         when(sharedPreferences.getString(Constants.SDK_PERSISTENT_ID_KEY, null)).thenReturn(null);
         when(sharedPreferences.edit()).thenReturn(mockedEditor);
         ApplicationContextHolder applicationContextHolder = new ApplicationContextHolder(sharedPreferences, "sdkKey");
-        assertEquals(applicationContextHolder.getPersistentId(), randomUUID);
+        assertEquals(randomUUID, applicationContextHolder.getPersistentId());
 
         verify(mockedEditor).putString(Constants.SDK_PERSISTENT_ID_KEY, randomUUID);
         verify(mockedEditor).apply();
@@ -52,7 +52,7 @@ public class ApplicationContextHolderTest {
         String value = "stored-persistent-id";
         when(sharedPreferences.getString(Constants.SDK_PERSISTENT_ID_KEY, null)).thenReturn(value);
         ApplicationContextHolder applicationContextHolder = new ApplicationContextHolder(sharedPreferences, "sdkKey");
-        assertEquals(applicationContextHolder.getCollectorUrl(), "https://c.xenn.io:443/sdkKey");
+        assertEquals("https://c.xenn.io:443/sdkKey", applicationContextHolder.getCollectorUrl());
     }
 
     @Test
@@ -61,6 +61,6 @@ public class ApplicationContextHolderTest {
         String value = "stored-persistent-id";
         when(sharedPreferences.getString(Constants.SDK_PERSISTENT_ID_KEY, null)).thenReturn(value);
         ApplicationContextHolder applicationContextHolder = new ApplicationContextHolder(sharedPreferences, "sdkKey");
-        assertEquals(applicationContextHolder.getTimezone(), "0");
+        assertEquals("0", applicationContextHolder.getTimezone());
     }
 }

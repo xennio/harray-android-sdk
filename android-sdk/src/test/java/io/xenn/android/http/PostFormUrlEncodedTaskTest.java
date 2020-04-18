@@ -46,7 +46,7 @@ public class PostFormUrlEncodedTaskTest {
 
         PostFormUrlEncodedTask httpService = new PostFormUrlEncodedTask("http://127.0.0.1:" + serverPort + "/", payload);
         int status = httpService.doInBackground();
-        assertEquals(status, 201);
+        assertEquals(201, status);
     }
 
 
@@ -55,7 +55,7 @@ public class PostFormUrlEncodedTaskTest {
         String payload = "e=base64formVariables";
         PostFormUrlEncodedTask httpService = new PostFormUrlEncodedTask("http://unknownhost:" + serverPort + "/", payload);
         int status = httpService.doInBackground();
-        assertEquals(status, 0);
+        assertEquals(0, status);
     }
 
 }

@@ -39,6 +39,7 @@ public class EventProcessorHandler {
                 .addBody("pageType", pageType)
                 .memberId(sessionContextHolder.getMemberId())
                 .appendExtra(params)
+                .appendExtra(sessionContextHolder.getExternalParameters())
                 .toMap();
 
         try {

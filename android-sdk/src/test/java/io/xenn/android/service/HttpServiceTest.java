@@ -5,6 +5,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import io.xenn.android.http.BitmapDownloadTask;
 import io.xenn.android.http.PostFormUrlEncodedTask;
 import io.xenn.android.http.HttpRequestFactory;
 
@@ -20,6 +21,9 @@ public class HttpServiceTest {
     @Mock
     private PostFormUrlEncodedTask mockPostFormUrlEncodedTask;
 
+    @Mock
+    private BitmapDownloadTask bitmapDownloadTask;
+
     @Test
     public void it_should_make_form_url_encoded_request() {
         String endpoint = "endpoint";
@@ -28,5 +32,14 @@ public class HttpServiceTest {
         when(httpRequestFactory.getPostFormUrlEncodedTask(endpoint, "e=" + payload)).thenReturn(mockPostFormUrlEncodedTask);
         httpService.postFormUrlEncoded(payload);
         verify(mockPostFormUrlEncodedTask).execute();
+    }
+
+    @Test
+    public void it_should_bitmap_request() {
+        String endpoint = "endpoint";
+        HttpService httpService = new HttpService(endpoint, httpRequestFactory);
+        when(httpRequestFactory.getBitmapDownloadTask(endpoint)).thenReturn(bitmapDownloadTask);
+        httpService.downloadImage(endpoint);
+        verify(bitmapDownloadTask).getBitmap();
     }
 }

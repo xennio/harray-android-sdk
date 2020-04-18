@@ -13,21 +13,26 @@ import androidx.core.app.NotificationCompat;
 
 import java.util.Map;
 
-import io.xenn.android.common.DeviceUtils;
-import io.xenn.android.utils.ImageDownloadManager;
+import io.xenn.android.service.DeviceService;
+import io.xenn.android.service.HttpService;
 import io.xenn.android.utils.XennioLogger;
 
 public class NotificationCompatBuilder {
 
     private Context applicationContext;
+    private final HttpService httpService;
     private NotificationCompat.Builder notificationCompat;
+    private final DeviceService deviceService;
 
-    public NotificationCompatBuilder(Context applicationContext) {
+
+    public NotificationCompatBuilder(Context applicationContext, HttpService httpService, DeviceService deviceService) {
         this.applicationContext = applicationContext;
+        this.httpService = httpService;
+        this.deviceService = deviceService;
     }
 
-    public static NotificationCompatBuilder create(Context applicationContext) {
-        NotificationCompatBuilder notificationCompatBuilder = new NotificationCompatBuilder(applicationContext);
+    public static NotificationCompatBuilder create(Context applicationContext, HttpService httpService, DeviceService deviceService) {
+        NotificationCompatBuilder notificationCompatBuilder = new NotificationCompatBuilder(applicationContext, httpService, deviceService);
         notificationCompatBuilder.applicationContext = applicationContext;
         return notificationCompatBuilder;
     }
@@ -43,7 +48,7 @@ public class NotificationCompatBuilder {
             XennioLogger.log(e.getMessage());
         }
         notificationCompat = new NotificationCompat.Builder(applicationContext, notificationChannelId)
-                .setVibrate(new long[]{0, 100, 100, 100, 100, 100})
+                .setVibrate(new long[]{0, 100, 100, 100})
                 .setSmallIcon(appIconResId)
                 .setAutoCancel(true);
         return this;
@@ -68,7 +73,7 @@ public class NotificationCompatBuilder {
 
     public NotificationCompatBuilder withSound(String sound) {
         if (sound != null) {
-            notificationCompat.setSound(DeviceUtils.getSound(applicationContext, sound));
+            notificationCompat.setSound(deviceService.getSound(sound));
         } else {
             RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         }
@@ -77,7 +82,7 @@ public class NotificationCompatBuilder {
 
     public NotificationCompatBuilder withImage(String imageUrl, String message) {
         if (imageUrl != null) {
-            Bitmap bitmap = ImageDownloadManager.getInstance().getBitmap(imageUrl);
+            Bitmap bitmap = httpService.downloadImage(imageUrl);
             notificationCompat.setStyle(new NotificationCompat.BigPictureStyle().bigPicture(bitmap).setSummaryText(message));
         }
         return this;

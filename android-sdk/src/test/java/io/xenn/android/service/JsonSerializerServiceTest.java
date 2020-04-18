@@ -9,7 +9,6 @@ import static org.junit.Assert.*;
 
 public class JsonSerializerServiceTest {
 
-
     @Test
     public void it_should_convert_object_to_json_string() {
 
@@ -23,8 +22,6 @@ public class JsonSerializerServiceTest {
         JsonSerializerService jsonSerializerService = new JsonSerializerService();
         String result = jsonSerializerService.serialize(payload);
 
-        assertEquals(result, "{\"a\":\"string Value\",\"b\":10,\"c\":{\"x\":\"inner Value\"}}");
+        assertEquals("{\"a\":\"string Value\",\"b\":10,\"c\":{\"x\":\"inner Value\"}}", result);
     }
-
-
 }

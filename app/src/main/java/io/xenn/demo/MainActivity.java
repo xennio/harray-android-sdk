@@ -19,11 +19,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
-import java.util.Arrays;
-import java.util.HashMap;
-
 import io.xenn.android.Xennio;
-import io.xenn.android.XennioAPI;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -37,8 +33,8 @@ public class MainActivity extends AppCompatActivity {
         Xennio.eventing().impression("productdetail");
         Intent intent = getIntent();
         // XennioAPI.handlePushOpen(intent, Arrays.asList("Insider", "xennio"));
-        Log.d("Xennio", "Source:" + intent.getStringExtra("source"));
-        Log.d("Xennio", "Url:" + intent.getStringExtra("realty_list"));
+        Log.d("Xennio", "Source:" + Xennio.deeplinking().get("source"));
+        Log.d("Xennio", "Realty List:" + Xennio.deeplinking().get("realty_list"));
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -58,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                XennioAPI.actionResult("300", "click", new HashMap<String, Object>());
+                Xennio.eventing().actionResult("click");
                 Snackbar.make(view, "Replace with your own action 2", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }

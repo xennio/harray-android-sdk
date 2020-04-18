@@ -44,6 +44,9 @@ public class EventProcessorHandlerTest {
         ArgumentCaptor<Map<String, Object>> xennEventArgumentCaptor = ArgumentCaptor.forClass(Map.class);
         when(applicationContextHolder.getPersistentId()).thenReturn("persistentId");
         when(sessionContextHolder.getSessionIdAndExtendSession()).thenReturn("sessionId");
+        HashMap<String, Object> externalParameters = new HashMap<>();
+        externalParameters.put("utm_source", "xennio");
+        when(sessionContextHolder.getExternalParameters()).thenReturn(externalParameters);
         when(sessionContextHolder.getMemberId()).thenReturn("memberId");
         when(entitySerializerService.serialize(xennEventArgumentCaptor.capture())).thenReturn("serializedEntity");
 
@@ -53,11 +56,12 @@ public class EventProcessorHandlerTest {
         Map<String, Object> header = (Map<String, Object>) xennEventMap.get("h");
         Map<String, Object> body = (Map<String, Object>) xennEventMap.get("b");
 
-        assertEquals(header.get("n"), "PV");
-        assertEquals(header.get("s"), "sessionId");
-        assertEquals(header.get("p"), "persistentId");
-        assertEquals(body.get("memberId"), "memberId");
-        assertEquals(body.get("pageType"), "homePage");
+        assertEquals("PV", header.get("n"));
+        assertEquals("sessionId", header.get("s"));
+        assertEquals("persistentId", header.get("p"));
+        assertEquals("memberId", body.get("memberId"));
+        assertEquals("homePage", body.get("pageType"));
+        assertEquals("xennio", body.get("utm_source"));
 
         verify(httpService).postFormUrlEncoded("serializedEntity");
     }
@@ -80,13 +84,13 @@ public class EventProcessorHandlerTest {
         Map<String, Object> header = (Map<String, Object>) xennEventMap.get("h");
         Map<String, Object> body = (Map<String, Object>) xennEventMap.get("b");
 
-        assertEquals(header.get("n"), "PV");
-        assertEquals(header.get("s"), "sessionId");
-        assertEquals(header.get("p"), "persistentId");
-        assertEquals(body.get("memberId"), "memberId");
-        assertEquals(body.get("pageType"), "homePage");
-        assertEquals(body.get("e1"), "2");
-        assertEquals(body.get("e2"), 4);
+        assertEquals("PV", header.get("n"));
+        assertEquals("sessionId", header.get("s"));
+        assertEquals("persistentId", header.get("p"));
+        assertEquals("memberId", body.get("memberId"));
+        assertEquals("homePage", body.get("pageType"));
+        assertEquals("2", body.get("e1"));
+        assertEquals(4, body.get("e2"));
 
         verify(httpService).postFormUrlEncoded("serializedEntity");
 
@@ -110,13 +114,13 @@ public class EventProcessorHandlerTest {
         Map<String, Object> header = (Map<String, Object>) xennEventMap.get("h");
         Map<String, Object> body = (Map<String, Object>) xennEventMap.get("b");
 
-        assertEquals(header.get("n"), "AR");
-        assertEquals(header.get("s"), "sessionId");
-        assertEquals(header.get("p"), "persistentId");
-        assertEquals(body.get("memberId"), "memberId");
-        assertEquals(body.get("type"), "conversion");
-        assertEquals(body.get("e1"), "2");
-        assertEquals(body.get("e2"), 4);
+        assertEquals("AR", header.get("n"));
+        assertEquals("sessionId", header.get("s"));
+        assertEquals("persistentId", header.get("p"));
+        assertEquals("memberId", body.get("memberId"));
+        assertEquals("conversion", body.get("type"));
+        assertEquals("2", body.get("e1"));
+        assertEquals(4, body.get("e2"));
 
         verify(httpService).postFormUrlEncoded("serializedEntity");
     }
@@ -135,12 +139,11 @@ public class EventProcessorHandlerTest {
         Map<String, Object> header = (Map<String, Object>) xennEventMap.get("h");
         Map<String, Object> body = (Map<String, Object>) xennEventMap.get("b");
 
-        assertEquals(header.get("n"), "AR");
-        assertEquals(header.get("s"), "sessionId");
-        assertEquals(header.get("p"), "persistentId");
-        assertEquals(body.get("memberId"), null);
-        assertEquals(body.get("type"), "conversion");
-
+        assertEquals("AR", header.get("n"));
+        assertEquals("sessionId", header.get("s"));
+        assertEquals("persistentId", header.get("p"));
+        assertEquals("conversion", body.get("type"));
+        assertNull(body.get("memberId"));
         verify(httpService).postFormUrlEncoded("serializedEntity");
     }
 
@@ -161,13 +164,13 @@ public class EventProcessorHandlerTest {
         Map<String, Object> header = (Map<String, Object>) xennEventMap.get("h");
         Map<String, Object> body = (Map<String, Object>) xennEventMap.get("b");
 
-        assertEquals(header.get("n"), "IM");
-        assertEquals(header.get("s"), "sessionId");
-        assertEquals(header.get("p"), "persistentId");
-        assertEquals(body.get("memberId"), "memberId");
-        assertEquals(body.get("type"), "product");
-        assertEquals(body.get("e1"), "2");
-        assertEquals(body.get("e2"), 4);
+        assertEquals("IM", header.get("n"));
+        assertEquals("sessionId", header.get("s"));
+        assertEquals("persistentId", header.get("p"));
+        assertEquals("memberId", body.get("memberId"));
+        assertEquals("product", body.get("type"));
+        assertEquals("2", body.get("e1"));
+        assertEquals(4, body.get("e2"));
 
         verify(httpService).postFormUrlEncoded("serializedEntity");
     }
@@ -187,14 +190,12 @@ public class EventProcessorHandlerTest {
         Map<String, Object> header = (Map<String, Object>) xennEventMap.get("h");
         Map<String, Object> body = (Map<String, Object>) xennEventMap.get("b");
 
-        assertEquals(header.get("n"), "IM");
-        assertEquals(header.get("s"), "sessionId");
-        assertEquals(header.get("p"), "persistentId");
-        assertEquals(body.get("memberId"), null);
-        assertEquals(body.get("type"), "product");
+        assertEquals("IM", header.get("n"));
+        assertEquals("sessionId", header.get("s"));
+        assertEquals("persistentId", header.get("p"));
+        assertEquals("product", body.get("type"));
+        assertNull(body.get("memberId"));
 
         verify(httpService).postFormUrlEncoded("serializedEntity");
     }
-
-
 }

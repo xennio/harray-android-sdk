@@ -13,7 +13,7 @@ public class PushMessageDataWrapper {
     }
 
     public String buildChannelId() {
-        String soundChannelId = this.hasSound() ? "" : this.getSound();
+        String soundChannelId = this.hasSound() ? this.getSound() : "";
         return Constants.PUSH_CHANNEL_ID + soundChannelId;
     }
 

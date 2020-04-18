@@ -69,7 +69,7 @@ public class SessionContextHolderTest {
         SessionContextHolder sessionContextHolder = new SessionContextHolder();
         String memberId = "memberId";
         sessionContextHolder.login(memberId);
-        assertEquals(sessionContextHolder.getMemberId(), memberId);
+        assertEquals(memberId, sessionContextHolder.getMemberId());
     }
 
     @Test
@@ -77,11 +77,10 @@ public class SessionContextHolderTest {
         SessionContextHolder sessionContextHolder = new SessionContextHolder();
         String memberId = "memberId";
         sessionContextHolder.login(memberId);
-        assertEquals(sessionContextHolder.getMemberId(), memberId);
+        assertEquals(memberId, sessionContextHolder.getMemberId());
         sessionContextHolder.logout();
         assertNull(sessionContextHolder.getMemberId());
     }
-
 
 
 }

@@ -15,7 +15,7 @@ public class EncodingServiceTest {
         EncodingService encodingService = new EncodingService();
         String encodedValue = encodingService.getUrlEncodedString(text);
 
-        assertEquals(encodedValue, "http%3A%2F%2Fwww.xenn.io%3Ffoo%3Dbar%26a%3Db%2Bc");
+        assertEquals("http%3A%2F%2Fwww.xenn.io%3Ffoo%3Dbar%26a%3Db%2Bc", encodedValue);
     }
 
     @Test
@@ -23,8 +23,6 @@ public class EncodingServiceTest {
         String value = "plain text value";
         EncodingService encodingService = new EncodingService();
         String result = encodingService.getBase64EncodedString(value);
-        assertEquals(result, "cGxhaW4gdGV4dCB2YWx1ZQ==\n");
+        assertEquals("cGxhaW4gdGV4dCB2YWx1ZQ==\n", result);
     }
-
-
 }

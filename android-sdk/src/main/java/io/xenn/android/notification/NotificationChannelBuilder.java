@@ -4,25 +4,24 @@ import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.content.Context;
 import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.Build;
 
 import io.xenn.android.common.Constants;
-import io.xenn.android.common.DeviceUtils;
+import io.xenn.android.service.DeviceService;
 
 public class NotificationChannelBuilder {
 
     private NotificationChannel notificationChannel;
-    private Context applicationContext;
+    private final DeviceService deviceService;
 
-    public NotificationChannelBuilder(Context applicationContext) {
-        this.applicationContext = applicationContext;
+    public NotificationChannelBuilder(DeviceService deviceService) {
+        this.deviceService = deviceService;
     }
 
-    public static NotificationChannelBuilder create(Context applicationContext) {
-        NotificationChannelBuilder notificationChannelBuilder = new NotificationChannelBuilder(applicationContext);
+    public static NotificationChannelBuilder create(DeviceService deviceService) {
+        NotificationChannelBuilder notificationChannelBuilder = new NotificationChannelBuilder(deviceService);
         return notificationChannelBuilder;
     }
 
@@ -44,15 +43,9 @@ public class NotificationChannelBuilder {
     }
 
     @TargetApi(Build.VERSION_CODES.O)
-    public NotificationChannelBuilder withImportance(int importance) {
-        notificationChannel.setImportance(importance);
-        return this;
-    }
-
-    @TargetApi(Build.VERSION_CODES.O)
     public NotificationChannelBuilder withSound(String sound) {
         if (sound != null) {
-            Uri soundUri = DeviceUtils.getSound(applicationContext, sound);
+            Uri soundUri = deviceService.getSound(sound);
             AudioAttributes attributes = new AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
                     .setUsage(AudioAttributes.USAGE_NOTIFICATION).build();
             notificationChannel.setSound(soundUri, attributes);

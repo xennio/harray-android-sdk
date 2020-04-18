@@ -15,8 +15,16 @@ public class HttpRequestFactoryTest {
         String endpoint = "a";
         String payload = "b";
         PostFormUrlEncodedTask postFormUrlEncodedTask = httpRequestFactory.getPostFormUrlEncodedTask(endpoint, payload);
-        assertEquals(postFormUrlEncodedTask.getEndpoint(), endpoint);
-        assertEquals(postFormUrlEncodedTask.getPayload(), payload);
+        assertEquals(endpoint, postFormUrlEncodedTask.getEndpoint());
+        assertEquals(payload, postFormUrlEncodedTask.getPayload());
+    }
+
+    @Test
+    public void it_should_return_bitmap_download_task() {
+        HttpRequestFactory httpRequestFactory = new HttpRequestFactory();
+        String endpoint = "a";
+        BitmapDownloadTask bitmapDownloadTask = httpRequestFactory.getBitmapDownloadTask(endpoint);
+        assertEquals(endpoint, bitmapDownloadTask.getUrlString());
     }
 
 }

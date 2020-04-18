@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import io.xenn.android.common.Constants;
 import io.xenn.android.context.ApplicationContextHolder;
 import io.xenn.android.context.SessionContextHolder;
+import io.xenn.android.context.SessionState;
+import io.xenn.android.deeplink.DeepLinkingProcessorHandler;
 import io.xenn.android.event.EventProcessorHandler;
 import io.xenn.android.event.SDKEventProcessorHandler;
 import io.xenn.android.http.HttpRequestFactory;
@@ -22,6 +24,7 @@ public final class Xennio {
     private final SDKEventProcessorHandler sdkEventProcessorHandler;
     private final SessionContextHolder sessionContextHolder;
     private final NotificationProcessorHandler notificationProcessorHandler;
+    private final DeepLinkingProcessorHandler deepLinkingProcessorHandler;
 
     private static Xennio instance;
 
@@ -37,20 +40,30 @@ public final class Xennio {
         DeviceService deviceService = new DeviceService(context);
         this.sdkEventProcessorHandler = new SDKEventProcessorHandler(applicationContextHolder, sessionContextHolder, httpService, entitySerializerService, deviceService);
 
-        this.notificationProcessorHandler = new NotificationProcessorHandler(applicationContextHolder, sessionContextHolder, httpService, entitySerializerService);
+        this.notificationProcessorHandler = new NotificationProcessorHandler(applicationContextHolder, sessionContextHolder, httpService, entitySerializerService, deviceService);
+
+        this.deepLinkingProcessorHandler = new DeepLinkingProcessorHandler(sessionContextHolder);
     }
 
     public static void configure(Context context, String sdkKey) {
         instance = new Xennio(context, sdkKey);
-        getInstance().sdkEventProcessorHandler.sessionStart();
     }
 
     public static EventProcessorHandler eventing() {
+        SessionContextHolder sessionContextHolder = getInstance().sessionContextHolder;
+        if (sessionContextHolder.getSessionState() != SessionState.SESSION_STARTED) {
+            getInstance().sdkEventProcessorHandler.sessionStart();
+            sessionContextHolder.startSession();
+        }
         return getInstance().eventProcessorHandler;
     }
 
     public static NotificationProcessorHandler notifications() {
         return getInstance().notificationProcessorHandler;
+    }
+
+    public static DeepLinkingProcessorHandler deeplinking() {
+        return getInstance().deepLinkingProcessorHandler;
     }
 
     public static Xennio getInstance() {

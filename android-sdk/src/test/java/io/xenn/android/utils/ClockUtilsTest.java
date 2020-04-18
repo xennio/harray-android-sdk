@@ -31,7 +31,7 @@ public class ClockUtilsTest {
         long time1 = ClockUtils.getTime();
         long time2 = ClockUtils.getTime();
         assertTrue(time1 == time2);
-        assertEquals(time1, expectedTime);
+        assertEquals(expectedTime, time1);
         ClockUtils.unFreeze();
     }
 }

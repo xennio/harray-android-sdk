@@ -4,4 +4,8 @@ public class HttpRequestFactory {
     public PostFormUrlEncodedTask getPostFormUrlEncodedTask(String endpoint, String payload) {
         return new PostFormUrlEncodedTask(endpoint, payload);
     }
+
+    public BitmapDownloadTask getBitmapDownloadTask(String endpoint) {
+        return new BitmapDownloadTask(endpoint);
+    }
 }

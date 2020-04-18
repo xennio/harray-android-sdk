@@ -34,6 +34,6 @@ public class EntitySerializerServiceTest {
         when(encodingService.getBase64EncodedString("URLENCODEDVALUE")).thenReturn("BASE64STRINGVALUE");
 
         String serializedEntity = entitySerializerService.serialize(event);
-        assertEquals(serializedEntity, "BASE64STRINGVALUE");
+        assertEquals("BASE64STRINGVALUE", serializedEntity);
     }
 }
