@@ -14,7 +14,7 @@ public class HttpService {
     }
 
     public void postFormUrlEncoded(final String payload) {
-        PostFormUrlEncodedTask task = httpRequestFactory.getPostFormUrlEncodedTask(endpoint, payload);
+        PostFormUrlEncodedTask task = httpRequestFactory.getPostFormUrlEncodedTask(endpoint, "e=" + payload);
         task.execute();
     }
 }

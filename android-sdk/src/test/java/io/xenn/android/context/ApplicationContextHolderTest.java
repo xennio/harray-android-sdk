@@ -29,7 +29,7 @@ public class ApplicationContextHolderTest {
         String randomUUID = RandomValueUtils.randomUUID();
         when(sharedPreferences.getString(Constants.SDK_PERSISTENT_ID_KEY, null)).thenReturn(null);
         when(sharedPreferences.edit()).thenReturn(mockedEditor);
-        ApplicationContextHolder applicationContextHolder = new ApplicationContextHolder(sharedPreferences);
+        ApplicationContextHolder applicationContextHolder = new ApplicationContextHolder(sharedPreferences, "sdkKey");
         assertEquals(applicationContextHolder.getPersistentId(), randomUUID);
 
         verify(mockedEditor).putString(Constants.SDK_PERSISTENT_ID_KEY, randomUUID);
@@ -42,9 +42,25 @@ public class ApplicationContextHolderTest {
     public void it_should_return_persistent_id_when_persistent_id_is_present_in_shared_preferences() {
         String value = "stored-persistent-id";
         when(sharedPreferences.getString(Constants.SDK_PERSISTENT_ID_KEY, null)).thenReturn(value);
-        ApplicationContextHolder applicationContextHolder = new ApplicationContextHolder(sharedPreferences);
+        ApplicationContextHolder applicationContextHolder = new ApplicationContextHolder(sharedPreferences, "sdkKey");
         assertEquals(applicationContextHolder.getPersistentId(), value);
         verifyNoInteractions(mockedEditor);
     }
 
+    @Test
+    public void it_should_add_sdk_key_to_collector_url() {
+        String value = "stored-persistent-id";
+        when(sharedPreferences.getString(Constants.SDK_PERSISTENT_ID_KEY, null)).thenReturn(value);
+        ApplicationContextHolder applicationContextHolder = new ApplicationContextHolder(sharedPreferences, "sdkKey");
+        assertEquals(applicationContextHolder.getCollectorUrl(), "https://c.xenn.io:443/sdkKey");
+    }
+
+    @Test
+    public void it_should_return_time_zone() {
+        System.setProperty("user.timezone", "UTC");
+        String value = "stored-persistent-id";
+        when(sharedPreferences.getString(Constants.SDK_PERSISTENT_ID_KEY, null)).thenReturn(value);
+        ApplicationContextHolder applicationContextHolder = new ApplicationContextHolder(sharedPreferences, "sdkKey");
+        assertEquals(applicationContextHolder.getTimezone(), "0");
+    }
 }

@@ -8,6 +8,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.media.RingtoneManager;
+
 import androidx.core.app.NotificationCompat;
 
 import java.util.Map;
@@ -49,7 +50,7 @@ public class NotificationCompatBuilder {
     }
 
     public NotificationCompatBuilder withTitle(String title) {
-        notificationCompat.setContentTitle(title != null ? title : DeviceUtils.getAppLabel(applicationContext, ""));
+        notificationCompat.setContentTitle(title);
         return this;
     }
 

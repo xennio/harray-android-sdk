@@ -22,6 +22,7 @@ public class PostFormUrlEncodedTask extends AsyncTask<Void, Void, Integer> {
     protected Integer doInBackground(Void... voids) {
         try {
             URL url = new URL(endpoint);
+            XennioLogger.log(payload);
             byte[] postData = payload.getBytes();
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setDoOutput(true);

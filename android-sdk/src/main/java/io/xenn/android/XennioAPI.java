@@ -36,8 +36,10 @@ import io.xenn.android.common.PushMessageDataWrapper;
 import io.xenn.android.model.XennEvent;
 import io.xenn.android.notification.NotificationChannelBuilder;
 import io.xenn.android.notification.NotificationCompatBuilder;
+import io.xenn.android.utils.ClockUtils;
 import io.xenn.android.utils.XennioLogger;
 
+@Deprecated
 public class XennioAPI {
 
     private static final String COLLECTOR_URL = "https://c.xenn.io:443/";
@@ -47,8 +49,8 @@ public class XennioAPI {
     private static String sid;
     private static Map<String, Object> deepLink = new HashMap<>();
     private static final Long HEART_BEAT_INTERVAL = 55 * 1000L;
-    private static final Long EXPIRE_TIME = 30 * 60 * 1000L;
-    private static Long lastEventTime;
+    private static final long EXPIRE_TIME = 30 * 60 * 1000L;
+    private static long lastEventTime = ClockUtils.getTime();
     private static TimerTask heartBeatTask;
     private static Timer timer = new Timer();
     private static boolean isInitialized = false;

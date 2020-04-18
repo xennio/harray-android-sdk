@@ -25,7 +25,7 @@ public class HttpServiceTest {
         String endpoint = "endpoint";
         HttpService httpService = new HttpService(endpoint, httpRequestFactory);
         String payload = "payload";
-        when(httpRequestFactory.getPostFormUrlEncodedTask(endpoint, payload)).thenReturn(mockPostFormUrlEncodedTask);
+        when(httpRequestFactory.getPostFormUrlEncodedTask(endpoint, "e=" + payload)).thenReturn(mockPostFormUrlEncodedTask);
         httpService.postFormUrlEncoded(payload);
         verify(mockPostFormUrlEncodedTask).execute();
     }

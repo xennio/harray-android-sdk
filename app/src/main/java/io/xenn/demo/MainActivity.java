@@ -22,6 +22,7 @@ import com.google.firebase.iid.InstanceIdResult;
 import java.util.Arrays;
 import java.util.HashMap;
 
+import io.xenn.android.Xennio;
 import io.xenn.android.XennioAPI;
 
 public class MainActivity extends AppCompatActivity {
@@ -29,15 +30,28 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Xennio.login("300");
+        Xennio.eventing().pageView("homePage");
+        Xennio.eventing().actionResult("test Action");
+        Xennio.eventing().impression("productdetail");
         Intent intent = getIntent();
-        XennioAPI.handlePushOpen(intent, Arrays.asList("Insider", "xennio"));
+        // XennioAPI.handlePushOpen(intent, Arrays.asList("Insider", "xennio"));
         Log.d("Xennio", "Source:" + intent.getStringExtra("source"));
         Log.d("Xennio", "Url:" + intent.getStringExtra("realty_list"));
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        XennioAPI.pageView("300", "homePage", new HashMap<String, Object>());
+        // XennioAPI.pageView("300", "homePage", new HashMap<String, Object>());
+
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        Xennio.notifications().savePushToken(task.getResult().getToken());
+                    }
+                });
 
         FirebaseInstanceId.getInstance().getInstanceId()
                 .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {

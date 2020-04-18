@@ -64,4 +64,24 @@ public class SessionContextHolderTest {
         ClockUtils.unFreeze();
     }
 
+    @Test
+    public void it_should_log_in_member() {
+        SessionContextHolder sessionContextHolder = new SessionContextHolder();
+        String memberId = "memberId";
+        sessionContextHolder.login(memberId);
+        assertEquals(sessionContextHolder.getMemberId(), memberId);
+    }
+
+    @Test
+    public void it_should_log_out_member() {
+        SessionContextHolder sessionContextHolder = new SessionContextHolder();
+        String memberId = "memberId";
+        sessionContextHolder.login(memberId);
+        assertEquals(sessionContextHolder.getMemberId(), memberId);
+        sessionContextHolder.logout();
+        assertNull(sessionContextHolder.getMemberId());
+    }
+
+
+
 }

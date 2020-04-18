@@ -21,6 +21,14 @@ public class XennEvent {
         return xennEvent;
     }
 
+    public static XennEvent create(String name, String persistentId, String sessionId) {
+        XennEvent xennEvent = new XennEvent(name);
+        xennEvent.h.put("n", name);
+        xennEvent.h.put("p", persistentId);
+        xennEvent.h.put("s", sessionId);
+        return xennEvent;
+    }
+
     public XennEvent addHeader(String key, Object value) {
         h.put(key, value);
         return this;
@@ -55,5 +63,12 @@ public class XennEvent {
 
     public String getName() {
         return name;
+    }
+
+    public Map<String, Object> toMap() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("h", h);
+        map.put("b", b);
+        return map;
     }
 }
