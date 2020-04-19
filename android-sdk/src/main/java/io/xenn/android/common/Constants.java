@@ -19,4 +19,6 @@ public class Constants {
     public static final String PREF_COLLECTION_NAME = "XENNIO_PREFS";
     public static final long SESSION_DURATION = 30 * 60 * 1000L;
     public static final List<String> EXTERNAL_PARAMETER_KEYS = Collections.unmodifiableList(Arrays.asList("campaignId", "campaignDate", "pushId", "url", "utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"));
+    public static final String PUSH_PAYLOAD_APPLICATION_LOGO = "logo";
+    public static final String PUSH_PAYLOAD_SUB_TITLE = "subTitle";
 }

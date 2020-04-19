@@ -68,9 +68,12 @@ public class NotificationProcessorHandler {
             String notificationChannelId = pushMessageDataWrapper.buildChannelId();
             NotificationManager notificationManager = (NotificationManager) applicationContext.getSystemService(Context.NOTIFICATION_SERVICE);
             NotificationChannelBuilder.create(deviceService).withChannelId(notificationChannelId).withSound(pushMessageDataWrapper.getSound()).createIn(notificationManager);
+
             NotificationCompat.Builder notificationCompatBuilder = NotificationCompatBuilder.create(applicationContext, httpService, deviceService)
                     .withChannelId(notificationChannelId)
+                    .withApplicationLogo(pushMessageDataWrapper.getApplicationLogo())
                     .withTitle(pushMessageDataWrapper.getTitle())
+                    .withSubtitle(pushMessageDataWrapper.getSubTitle())
                     .withMessage(pushMessageDataWrapper.getMessage())
                     .withBadge(pushMessageDataWrapper.getBadge())
                     .withSound(pushMessageDataWrapper.getSound())
@@ -99,7 +102,7 @@ public class NotificationProcessorHandler {
         }
     }
 
-    protected void pushMessageOpened() {
+    public void pushMessageOpened() {
         try {
             Map<String, Object> event = XennEvent.create("Feedback", applicationContextHolder.getPersistentId(), sessionContextHolder.getSessionIdAndExtendSession())
                     .memberId(sessionContextHolder.getMemberId())

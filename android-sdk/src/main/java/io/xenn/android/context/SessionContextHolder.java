@@ -1,6 +1,5 @@
 package io.xenn.android.context;
 
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,7 +16,6 @@ public class SessionContextHolder {
     private Map<String, Object> externalParameters = new HashMap<>();
     private Map<String, String> intentParameters = new HashMap<>();
     private SessionState sessionState = SessionState.SESSION_INITIALIZED;
-
 
     public SessionContextHolder() {
         long now = ClockUtils.getTime();
@@ -77,7 +75,6 @@ public class SessionContextHolder {
                 externalParameters.put(eachKey, data.get(eachKey));
             }
         }
-
     }
 
     public SessionState getSessionState() {
@@ -90,6 +87,5 @@ public class SessionContextHolder {
 
     public void updateIntentParameters(Map<String, String> data) {
         this.intentParameters = data;
-
     }
 }

@@ -13,6 +13,7 @@ import androidx.core.app.NotificationCompat;
 
 import java.util.Map;
 
+import io.xenn.android.common.Constants;
 import io.xenn.android.service.DeviceService;
 import io.xenn.android.service.HttpService;
 import io.xenn.android.utils.XennioLogger;
@@ -59,8 +60,15 @@ public class NotificationCompatBuilder {
         return this;
     }
 
+    public NotificationCompatBuilder withSubtitle(String subTitle) {
+        notificationCompat.setContentText(subTitle);
+        return this;
+    }
+
     public NotificationCompatBuilder withMessage(String message) {
-        notificationCompat.setStyle(new NotificationCompat.BigTextStyle().bigText(message));
+        if (message != null) {
+            notificationCompat.setStyle(new NotificationCompat.BigTextStyle().bigText(message));
+        }
         return this;
     }
 
@@ -83,7 +91,11 @@ public class NotificationCompatBuilder {
     public NotificationCompatBuilder withImage(String imageUrl, String message) {
         if (imageUrl != null) {
             Bitmap bitmap = httpService.downloadImage(imageUrl);
-            notificationCompat.setStyle(new NotificationCompat.BigPictureStyle().bigPicture(bitmap).setSummaryText(message));
+            NotificationCompat.BigPictureStyle bigPictureStyle = new NotificationCompat.BigPictureStyle().bigPicture(bitmap);
+            if (message != null) {
+                bigPictureStyle.setSummaryText(message);
+            }
+            notificationCompat.setStyle(bigPictureStyle);
         }
         return this;
     }
@@ -94,6 +106,7 @@ public class NotificationCompatBuilder {
         ComponentName componentName = intent.getComponent();
         Intent notificationIntent = Intent.makeRestartActivityTask(componentName);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        notificationIntent.putExtra("via", Constants.PUSH_CHANNEL_ID);
         for (Map.Entry<String, String> entry : intentData.entrySet()) {
             notificationIntent.putExtra(entry.getKey(), entry.getValue());
         }
@@ -108,4 +121,10 @@ public class NotificationCompatBuilder {
     }
 
 
+    public NotificationCompatBuilder withApplicationLogo(String logo) {
+        if (logo != null) {
+            notificationCompat.setLargeIcon(httpService.downloadImage(logo));
+        }
+        return this;
+    }
 }

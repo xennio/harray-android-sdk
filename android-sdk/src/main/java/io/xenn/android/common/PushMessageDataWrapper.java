@@ -52,4 +52,12 @@ public class PushMessageDataWrapper {
     public String getImageUrl() {
         return data.get(Constants.PUSH_PAYLOAD_IMAGE_URL);
     }
+
+    public String getApplicationLogo() {
+        return data.get(Constants.PUSH_PAYLOAD_APPLICATION_LOGO);
+    }
+
+    public String getSubTitle() {
+        return data.get(Constants.PUSH_PAYLOAD_SUB_TITLE);
+    }
 }

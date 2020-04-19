@@ -82,4 +82,11 @@ public class PushMessageDataWrapperTest {
         assertEquals("message content", PushMessageDataWrapper.from(message).getMessage());
     }
 
+    @Test
+    public void it_should_return_logo_url_value_when_push_message_contains_logo() {
+        Map<String, String> message = new HashMap<>();
+        message.put(Constants.PUSH_PAYLOAD_APPLICATION_LOGO, "http://imageurl");
+        assertEquals("http://imageurl", PushMessageDataWrapper.from(message).getApplicationLogo());
+    }
+
 }

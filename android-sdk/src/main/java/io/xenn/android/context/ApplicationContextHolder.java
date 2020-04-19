@@ -13,7 +13,7 @@ import io.xenn.android.utils.RandomValueUtils;
 public class ApplicationContextHolder {
 
     private final String collectorUrl = "https://c.xenn.io:443/";
-    private final String sdkVersion = "2.3";
+    private final String sdkVersion = "2.4";
     private final String sdkKey;
     private String persistentId;
 

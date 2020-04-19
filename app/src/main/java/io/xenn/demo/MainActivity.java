@@ -24,6 +24,14 @@ import io.xenn.android.Xennio;
 public class MainActivity extends AppCompatActivity {
 
     @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        Log.d("Xennio", "Source:" + intent.getStringExtra("source"));
+        Log.d("Xennio", "Realty List:" + intent.getStringExtra("realty_list"));
+        Xennio.notifications().pushMessageOpened();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -33,8 +41,8 @@ public class MainActivity extends AppCompatActivity {
         Xennio.eventing().impression("productdetail");
         Intent intent = getIntent();
         // XennioAPI.handlePushOpen(intent, Arrays.asList("Insider", "xennio"));
-        Log.d("Xennio", "Source:" + Xennio.deeplinking().get("source"));
-        Log.d("Xennio", "Realty List:" + Xennio.deeplinking().get("realty_list"));
+        Log.d("Xennio", "Source:" + intent.getStringExtra("source"));
+        Log.d("Xennio", "Realty List:" + intent.getStringExtra("realty_list"));
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
