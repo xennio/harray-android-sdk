@@ -73,7 +73,7 @@ public final class Xennio {
         getInstance().sessionContextHolder.updateIntentParameters(intentData);
     }
 
-    private static Xennio getInstance() {
+    protected static Xennio getInstance() {
         if (instance == null) {
             throw new IllegalStateException("Xennio.configure(Context context, String sdkKey) must be called before getting instance");
         }
