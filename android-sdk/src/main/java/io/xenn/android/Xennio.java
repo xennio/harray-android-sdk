@@ -1,7 +1,10 @@
 package io.xenn.android;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+
+import java.util.Map;
 
 import io.xenn.android.common.Constants;
 import io.xenn.android.context.ApplicationContextHolder;
@@ -66,7 +69,11 @@ public final class Xennio {
         return getInstance().deepLinkingProcessorHandler;
     }
 
-    public static Xennio getInstance() {
+    public static void synchronizeIntentData(Map<String, String> intentData) {
+        getInstance().sessionContextHolder.updateIntentParameters(intentData);
+    }
+
+    private static Xennio getInstance() {
         if (instance == null) {
             throw new IllegalStateException("Xennio.configure(Context context, String sdkKey) must be called before getting instance");
         }

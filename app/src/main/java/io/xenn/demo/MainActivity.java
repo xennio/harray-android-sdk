@@ -34,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         Xennio.login("300");
         Xennio.eventing().pageView("homePage");
         Xennio.eventing().actionResult("test Action");
