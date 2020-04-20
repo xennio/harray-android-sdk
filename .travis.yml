@@ -1,21 +1,25 @@
-os:
-  - linux
 language: android
-jdk:
-  - oraclejdk8
-sudo: false
-env:
-  global:
-    - ANDROID_API=28
-    - EMULATOR_API=21
-    - ANDROID_BUILD_TOOLS=24.0.2
-    - ADB_INSTALL_TIMEOUT=5 # minutes
+dist: trusty
+android:
+  components:
+    - build-tools-26.0.2
+    - android-26
+    - add-on
+    - extra
+  licenses:
+    - 'android-sdk-preview-license-52d11cd2'
+    - 'android-sdk-license-.+'
+    - 'google-gdk-license-.+'
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
 cache:
   directories:
-    - $HOME/.m2
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+    - $HOME/.android/build-cache
 before_install:
   - java -version
-  - sleep 10
 script:
   - ./gradlew clean
   - ./gradlew build
