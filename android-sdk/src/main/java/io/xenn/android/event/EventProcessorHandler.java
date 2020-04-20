@@ -87,4 +87,17 @@ public class EventProcessorHandler {
         }
 
     }
+
+    public void custom(String eventName, Map<String, Object> params) {
+        try {
+            Map<String, Object> impressionEvent = XennEvent.create(eventName, applicationContextHolder.getPersistentId(), sessionContextHolder.getSessionIdAndExtendSession())
+                    .memberId(sessionContextHolder.getMemberId())
+                    .appendExtra(params)
+                    .toMap();
+            String serializedEvent = entitySerializerService.serialize(impressionEvent);
+            httpService.postFormUrlEncoded(serializedEvent);
+        } catch (Exception e) {
+            XennioLogger.log(eventName + "Event Error:" + e.getMessage());
+        }
+    }
 }

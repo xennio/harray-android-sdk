@@ -185,7 +185,11 @@ public class EventProcessorHandlerTest {
         when(sessionContextHolder.getMemberId()).thenReturn(null);
         when(entitySerializerService.serialize(xennEventArgumentCaptor.capture())).thenReturn("serializedEntity");
 
-        eventProcessorHandler.impression("product");
+        HashMap<String, Object> extraParams = new HashMap<>();
+        extraParams.put("e1", "2");
+        extraParams.put("e2", 4);
+
+        eventProcessorHandler.impression("product", extraParams);
 
         Map<String, Object> xennEventMap = xennEventArgumentCaptor.getValue();
         Map<String, Object> header = (Map<String, Object>) xennEventMap.get("h");
@@ -199,4 +203,36 @@ public class EventProcessorHandlerTest {
 
         verify(httpService).postFormUrlEncoded("serializedEntity");
     }
+
+    @Test
+    public void it_should_create_custom_event_and_make_api_call() throws UnsupportedEncodingException {
+        ArgumentCaptor<Map<String, Object>> xennEventArgumentCaptor = ArgumentCaptor.forClass(Map.class);
+        when(applicationContextHolder.getPersistentId()).thenReturn("persistentId");
+        when(sessionContextHolder.getSessionIdAndExtendSession()).thenReturn("sessionId");
+        when(sessionContextHolder.getMemberId()).thenReturn("memberId");
+        when(entitySerializerService.serialize(xennEventArgumentCaptor.capture())).thenReturn("serializedEntity");
+
+        HashMap<String, Object> extraParams = new HashMap<>();
+        extraParams.put("e1", "2");
+        extraParams.put("e2", 4);
+
+        eventProcessorHandler.custom("eventName", extraParams);
+
+        Map<String, Object> xennEventMap = xennEventArgumentCaptor.getValue();
+        Map<String, Object> header = (Map<String, Object>) xennEventMap.get("h");
+        Map<String, Object> body = (Map<String, Object>) xennEventMap.get("b");
+
+        assertEquals("eventName", header.get("n"));
+        assertEquals("sessionId", header.get("s"));
+        assertEquals("persistentId", header.get("p"));
+        assertEquals("2", body.get("e1"));
+        assertEquals("memberId", body.get("memberId"));
+        assertEquals(4, body.get("e2"));
+
+        verify(httpService).postFormUrlEncoded("serializedEntity");
+
+
+    }
+
+
 }
