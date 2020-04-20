@@ -1,9 +1,11 @@
 plugins {
     id "com.bmuschko.nexus" version "2.3.1"
+    id "com.github.kt3k.coveralls" version "2.6.3"
 }
 apply plugin: 'com.android.library'
 apply plugin: 'maven-publish'
 apply plugin: 'com.bmuschko.nexus'
+apply plugin: 'jacoco'
 
 archivesBaseName = 'android-sdk'
 group = "io.xenn"
@@ -19,6 +21,9 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
+        debug {
+            testCoverageEnabled true
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -30,6 +35,36 @@ android {
             returnDefaultValues = true
         }
     }
+}
+
+coveralls {
+    jacocoReportPath 'build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml'
+}
+tasks.withType(Test) {
+    jacoco.includeNoLocationClasses = true
+}
+
+task jacocoTestReport(type: JacocoReport, dependsOn: ['test']) {
+
+    reports {
+        xml.enabled = true
+        html.enabled = true
+    }
+
+    // The lines below make sure we can report against Kotlin and exclude some Android Stuff
+    def fileFilter = [
+            '**/*Activity.class',
+            '**/R.class', '**/R$*.class', '**/BuildConfig.*', '**/Manifest*.*',
+            '**/*Test*.*', 'android/**/*.*'
+    ]
+    def debugTree = fileTree(dir: "$project.buildDir/tmp/kotlin-classes/debug", excludes: fileFilter)
+    def mainSrc = "$project.projectDir/src/main/java"
+
+    sourceDirectories = files([mainSrc])
+    classDirectories = files([debugTree])
+    executionData = fileTree(dir: project.buildDir, includes: [
+            'jacoco/testDebugUnitTest.exec', 'outputs/code-coverage/connected/*coverage.ec'
+    ])
 }
 
 dependencies {

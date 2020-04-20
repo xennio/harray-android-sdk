@@ -34,11 +34,9 @@ stages:
 
 jobs:
   include:
-    # Make sure we're not being sloppy
     - stage: lint_and_test
       name: "Lint"
       script: ./gradlew clean lint
-    # Make sure we're not breaking things
     - name: "Test"
       script: ./gradlew clean test
 
