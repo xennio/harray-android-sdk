@@ -19,6 +19,8 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
+import java.util.HashMap;
+
 import io.xenn.android.Xennio;
 
 public class MainActivity extends AppCompatActivity {
@@ -29,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d("Xennio", "Source:" + intent.getStringExtra("source"));
         Log.d("Xennio", "Realty List:" + intent.getStringExtra("realty_list"));
         Xennio.notifications().pushMessageOpened();
+        Xennio.notifications().resetBadgeCounts(this);
     }
 
     @Override
@@ -39,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
         Xennio.eventing().pageView("homePage");
         Xennio.eventing().actionResult("test Action");
         Xennio.eventing().impression("productdetail");
+        Xennio.eventing().custom("customEvent", new HashMap<String, Object>());
         Intent intent = getIntent();
         // XennioAPI.handlePushOpen(intent, Arrays.asList("Insider", "xennio"));
         Log.d("Xennio", "Source:" + intent.getStringExtra("source"));
