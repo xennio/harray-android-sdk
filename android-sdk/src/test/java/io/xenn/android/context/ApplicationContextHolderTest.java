@@ -10,7 +10,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import io.xenn.android.common.Constants;
 import io.xenn.android.utils.RandomValueUtils;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;

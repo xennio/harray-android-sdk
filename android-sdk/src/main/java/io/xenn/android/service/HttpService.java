@@ -3,8 +3,8 @@ package io.xenn.android.service;
 import android.graphics.Bitmap;
 
 import io.xenn.android.http.BitmapDownloadTask;
-import io.xenn.android.http.PostFormUrlEncodedTask;
 import io.xenn.android.http.HttpRequestFactory;
+import io.xenn.android.http.PostFormUrlEncodedTask;
 
 public class HttpService {
 

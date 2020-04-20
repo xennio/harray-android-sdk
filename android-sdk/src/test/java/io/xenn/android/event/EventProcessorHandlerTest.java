@@ -16,7 +16,8 @@ import io.xenn.android.context.SessionContextHolder;
 import io.xenn.android.service.EntitySerializerService;
 import io.xenn.android.service.HttpService;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 

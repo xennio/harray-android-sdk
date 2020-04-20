@@ -2,10 +2,7 @@ package io.xenn.android.http;
 
 import org.junit.Test;
 
-import io.xenn.android.http.HttpRequestFactory;
-import io.xenn.android.http.PostFormUrlEncodedTask;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class HttpRequestFactoryTest {
 
