@@ -46,6 +46,7 @@ public final class Xennio {
 
     public static void configure(Context context, String sdkKey) {
         instance = new Xennio(context, sdkKey);
+        instance.notificationProcessorHandler.resetBadgeCounts(context);
     }
 
     public static EventProcessorHandler eventing() {

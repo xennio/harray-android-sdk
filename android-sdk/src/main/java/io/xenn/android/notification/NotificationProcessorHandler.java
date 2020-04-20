@@ -67,7 +67,6 @@ public class NotificationProcessorHandler {
             String notificationChannelId = pushMessageDataWrapper.buildChannelId();
             NotificationManager notificationManager = (NotificationManager) applicationContext.getSystemService(Context.NOTIFICATION_SERVICE);
             NotificationChannelBuilder.create(deviceService).withChannelId(notificationChannelId).withSound(pushMessageDataWrapper.getSound()).createIn(notificationManager);
-
             NotificationCompat.Builder notificationCompatBuilder = NotificationCompatBuilder.create(applicationContext, httpService, deviceService)
                     .withChannelId(notificationChannelId)
                     .withApplicationLogo(pushMessageDataWrapper.getApplicationLogo())
@@ -83,6 +82,15 @@ public class NotificationProcessorHandler {
             notificationManager.notify(12, notificationCompatBuilder.build());
         } catch (Exception e) {
             XennioLogger.log("Xenn Push handle error:" + e.getMessage());
+        }
+    }
+
+    public void resetBadgeCounts(Context applicationContext) {
+        NotificationManager notificationManager = (NotificationManager) applicationContext.getSystemService(Context.NOTIFICATION_SERVICE);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            if (notificationManager != null) {
+                notificationManager.cancelAll();
+            }
         }
     }
 
