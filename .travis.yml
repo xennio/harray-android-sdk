@@ -1,5 +1,7 @@
 language: android
-
+env:
+  global:
+    - COVERALLS_REPO_TOKEN=XTQdSjjgszF1fP45iiBuuDiUo95xMxrAH
 android:
   components:
     - tools
