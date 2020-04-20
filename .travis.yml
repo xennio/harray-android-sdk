@@ -21,9 +21,9 @@ cache:
 before_install:
   - java -version
 script:
-  - ./gradlew clean
-  - ./gradlew build
-  - ./gradlew test
+  - ./gradlew clean connectedCheck
+  - ./gradlew build connectedCheck
+  - ./gradlew test connectedCheck
 notifications:
   webhooks:
     on_success: change  # options: [always|never|change] default: always

@@ -76,4 +76,8 @@ public final class Xennio {
     public static void login(String memberId) {
         getInstance().sessionContextHolder.login(memberId);
     }
+
+    public static void logout() {
+        getInstance().sessionContextHolder.logout();
+    }
 }
