@@ -38,7 +38,7 @@ public class DeviceServiceTest {
         assertEquals("9", deviceService.getOsVersion());
     }
 
-    @Ignore
+    @Test
     public void it_should_get_manufacturer() {
         assertEquals("4.1.2", deviceService.getManufacturer());
     }
