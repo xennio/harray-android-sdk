@@ -19,7 +19,6 @@ public class SplashActivity extends AppCompatActivity {
         Xennio.eventing().pageView("splash");
         setContentView(R.layout.activity_splash);
 
-        Log.d("Demo App", Xennio.deeplinking().get("realty_list"));
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
     }

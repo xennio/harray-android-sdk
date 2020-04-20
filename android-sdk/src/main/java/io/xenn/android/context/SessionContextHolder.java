@@ -14,7 +14,6 @@ public class SessionContextHolder {
     private long sessionStartTime;
     private long lastActivityTime;
     private Map<String, Object> externalParameters = new HashMap<>();
-    private Map<String, String> intentParameters = new HashMap<>();
     private SessionState sessionState = SessionState.SESSION_INITIALIZED;
 
     public SessionContextHolder() {
@@ -31,7 +30,6 @@ public class SessionContextHolder {
             sessionStartTime = now;
             sessionState = SessionState.SESSION_RESTARTED;
             externalParameters = new HashMap<>();
-            intentParameters = new HashMap<>();
         }
         lastActivityTime = now;
         return sessionId;
@@ -65,11 +63,8 @@ public class SessionContextHolder {
         return externalParameters;
     }
 
-    public Map<String, String> getIntentParameters() {
-        return intentParameters;
-    }
 
-    public void updateExternalParameters(Map<String, String> data) {
+    public void updateExternalParameters(Map<String, Object> data) {
         for (String eachKey : Constants.EXTERNAL_PARAMETER_KEYS) {
             if (data.containsKey(eachKey)) {
                 externalParameters.put(eachKey, data.get(eachKey));
@@ -85,7 +80,4 @@ public class SessionContextHolder {
         sessionState = SessionState.SESSION_STARTED;
     }
 
-    public void updateIntentParameters(Map<String, String> data) {
-        this.intentParameters = data;
-    }
 }

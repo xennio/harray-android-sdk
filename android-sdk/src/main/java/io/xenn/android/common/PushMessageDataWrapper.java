@@ -1,5 +1,6 @@
 package io.xenn.android.common;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class PushMessageDataWrapper {
@@ -59,5 +60,13 @@ public class PushMessageDataWrapper {
 
     public String getSubTitle() {
         return data.get(Constants.PUSH_PAYLOAD_SUB_TITLE);
+    }
+
+    public Map<String, Object> toObjectMap() {
+        Map<String, Object> map = new HashMap<>();
+        for (Map.Entry<String, String> eachEntry : data.entrySet()) {
+            map.put(eachEntry.getKey(), eachEntry.getValue());
+        }
+        return map;
     }
 }

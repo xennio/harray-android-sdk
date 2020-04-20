@@ -1,7 +1,6 @@
 package io.xenn.android;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 
 import java.util.Map;
@@ -10,7 +9,6 @@ import io.xenn.android.common.Constants;
 import io.xenn.android.context.ApplicationContextHolder;
 import io.xenn.android.context.SessionContextHolder;
 import io.xenn.android.context.SessionState;
-import io.xenn.android.deeplink.DeepLinkingProcessorHandler;
 import io.xenn.android.event.EventProcessorHandler;
 import io.xenn.android.event.SDKEventProcessorHandler;
 import io.xenn.android.http.HttpRequestFactory;
@@ -27,7 +25,6 @@ public final class Xennio {
     private final SDKEventProcessorHandler sdkEventProcessorHandler;
     private final SessionContextHolder sessionContextHolder;
     private final NotificationProcessorHandler notificationProcessorHandler;
-    private final DeepLinkingProcessorHandler deepLinkingProcessorHandler;
 
     private static Xennio instance;
 
@@ -45,7 +42,6 @@ public final class Xennio {
 
         this.notificationProcessorHandler = new NotificationProcessorHandler(applicationContextHolder, sessionContextHolder, httpService, entitySerializerService, deviceService);
 
-        this.deepLinkingProcessorHandler = new DeepLinkingProcessorHandler(sessionContextHolder);
     }
 
     public static void configure(Context context, String sdkKey) {
@@ -65,12 +61,8 @@ public final class Xennio {
         return getInstance().notificationProcessorHandler;
     }
 
-    public static DeepLinkingProcessorHandler deeplinking() {
-        return getInstance().deepLinkingProcessorHandler;
-    }
-
-    public static void synchronizeIntentData(Map<String, String> intentData) {
-        getInstance().sessionContextHolder.updateIntentParameters(intentData);
+    public static void synchronizeIntentData(Map<String, Object> intentData) {
+        getInstance().sessionContextHolder.updateExternalParameters(intentData);
     }
 
     protected static Xennio getInstance() {

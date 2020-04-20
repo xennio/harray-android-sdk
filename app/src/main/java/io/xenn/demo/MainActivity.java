@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Xennio.login("300");
+
         Xennio.eventing().pageView("homePage");
         Xennio.eventing().actionResult("test Action");
         Xennio.eventing().impression("productdetail");

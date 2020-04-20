@@ -89,4 +89,15 @@ public class PushMessageDataWrapperTest {
         assertEquals("http://imageurl", PushMessageDataWrapper.from(message).getApplicationLogo());
     }
 
+    @Test
+    public void it_should_convert_string_value_type_map_to_object_map() {
+        Map<String, String> message = new HashMap<>();
+        message.put("foo", "bar");
+        message.put("foo1", "bar2");
+        Map<String, Object> expected = PushMessageDataWrapper.from(message).toObjectMap();
+        assertTrue(message.size() == expected.size());
+        assertTrue(expected.containsKey("foo"));
+        assertTrue(expected.containsKey("foo1"));
+    }
+
 }

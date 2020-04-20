@@ -56,8 +56,7 @@ public class NotificationProcessorHandler {
         try {
             Map<String, String> data = remoteMessage.getData();
             PushMessageDataWrapper pushMessageDataWrapper = PushMessageDataWrapper.from(data);
-            sessionContextHolder.updateExternalParameters(data);
-            sessionContextHolder.updateIntentParameters(data);
+            sessionContextHolder.updateExternalParameters(pushMessageDataWrapper.toObjectMap());
             this.pushMessageReceived();
 
             if (pushMessageDataWrapper.isSilent()) {

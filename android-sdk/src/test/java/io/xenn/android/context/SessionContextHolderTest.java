@@ -24,7 +24,6 @@ public class SessionContextHolderTest {
         assertTrue(sessionStartTime == sessionContextHolder.getSessionStartTime());
         assertTrue(sessionStartTime == sessionContextHolder.getLastActivityTime());
         assertTrue(sessionContextHolder.getExternalParameters().isEmpty());
-        assertTrue(sessionContextHolder.getIntentParameters().isEmpty());
         assertEquals(SessionState.SESSION_INITIALIZED, sessionContextHolder.getSessionState());
         ClockUtils.unFreeze();
         RandomValueUtils.unFreeze();
@@ -67,7 +66,6 @@ public class SessionContextHolderTest {
         assertTrue(lastActivityTime == expectedTimeInFuture);
         assertTrue(sessionStartTime == expectedTimeInFuture);
         assertTrue(sessionContextHolder.getExternalParameters().isEmpty());
-        assertTrue(sessionContextHolder.getIntentParameters().isEmpty());
         assertEquals(SessionState.SESSION_RESTARTED, sessionContextHolder.getSessionState());
         ClockUtils.unFreeze();
     }
@@ -99,7 +97,7 @@ public class SessionContextHolderTest {
 
     @Test
     public void it_should_update_external_parameters() {
-        Map<String, String> externalParameters = new HashMap<>();
+        Map<String, Object> externalParameters = new HashMap<>();
         externalParameters.put("a", "b");
         externalParameters.put("c", "e");
         externalParameters.put("d", "f");
@@ -135,7 +133,7 @@ public class SessionContextHolderTest {
 
     @Test
     public void it_should_update_external_parameters_when_parameter_present() {
-        Map<String, String> externalParameters = new HashMap<>();
+        Map<String, Object> externalParameters = new HashMap<>();
         externalParameters.put("a", "b");
         externalParameters.put("campaignId", "campaignId");
         SessionContextHolder sessionContextHolder = new SessionContextHolder();
