@@ -9,20 +9,19 @@ This guide provides necessary steps to implement Xenn.io Android SDK for native 
 
 ### Setup
 
-1. [Prerequisites]
-2. [Creating Application]
-3. [Installing the SDK]
-4. [Identifying your members]
-5. [Tracking Page Views]
-6. [User Action Events]
-7. [Impression Events]
-8. [Custom Events]
+1. [Prerequisites](https://github.com/xennio/harray-android-sdk/wiki/Prerequisites)
+2. [Creating Application](https://github.com/xennio/harray-android-sdk/wiki/Creating-Application)
+3. [Installing the SDK](https://github.com/xennio/harray-android-sdk/wiki/Installing-the-SDK)
+4. [Identifying your members](https://github.com/xennio/harray-android-sdk/wiki/Identifying-your-members)
+5. [Page Views Events](https://github.com/xennio/harray-android-sdk/wiki/Page-Views-Events)
+6. [User Action Events](https://github.com/xennio/harray-android-sdk/wiki/User-Action-Events)
+7. [Impression Events](https://github.com/xennio/harray-android-sdk/wiki/Impression-Events)
+8. [Custom Events](https://github.com/xennio/harray-android-sdk/wiki/Custom-Events)
 
 ### Push Notifications
 
 1. [Setup]
 2. [Intent Support]
-3. [Testing]
 
 ## License
 
