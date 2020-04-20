@@ -6,9 +6,9 @@ env:
     - ANDROID_BUILD_TOOLS_VERSION=28.0.3
 android:
   licenses:
-    - 'android-sdk-preview-license-.+'
-    - 'android-sdk-license-.+'
-    - 'google-gdk-license-.+'
+    - android-sdk-preview-license-.+
+    - android-sdk-license-.+
+    - google-gdk-license-.+
   components:
     - tools
     - platform-tools
