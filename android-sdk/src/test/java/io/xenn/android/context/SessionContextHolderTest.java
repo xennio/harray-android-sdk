@@ -55,7 +55,6 @@ public class SessionContextHolderTest {
         long expectedTime = 1587133370000L;
         ClockUtils.freeze(expectedTime);
         RandomValueUtils.freeze();
-        String sessionId = RandomValueUtils.randomUUID();
         SessionContextHolder sessionContextHolder = new SessionContextHolder();
         String resolvedSessionId = sessionContextHolder.getSessionIdAndExtendSession();
         RandomValueUtils.unFreeze();
