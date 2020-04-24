@@ -73,8 +73,10 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging:19.0.1'
     implementation "android.arch.lifecycle:extensions:1.1.1"
     annotationProcessor "android.arch.lifecycle:compiler:1.1.1"
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    testImplementation "androidx.test:core:1.2.0"
+    testImplementation "androidx.test.ext:junit:1.1.1"
+    testImplementation "androidx.test:runner:1.2.0"
+    testImplementation 'ch.qos.logback:logback-classic:1.2.3'
     testImplementation 'junit:junit:4.12'
     testImplementation "org.json:json:20180813"
     testImplementation group: 'org.robolectric', name: 'robolectric', version: '4.3.1'
