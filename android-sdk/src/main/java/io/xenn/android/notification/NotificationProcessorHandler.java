@@ -2,6 +2,7 @@ package io.xenn.android.notification;
 
 import android.app.NotificationManager;
 import android.content.Context;
+import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
 
@@ -66,7 +67,9 @@ public class NotificationProcessorHandler {
 
             String notificationChannelId = pushMessageDataWrapper.buildChannelId();
             NotificationManager notificationManager = (NotificationManager) applicationContext.getSystemService(Context.NOTIFICATION_SERVICE);
-            NotificationChannelBuilder.create(deviceService).withChannelId(notificationChannelId).withSound(pushMessageDataWrapper.getSound()).createIn(notificationManager);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && notificationManager != null) {
+                NotificationChannelBuilder.create(deviceService).withChannelId(notificationChannelId).withSound(pushMessageDataWrapper.getSound()).createIn(notificationManager);
+            }
             NotificationCompat.Builder notificationCompatBuilder = NotificationCompatBuilder.create(applicationContext, httpService, deviceService)
                     .withChannelId(notificationChannelId)
                     .withApplicationLogo(pushMessageDataWrapper.getApplicationLogo())
