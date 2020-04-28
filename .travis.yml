@@ -49,4 +49,5 @@ jobs:
       script: ./gradlew clean test
 
 after_success:
+  - ./gradlew jacocoTestReport coveralls
   - codecov
