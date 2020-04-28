@@ -1,7 +1,7 @@
 # Xennio-Android-SDK
 
 [![Build Status](https://travis-ci.org/xennio/harray-android-sdk.svg?branch=master)](https://travis-ci.org/xennio/harray-android-sdk)
-[![Coverage Status](https://coveralls.io/repos/github/xennio/harray-android-sdk/badge.svg?branch=master)](https://coveralls.io/github/xennio/harray-android-sdk?branch=master)
+[![codecov](https://codecov.io/gh/xennio/harray-android-sdk/branch/master/graph/badge.svg)](https://codecov.io/gh/xennio/harray-android-sdk)
 ![GitHub](https://img.shields.io/github/license/xennio/harray-android-sdk?style=flat-square)
 
 # Integration Guide
