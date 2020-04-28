@@ -3,8 +3,6 @@ package io.xenn.android.http;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-import com.google.android.gms.common.util.IOUtils;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
