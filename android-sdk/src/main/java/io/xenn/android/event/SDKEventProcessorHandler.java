@@ -52,7 +52,7 @@ public class SDKEventProcessorHandler {
                     .addBody("zn", applicationContextHolder.getTimezone())
                     .appendExtra(sessionContextHolder.getExternalParameters())
                     .toMap();
-            String serializedEntity = entitySerializerService.serialize(event);
+            String serializedEntity = entitySerializerService.serializeToBase64(event);
             httpService.postFormUrlEncoded(serializedEntity);
 
         } catch (Exception e) {
@@ -66,7 +66,7 @@ public class SDKEventProcessorHandler {
                 Map<String, Object> event = XennEvent.create("HB", applicationContextHolder.getPersistentId(), sessionContextHolder.getSessionIdAndExtendSession())
                         .memberId(sessionContextHolder.getMemberId())
                         .toMap();
-                String serializedEntity = entitySerializerService.serialize(event);
+                String serializedEntity = entitySerializerService.serializeToBase64(event);
                 httpService.postFormUrlEncoded(serializedEntity);
 
             } catch (Exception e) {

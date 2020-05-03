@@ -33,7 +33,17 @@ public class EntitySerializerServiceTest {
         when(encodingService.getUrlEncodedString("JSONVALUE")).thenReturn("URLENCODEDVALUE");
         when(encodingService.getBase64EncodedString("URLENCODEDVALUE")).thenReturn("BASE64STRINGVALUE");
 
-        String serializedEntity = entitySerializerService.serialize(event);
+        String serializedEntity = entitySerializerService.serializeToBase64(event);
         assertEquals("BASE64STRINGVALUE", serializedEntity);
+    }
+
+    @Test
+    public void it_should_convert_entity_to_json_encoded_string() throws UnsupportedEncodingException {
+        Map<String, Object> event = new HashMap<>();
+
+        when(jsonSerializerService.serialize(event)).thenReturn("JSONVALUE");
+
+        String serializedEntity = entitySerializerService.serializeToJson(event);
+        assertEquals("JSONVALUE", serializedEntity);
     }
 }

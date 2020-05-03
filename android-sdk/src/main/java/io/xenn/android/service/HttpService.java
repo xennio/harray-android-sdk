@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import io.xenn.android.http.BitmapDownloadTask;
 import io.xenn.android.http.HttpRequestFactory;
 import io.xenn.android.http.PostFormUrlEncodedTask;
+import io.xenn.android.http.PostJsonEncodedTask;
 
 public class HttpService {
 
@@ -24,5 +25,10 @@ public class HttpService {
     public Bitmap downloadImage(String endpoint) {
         BitmapDownloadTask bitmapDownloadTask = httpRequestFactory.getBitmapDownloadTask(endpoint);
         return bitmapDownloadTask.getBitmap();
+    }
+
+    public void postJsonEncoded(final String payload, final String path) {
+        PostJsonEncodedTask postJsonEncodedTask = httpRequestFactory.getPostJsonEncodedTask(endpoint + "/" + path, payload);
+        postJsonEncodedTask.execute();
     }
 }

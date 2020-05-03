@@ -53,7 +53,7 @@ public class SDKEventProcessorHandlerTest {
         externalParameters.put("utm_source", "xennio");
         when(sessionContextHolder.getExternalParameters()).thenReturn(externalParameters);
         when(sessionContextHolder.getMemberId()).thenReturn(null);
-        when(entitySerializerService.serialize(xennEventArgumentCaptor.capture())).thenReturn("serializedEntity");
+        when(entitySerializerService.serializeToBase64(xennEventArgumentCaptor.capture())).thenReturn("serializedEntity");
 
 
         when(deviceService.getManufacturer()).thenReturn("Samsung");
@@ -93,7 +93,7 @@ public class SDKEventProcessorHandlerTest {
         when(sessionContextHolder.getSessionIdAndExtendSession()).thenReturn("sessionId");
         when(sessionContextHolder.getMemberId()).thenReturn("memberId");
         when(sessionContextHolder.getLastActivityTime()).thenReturn(1584558770000L);
-        when(entitySerializerService.serialize(xennEventArgumentCaptor.capture())).thenReturn("serializedEntity");
+        when(entitySerializerService.serializeToBase64(xennEventArgumentCaptor.capture())).thenReturn("serializedEntity");
 
         sdkEventProcessorHandler.heartBeat();
 

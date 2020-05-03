@@ -21,4 +21,8 @@ public class Constants {
     public static final List<String> EXTERNAL_PARAMETER_KEYS = Collections.unmodifiableList(Arrays.asList("campaignId", "campaignDate", "pushId", "url", "utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"));
     public static final String PUSH_PAYLOAD_APPLICATION_LOGO = "logo";
     public static final String PUSH_PAYLOAD_SUB_TITLE = "subTitle";
+    public static final String PUSH_ID_KEY = "pushId";
+    public static final String CAMPAIGN_ID_KEY = "campaignId";
+    public static final String CAMPAIGN_DATE_KEY = "campaignDate";
+    public static final String PUSH_FEED_BACK_PATH = "feedback";
 }

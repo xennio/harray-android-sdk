@@ -49,7 +49,7 @@ public class EventProcessorHandlerTest {
         externalParameters.put("utm_source", "xennio");
         when(sessionContextHolder.getExternalParameters()).thenReturn(externalParameters);
         when(sessionContextHolder.getMemberId()).thenReturn("memberId");
-        when(entitySerializerService.serialize(xennEventArgumentCaptor.capture())).thenReturn("serializedEntity");
+        when(entitySerializerService.serializeToBase64(xennEventArgumentCaptor.capture())).thenReturn("serializedEntity");
 
         eventProcessorHandler.pageView("homePage");
 
@@ -75,7 +75,7 @@ public class EventProcessorHandlerTest {
         when(applicationContextHolder.getPersistentId()).thenReturn("persistentId");
         when(sessionContextHolder.getSessionIdAndExtendSession()).thenReturn("sessionId");
         when(sessionContextHolder.getMemberId()).thenReturn("memberId");
-        when(entitySerializerService.serialize(xennEventArgumentCaptor.capture())).thenReturn("serializedEntity");
+        when(entitySerializerService.serializeToBase64(xennEventArgumentCaptor.capture())).thenReturn("serializedEntity");
         HashMap<String, Object> extraParams = new HashMap<>();
         extraParams.put("e1", "2");
         extraParams.put("e2", 4);
@@ -105,7 +105,7 @@ public class EventProcessorHandlerTest {
         when(applicationContextHolder.getPersistentId()).thenReturn("persistentId");
         when(sessionContextHolder.getSessionIdAndExtendSession()).thenReturn("sessionId");
         when(sessionContextHolder.getMemberId()).thenReturn("memberId");
-        when(entitySerializerService.serialize(xennEventArgumentCaptor.capture())).thenReturn("serializedEntity");
+        when(entitySerializerService.serializeToBase64(xennEventArgumentCaptor.capture())).thenReturn("serializedEntity");
         HashMap<String, Object> extraParams = new HashMap<>();
         extraParams.put("e1", "2");
         extraParams.put("e2", 4);
@@ -133,7 +133,7 @@ public class EventProcessorHandlerTest {
         when(applicationContextHolder.getPersistentId()).thenReturn("persistentId");
         when(sessionContextHolder.getSessionIdAndExtendSession()).thenReturn("sessionId");
         when(sessionContextHolder.getMemberId()).thenReturn(null);
-        when(entitySerializerService.serialize(xennEventArgumentCaptor.capture())).thenReturn("serializedEntity");
+        when(entitySerializerService.serializeToBase64(xennEventArgumentCaptor.capture())).thenReturn("serializedEntity");
         eventProcessorHandler.actionResult("conversion");
 
         Map<String, Object> xennEventMap = xennEventArgumentCaptor.getValue();
@@ -155,7 +155,7 @@ public class EventProcessorHandlerTest {
         when(applicationContextHolder.getPersistentId()).thenReturn("persistentId");
         when(sessionContextHolder.getSessionIdAndExtendSession()).thenReturn("sessionId");
         when(sessionContextHolder.getMemberId()).thenReturn("memberId");
-        when(entitySerializerService.serialize(xennEventArgumentCaptor.capture())).thenReturn("serializedEntity");
+        when(entitySerializerService.serializeToBase64(xennEventArgumentCaptor.capture())).thenReturn("serializedEntity");
         HashMap<String, Object> extraParams = new HashMap<>();
         extraParams.put("e1", "2");
         extraParams.put("e2", 4);
@@ -183,7 +183,7 @@ public class EventProcessorHandlerTest {
         when(applicationContextHolder.getPersistentId()).thenReturn("persistentId");
         when(sessionContextHolder.getSessionIdAndExtendSession()).thenReturn("sessionId");
         when(sessionContextHolder.getMemberId()).thenReturn(null);
-        when(entitySerializerService.serialize(xennEventArgumentCaptor.capture())).thenReturn("serializedEntity");
+        when(entitySerializerService.serializeToBase64(xennEventArgumentCaptor.capture())).thenReturn("serializedEntity");
 
         HashMap<String, Object> extraParams = new HashMap<>();
         extraParams.put("e1", "2");
@@ -210,7 +210,7 @@ public class EventProcessorHandlerTest {
         when(applicationContextHolder.getPersistentId()).thenReturn("persistentId");
         when(sessionContextHolder.getSessionIdAndExtendSession()).thenReturn("sessionId");
         when(sessionContextHolder.getMemberId()).thenReturn("memberId");
-        when(entitySerializerService.serialize(xennEventArgumentCaptor.capture())).thenReturn("serializedEntity");
+        when(entitySerializerService.serializeToBase64(xennEventArgumentCaptor.capture())).thenReturn("serializedEntity");
 
         HashMap<String, Object> extraParams = new HashMap<>();
         extraParams.put("e1", "2");

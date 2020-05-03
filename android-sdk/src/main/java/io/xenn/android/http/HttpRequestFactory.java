@@ -8,4 +8,8 @@ public class HttpRequestFactory {
     public BitmapDownloadTask getBitmapDownloadTask(String endpoint) {
         return new BitmapDownloadTask(endpoint);
     }
+
+    public PostJsonEncodedTask getPostJsonEncodedTask(String endpoint, String payload) {
+        return new PostJsonEncodedTask(endpoint, payload);
+    }
 }

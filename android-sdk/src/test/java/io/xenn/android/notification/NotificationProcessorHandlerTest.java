@@ -47,7 +47,7 @@ public class NotificationProcessorHandlerTest {
         when(applicationContextHolder.getPersistentId()).thenReturn("persistentId");
         when(sessionContextHolder.getSessionIdAndExtendSession()).thenReturn("sessionId");
         when(sessionContextHolder.getMemberId()).thenReturn("memberId");
-        when(entitySerializerService.serialize(xennEventArgumentCaptor.capture())).thenReturn("serializedEntity");
+        when(entitySerializerService.serializeToBase64(xennEventArgumentCaptor.capture())).thenReturn("serializedEntity");
 
         notificationProcessorHandler.savePushToken("device token");
 
@@ -71,9 +71,7 @@ public class NotificationProcessorHandlerTest {
     public void it_should_construct_push_message_receive_event_and_make_api_call() throws UnsupportedEncodingException {
 
         ArgumentCaptor<Map<String, Object>> xennEventArgumentCaptor = ArgumentCaptor.forClass(Map.class);
-        when(applicationContextHolder.getPersistentId()).thenReturn("persistentId");
-        when(sessionContextHolder.getSessionIdAndExtendSession()).thenReturn("sessionId");
-        Map<String, Object> externalParameters = new HashMap<>();
+        Map<String, String> externalParameters = new HashMap<>();
         externalParameters.put("pushId", "pushId");
         externalParameters.put("campaignId", "campaignId");
         externalParameters.put("campaignDate", "campaignDate");
@@ -84,41 +82,25 @@ public class NotificationProcessorHandlerTest {
         externalParameters.put("utm_term", "utm_term");
         externalParameters.put("utm_content", "utm_content");
 
-        when(sessionContextHolder.getExternalParameters()).thenReturn(externalParameters);
-        when(sessionContextHolder.getMemberId()).thenReturn("memberId");
-        when(entitySerializerService.serialize(xennEventArgumentCaptor.capture())).thenReturn("serializedEntity");
+        when(entitySerializerService.serializeToJson(xennEventArgumentCaptor.capture())).thenReturn("serializedEntity");
 
-        notificationProcessorHandler.pushMessageReceived();
+        notificationProcessorHandler.pushMessageDelivered(externalParameters);
 
         Map<String, Object> xennEventMap = xennEventArgumentCaptor.getValue();
-        Map<String, Object> header = (Map<String, Object>) xennEventMap.get("h");
-        Map<String, Object> body = (Map<String, Object>) xennEventMap.get("b");
 
-        assertEquals("Feedback", header.get("n"));
-        assertEquals("sessionId", header.get("s"));
-        assertEquals("persistentId", header.get("p"));
-        assertEquals("memberId", body.get("memberId"));
-        assertEquals("pushReceived", body.get("type"));
-        assertEquals("utm_content", body.get("utm_content"));
-        assertEquals("utm_term", body.get("utm_term"));
-        assertEquals("utm_medium", body.get("utm_medium"));
-        assertEquals("utm_campaign", body.get("utm_campaign"));
-        assertEquals("xennio", body.get("utm_source"));
-        assertEquals("url", body.get("url"));
-        assertEquals("campaignDate", body.get("campaignDate"));
-        assertEquals("campaignId", body.get("campaignId"));
-        assertEquals("pushId", body.get("pushId"));
+        assertEquals("d", xennEventMap.get("n"));
+        assertEquals("pushId", xennEventMap.get("pi"));
+        assertEquals("campaignId", xennEventMap.get("ci"));
+        assertEquals("campaignDate", xennEventMap.get("cd"));
 
-        verify(httpService).postFormUrlEncoded("serializedEntity");
+        verify(httpService).postJsonEncoded("serializedEntity", "feedback");
     }
 
     @Test
     public void it_should_construct_push_message_open_event_and_make_api_call() throws UnsupportedEncodingException {
 
         ArgumentCaptor<Map<String, Object>> xennEventArgumentCaptor = ArgumentCaptor.forClass(Map.class);
-        when(applicationContextHolder.getPersistentId()).thenReturn("persistentId");
-        when(sessionContextHolder.getSessionIdAndExtendSession()).thenReturn("sessionId");
-        Map<String, Object> externalParameters = new HashMap<>();
+        Map<String, String> externalParameters = new HashMap<>();
         externalParameters.put("pushId", "pushId");
         externalParameters.put("campaignId", "campaignId");
         externalParameters.put("campaignDate", "campaignDate");
@@ -129,32 +111,18 @@ public class NotificationProcessorHandlerTest {
         externalParameters.put("utm_term", "utm_term");
         externalParameters.put("utm_content", "utm_content");
 
-        when(sessionContextHolder.getExternalParameters()).thenReturn(externalParameters);
-        when(sessionContextHolder.getMemberId()).thenReturn("memberId");
-        when(entitySerializerService.serialize(xennEventArgumentCaptor.capture())).thenReturn("serializedEntity");
+        when(entitySerializerService.serializeToJson(xennEventArgumentCaptor.capture())).thenReturn("serializedEntity");
 
-        notificationProcessorHandler.pushMessageOpened();
+        notificationProcessorHandler.pushMessageOpened(externalParameters);
 
         Map<String, Object> xennEventMap = xennEventArgumentCaptor.getValue();
-        Map<String, Object> header = (Map<String, Object>) xennEventMap.get("h");
-        Map<String, Object> body = (Map<String, Object>) xennEventMap.get("b");
 
-        assertEquals("Feedback", header.get("n"));
-        assertEquals("sessionId", header.get("s"));
-        assertEquals("persistentId", header.get("p"));
-        assertEquals("memberId", body.get("memberId"));
-        assertEquals("pushOpened", body.get("type"));
-        assertEquals("utm_content", body.get("utm_content"));
-        assertEquals("utm_term", body.get("utm_term"));
-        assertEquals("utm_medium", body.get("utm_medium"));
-        assertEquals("utm_campaign", body.get("utm_campaign"));
-        assertEquals("xennio", body.get("utm_source"));
-        assertEquals("url", body.get("url"));
-        assertEquals("campaignDate", body.get("campaignDate"));
-        assertEquals("campaignId", body.get("campaignId"));
-        assertEquals("pushId", body.get("pushId"));
+        assertEquals("o", xennEventMap.get("n"));
+        assertEquals("pushId", xennEventMap.get("pi"));
+        assertEquals("campaignId", xennEventMap.get("ci"));
+        assertEquals("campaignDate", xennEventMap.get("cd"));
 
-        verify(httpService).postFormUrlEncoded("serializedEntity");
+        verify(httpService).postJsonEncoded("serializedEntity", "feedback");
     }
 
 }

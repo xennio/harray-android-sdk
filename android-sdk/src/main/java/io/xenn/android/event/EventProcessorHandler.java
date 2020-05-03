@@ -43,7 +43,7 @@ public class EventProcessorHandler {
                 .toMap();
 
         try {
-            String serializedEvent = entitySerializerService.serialize(pageViewEvent);
+            String serializedEvent = entitySerializerService.serializeToBase64(pageViewEvent);
             httpService.postFormUrlEncoded(serializedEvent);
         } catch (Exception e) {
             XennioLogger.log("Page View Event Error:" + e.getMessage());
@@ -62,7 +62,7 @@ public class EventProcessorHandler {
                     .addBody("type", type)
                     .appendExtra(params)
                     .toMap();
-            String serializedEvent = entitySerializerService.serialize(actionResultEvent);
+            String serializedEvent = entitySerializerService.serializeToBase64(actionResultEvent);
             httpService.postFormUrlEncoded(serializedEvent);
         } catch (Exception e) {
             XennioLogger.log("Action Result Event Error:" + e.getMessage());
@@ -80,7 +80,7 @@ public class EventProcessorHandler {
                     .addBody("type", type)
                     .appendExtra(params)
                     .toMap();
-            String serializedEvent = entitySerializerService.serialize(impressionEvent);
+            String serializedEvent = entitySerializerService.serializeToBase64(impressionEvent);
             httpService.postFormUrlEncoded(serializedEvent);
         } catch (Exception e) {
             XennioLogger.log("Impression Event Error:" + e.getMessage());
@@ -94,7 +94,7 @@ public class EventProcessorHandler {
                     .memberId(sessionContextHolder.getMemberId())
                     .appendExtra(params)
                     .toMap();
-            String serializedEvent = entitySerializerService.serialize(impressionEvent);
+            String serializedEvent = entitySerializerService.serializeToBase64(impressionEvent);
             httpService.postFormUrlEncoded(serializedEvent);
         } catch (Exception e) {
             XennioLogger.log(eventName + "Event Error:" + e.getMessage());

@@ -10,9 +10,11 @@ import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.Map;
 
+import io.xenn.android.common.Constants;
 import io.xenn.android.common.PushMessageDataWrapper;
 import io.xenn.android.context.ApplicationContextHolder;
 import io.xenn.android.context.SessionContextHolder;
+import io.xenn.android.model.FeedbackEvent;
 import io.xenn.android.model.XennEvent;
 import io.xenn.android.service.DeviceService;
 import io.xenn.android.service.EntitySerializerService;
@@ -45,7 +47,7 @@ public class NotificationProcessorHandler {
                     .addBody("appType", "fcmAppPush")
                     .addBody("deviceToken", deviceToken)
                     .toMap();
-            String serializedEntity = entitySerializerService.serialize(event);
+            String serializedEntity = entitySerializerService.serializeToBase64(event);
             httpService.postFormUrlEncoded(serializedEntity);
             XennioLogger.log("Received Token: " + deviceToken);
         } catch (Exception e) {
@@ -58,10 +60,10 @@ public class NotificationProcessorHandler {
             Map<String, String> data = remoteMessage.getData();
             PushMessageDataWrapper pushMessageDataWrapper = PushMessageDataWrapper.from(data);
             sessionContextHolder.updateExternalParameters(pushMessageDataWrapper.toObjectMap());
-            this.pushMessageReceived();
+            this.pushMessageDelivered(data);
 
             if (pushMessageDataWrapper.isSilent()) {
-                this.pushMessageOpened();
+                this.pushMessageOpened(data);
                 return;
             }
 
@@ -97,30 +99,30 @@ public class NotificationProcessorHandler {
         }
     }
 
-    protected void pushMessageReceived() {
+    protected void pushMessageDelivered(Map<String, String> pushContent) {
         try {
-            Map<String, Object> event = XennEvent.create("Feedback", applicationContextHolder.getPersistentId(), sessionContextHolder.getSessionIdAndExtendSession())
-                    .memberId(sessionContextHolder.getMemberId())
-                    .addBody("type", "pushReceived")
-                    .appendExtra(sessionContextHolder.getExternalParameters())
-                    .toMap();
-            String serializedEntity = entitySerializerService.serialize(event);
-            httpService.postFormUrlEncoded(serializedEntity);
+            Map<String, Object> event = new FeedbackEvent("d",
+                    pushContent.get(Constants.PUSH_ID_KEY),
+                    pushContent.get(Constants.CAMPAIGN_ID_KEY),
+                    pushContent.get(Constants.CAMPAIGN_DATE_KEY)).toMap();
+
+            String serializedEntity = entitySerializerService.serializeToJson(event);
+            httpService.postJsonEncoded(serializedEntity, Constants.PUSH_FEED_BACK_PATH);
 
         } catch (Exception e) {
             XennioLogger.log("Push received event error: " + e.getMessage());
         }
     }
 
-    public void pushMessageOpened() {
+    public void pushMessageOpened(Map<String, String> pushContent) {
         try {
-            Map<String, Object> event = XennEvent.create("Feedback", applicationContextHolder.getPersistentId(), sessionContextHolder.getSessionIdAndExtendSession())
-                    .memberId(sessionContextHolder.getMemberId())
-                    .addBody("type", "pushOpened")
-                    .appendExtra(sessionContextHolder.getExternalParameters())
-                    .toMap();
-            String serializedEntity = entitySerializerService.serialize(event);
-            httpService.postFormUrlEncoded(serializedEntity);
+            Map<String, Object> event = new FeedbackEvent("o",
+                    pushContent.get(Constants.PUSH_ID_KEY),
+                    pushContent.get(Constants.CAMPAIGN_ID_KEY),
+                    pushContent.get(Constants.CAMPAIGN_DATE_KEY)).toMap();
+
+            String serializedEntity = entitySerializerService.serializeToJson(event);
+            httpService.postJsonEncoded(serializedEntity, Constants.PUSH_FEED_BACK_PATH);
 
         } catch (Exception e) {
             XennioLogger.log("Push opened event error: " + e.getMessage());
