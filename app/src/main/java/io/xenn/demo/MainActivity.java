@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
         super.onNewIntent(intent);
         Log.d("Xennio", "Source:" + intent.getStringExtra("source"));
         Log.d("Xennio", "Realty List:" + intent.getStringExtra("realty_list"));
-        Xennio.notifications().pushMessageOpened();
+        Xennio.notifications().pushMessageOpened(intent);
         Xennio.notifications().resetBadgeCounts(this);
     }
 

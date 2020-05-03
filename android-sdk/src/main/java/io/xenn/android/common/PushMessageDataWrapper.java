@@ -1,7 +1,11 @@
 package io.xenn.android.common;
 
+import android.content.Intent;
+import android.os.Bundle;
+
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class PushMessageDataWrapper {
 
@@ -10,6 +14,17 @@ public class PushMessageDataWrapper {
     public static PushMessageDataWrapper from(Map<String, String> data) {
         PushMessageDataWrapper pushMessageDataWrapper = new PushMessageDataWrapper();
         pushMessageDataWrapper.data = data;
+        return pushMessageDataWrapper;
+    }
+
+    public static PushMessageDataWrapper from(Intent intent) {
+        PushMessageDataWrapper pushMessageDataWrapper = new PushMessageDataWrapper();
+        pushMessageDataWrapper.data = new HashMap<>();
+        Bundle extras = intent.getExtras();
+        Set<String> ks = extras.keySet();
+        for (String key : ks) {
+            pushMessageDataWrapper.data.put(key, intent.getStringExtra(key));
+        }
         return pushMessageDataWrapper;
     }
 
@@ -68,5 +83,25 @@ public class PushMessageDataWrapper {
             map.put(eachEntry.getKey(), eachEntry.getValue());
         }
         return map;
+    }
+
+    public String getPushId() {
+        return data.get(Constants.PUSH_ID_KEY);
+    }
+
+    public String getCampaignId() {
+        return data.get(Constants.CAMPAIGN_ID_KEY);
+    }
+
+    public String getCampaignDate() {
+        return data.get(Constants.CAMPAIGN_DATE_KEY);
+    }
+
+    public Map<String, String> getData() {
+        return data;
+    }
+
+    public String getSource() {
+        return data.get(Constants.PUSH_PAYLOAD_SOURCE);
     }
 }

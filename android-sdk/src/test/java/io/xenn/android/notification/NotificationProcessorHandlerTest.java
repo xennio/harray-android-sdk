@@ -12,6 +12,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.xenn.android.common.PushMessageDataWrapper;
 import io.xenn.android.context.ApplicationContextHolder;
 import io.xenn.android.context.SessionContextHolder;
 import io.xenn.android.service.EntitySerializerService;
@@ -84,7 +85,7 @@ public class NotificationProcessorHandlerTest {
 
         when(entitySerializerService.serializeToJson(xennEventArgumentCaptor.capture())).thenReturn("serializedEntity");
 
-        notificationProcessorHandler.pushMessageDelivered(externalParameters);
+        notificationProcessorHandler.pushMessageDelivered(PushMessageDataWrapper.from(externalParameters));
 
         Map<String, Object> xennEventMap = xennEventArgumentCaptor.getValue();
 
@@ -113,7 +114,7 @@ public class NotificationProcessorHandlerTest {
 
         when(entitySerializerService.serializeToJson(xennEventArgumentCaptor.capture())).thenReturn("serializedEntity");
 
-        notificationProcessorHandler.pushMessageOpened(externalParameters);
+        notificationProcessorHandler.pushMessageOpened(PushMessageDataWrapper.from(externalParameters));
 
         Map<String, Object> xennEventMap = xennEventArgumentCaptor.getValue();
 

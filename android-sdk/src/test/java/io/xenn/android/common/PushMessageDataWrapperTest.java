@@ -1,13 +1,20 @@
 package io.xenn.android.common;
 
+import android.content.Intent;
+import android.os.Bundle;
+
 import org.junit.Test;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class PushMessageDataWrapperTest {
 
@@ -92,6 +99,13 @@ public class PushMessageDataWrapperTest {
     }
 
     @Test
+    public void it_should_return_source_value_when_push_message_contains_source() {
+        Map<String, String> message = new HashMap<>();
+        message.put(Constants.PUSH_PAYLOAD_SOURCE, "xennio");
+        assertEquals("xennio", PushMessageDataWrapper.from(message).getSource());
+    }
+
+    @Test
     public void it_should_convert_string_value_type_map_to_object_map() {
         Map<String, String> message = new HashMap<>();
         message.put("foo", "bar");
@@ -100,6 +114,42 @@ public class PushMessageDataWrapperTest {
         assertTrue(message.size() == expected.size());
         assertTrue(expected.containsKey("foo"));
         assertTrue(expected.containsKey("foo1"));
+    }
+
+    @Test
+    public void it_should_wrap_push_notification_data_from_intent() {
+        Map<String, String> message = new HashMap<>();
+        message.put("pushId", "pushId");
+        message.put("campaignDate", "campaignDate");
+        message.put("campaignId", "campaignId");
+
+        PushMessageDataWrapper pushMessageDataWrapper = PushMessageDataWrapper.from(message);
+
+        assertEquals("pushId", pushMessageDataWrapper.getPushId());
+        assertEquals("campaignDate", pushMessageDataWrapper.getCampaignDate());
+        assertEquals("campaignId", pushMessageDataWrapper.getCampaignId());
+    }
+
+    @Test
+    public void it_should_put_all_bundle_elements_to_map() {
+        Intent intent = mock(Intent.class);
+        Bundle bundle = mock(Bundle.class);
+        when(intent.getExtras()).thenReturn(bundle);
+        Set<String> bundleKeys = new HashSet<>();
+        bundleKeys.add("pushId");
+        bundleKeys.add("campaignDate");
+        bundleKeys.add("campaignId");
+        when(bundle.keySet()).thenReturn(bundleKeys);
+        when(intent.getStringExtra("pushId")).thenReturn("pushId");
+        when(intent.getStringExtra("campaignDate")).thenReturn("campaignDate");
+        when(intent.getStringExtra("campaignId")).thenReturn("campaignId");
+
+        PushMessageDataWrapper pushMessageDataWrapper = PushMessageDataWrapper.from(intent);
+
+        assertEquals(3, pushMessageDataWrapper.getData().size());
+        assertEquals("pushId", pushMessageDataWrapper.getData().get("pushId"));
+        assertEquals("campaignDate", pushMessageDataWrapper.getData().get("campaignDate"));
+        assertEquals("campaignId", pushMessageDataWrapper.getData().get("campaignId"));
     }
 
 }
