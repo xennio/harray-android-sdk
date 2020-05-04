@@ -62,7 +62,7 @@ public class HttpServiceTest {
     public void it_should_add_sdk_key_to_collector_url() {
         String endpoint = "endpoint";
         HttpService httpService = new HttpService(httpRequestFactory, "sdk-key");
-        assertEquals("https://c.xenn.io:443/sdkKey", httpService.getCollectorUrl());
+        assertEquals("https://c.xenn.io:443/sdk-key", httpService.getCollectorUrl());
     }
 
     @Test
