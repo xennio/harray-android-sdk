@@ -20,6 +20,7 @@ import io.xenn.android.service.HttpService;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -106,7 +107,7 @@ public class NotificationProcessorHandlerTest {
         externalParameters.put("campaignId", "campaignId");
         externalParameters.put("campaignDate", "campaignDate");
         externalParameters.put("url", "url");
-        externalParameters.put("utm_source", "xennio");
+        externalParameters.put("source", "xennio");
         externalParameters.put("utm_medium", "utm_medium");
         externalParameters.put("utm_campaign", "utm_campaign");
         externalParameters.put("utm_term", "utm_term");
@@ -124,6 +125,25 @@ public class NotificationProcessorHandlerTest {
         assertEquals("campaignDate", xennEventMap.get("cd"));
 
         verify(httpService).postJsonEncoded("serializedEntity", "feedback");
+    }
+
+    @Test
+    public void it_should_not_make_push_open_when_source_is_not_xenn_io() throws UnsupportedEncodingException {
+
+        Map<String, String> externalParameters = new HashMap<>();
+        externalParameters.put("pushId", "pushId");
+        externalParameters.put("campaignId", "campaignId");
+        externalParameters.put("campaignDate", "campaignDate");
+        externalParameters.put("url", "url");
+        externalParameters.put("source", "mennio");
+        externalParameters.put("utm_medium", "utm_medium");
+        externalParameters.put("utm_campaign", "utm_campaign");
+        externalParameters.put("utm_term", "utm_term");
+        externalParameters.put("utm_content", "utm_content");
+
+        notificationProcessorHandler.pushMessageOpened(PushMessageDataWrapper.from(externalParameters));
+
+        verifyNoInteractions(httpService);
     }
 
 }

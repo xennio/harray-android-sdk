@@ -123,17 +123,20 @@ public class NotificationProcessorHandler {
     }
 
     protected void pushMessageOpened(PushMessageDataWrapper pushMessageDataWrapper) {
-        try {
-            Map<String, Object> event = new FeedbackEvent("o",
-                    pushMessageDataWrapper.getPushId(),
-                    pushMessageDataWrapper.getCampaignId(),
-                    pushMessageDataWrapper.getCampaignDate()).toMap();
+        if (pushMessageDataWrapper.getSource().equals(Constants.PUSH_CHANNEL_ID)) {
+            try {
+                Map<String, Object> event = new FeedbackEvent("o",
+                        pushMessageDataWrapper.getPushId(),
+                        pushMessageDataWrapper.getCampaignId(),
+                        pushMessageDataWrapper.getCampaignDate()).toMap();
 
-            String serializedEntity = entitySerializerService.serializeToJson(event);
-            httpService.postJsonEncoded(serializedEntity, Constants.PUSH_FEED_BACK_PATH);
+                String serializedEntity = entitySerializerService.serializeToJson(event);
+                httpService.postJsonEncoded(serializedEntity, Constants.PUSH_FEED_BACK_PATH);
 
-        } catch (Exception e) {
-            XennioLogger.log("Push opened event error: " + e.getMessage());
+            } catch (Exception e) {
+                XennioLogger.log("Push opened event error: " + e.getMessage());
+            }
         }
+
     }
 }
