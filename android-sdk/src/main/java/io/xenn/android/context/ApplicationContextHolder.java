@@ -12,12 +12,10 @@ import io.xenn.android.utils.RandomValueUtils;
 
 public class ApplicationContextHolder {
 
-    private final String collectorUrl = "https://c.xenn.io:443/";
-    private final String sdkVersion = "2.7";
-    private final String sdkKey;
+    private final String sdkVersion = "2.8";
     private String persistentId;
 
-    public ApplicationContextHolder(SharedPreferences sharedPreferences, String sdkKey) {
+    public ApplicationContextHolder(SharedPreferences sharedPreferences) {
         String value = sharedPreferences.getString(Constants.SDK_PERSISTENT_ID_KEY, null);
         if (value == null) {
             value = RandomValueUtils.randomUUID();
@@ -26,7 +24,6 @@ public class ApplicationContextHolder {
             editor.apply();
         }
         this.persistentId = value;
-        this.sdkKey = sdkKey;
     }
 
     public String getTimezone() {
@@ -40,9 +37,6 @@ public class ApplicationContextHolder {
         return persistentId;
     }
 
-    public String getCollectorUrl() {
-        return collectorUrl + sdkKey;
-    }
 
     public String getSdkVersion() {
         return sdkVersion;

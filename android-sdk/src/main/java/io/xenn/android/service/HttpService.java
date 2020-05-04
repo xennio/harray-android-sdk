@@ -9,16 +9,17 @@ import io.xenn.android.http.PostJsonEncodedTask;
 
 public class HttpService {
 
-    private final String endpoint;
+    private final String collectorUrl = "https://c.xenn.io:443/";
+    private final String sdkKey;
     private final HttpRequestFactory httpRequestFactory;
 
-    public HttpService(String endpoint, HttpRequestFactory httpRequestFactory) {
-        this.endpoint = endpoint;
+    public HttpService(HttpRequestFactory httpRequestFactory, String sdkKey) {
         this.httpRequestFactory = httpRequestFactory;
+        this.sdkKey = sdkKey;
     }
 
     public void postFormUrlEncoded(final String payload) {
-        PostFormUrlEncodedTask task = httpRequestFactory.getPostFormUrlEncodedTask(endpoint, "e=" + payload);
+        PostFormUrlEncodedTask task = httpRequestFactory.getPostFormUrlEncodedTask(getCollectorUrl(), "e=" + payload);
         task.execute();
     }
 
@@ -28,7 +29,15 @@ public class HttpService {
     }
 
     public void postJsonEncoded(final String payload, final String path) {
-        PostJsonEncodedTask postJsonEncodedTask = httpRequestFactory.getPostJsonEncodedTask(endpoint + "/" + path, payload);
+        PostJsonEncodedTask postJsonEncodedTask = httpRequestFactory.getPostJsonEncodedTask(getCollectorUrl(path), payload);
         postJsonEncodedTask.execute();
+    }
+
+    public String getCollectorUrl() {
+        return collectorUrl + sdkKey;
+    }
+
+    public String getCollectorUrl(String feedback) {
+        return collectorUrl + feedback;
     }
 }

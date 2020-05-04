@@ -30,10 +30,10 @@ public final class Xennio {
 
     private Xennio(Context context, String sdkKey) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(Constants.PREF_COLLECTION_NAME, Context.MODE_PRIVATE);
-        ApplicationContextHolder applicationContextHolder = new ApplicationContextHolder(sharedPreferences, sdkKey);
+        ApplicationContextHolder applicationContextHolder = new ApplicationContextHolder(sharedPreferences);
         sessionContextHolder = new SessionContextHolder();
 
-        HttpService httpService = new HttpService(applicationContextHolder.getCollectorUrl(), new HttpRequestFactory());
+        HttpService httpService = new HttpService(new HttpRequestFactory(), sdkKey);
         EntitySerializerService entitySerializerService = new EntitySerializerService(new EncodingService(), new JsonSerializerService());
         this.eventProcessorHandler = new EventProcessorHandler(applicationContextHolder, sessionContextHolder, httpService, entitySerializerService);
 

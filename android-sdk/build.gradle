@@ -9,7 +9,7 @@ apply plugin: 'jacoco'
 
 archivesBaseName = 'android-sdk'
 group = "io.xenn"
-version = "2.7"
+version = "2.8"
 
 android {
     compileSdkVersion 28
@@ -17,7 +17,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 28
         versionCode 1
-        versionName "2.7"
+        versionName "2.8"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -116,7 +116,7 @@ publishing {
         androidSdk(MavenPublication) {
             groupId "io.xenn"
             artifactId "android-sdk"
-            version "2.7"
+            version "2.8"
             artifact "$buildDir/outputs/aar/android-sdk-release.aar"
         }
     }
