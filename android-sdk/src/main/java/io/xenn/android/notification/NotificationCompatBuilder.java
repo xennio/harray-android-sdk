@@ -18,6 +18,8 @@ import io.xenn.android.service.DeviceService;
 import io.xenn.android.service.HttpService;
 import io.xenn.android.utils.XennioLogger;
 
+import static androidx.core.app.NotificationCompat.DEFAULT_ALL;
+
 public class NotificationCompatBuilder {
 
     private Context applicationContext;
@@ -40,7 +42,7 @@ public class NotificationCompatBuilder {
 
     public NotificationCompatBuilder withChannelId(String notificationChannelId) {
 
-        int appIconResId = 0;
+        int appIconResId = -1;
         try {
             PackageManager packageManager = applicationContext.getPackageManager();
             final ApplicationInfo applicationInfo = packageManager.getApplicationInfo(applicationContext.getPackageName(), PackageManager.GET_META_DATA);
@@ -49,9 +51,10 @@ public class NotificationCompatBuilder {
             XennioLogger.log(e.getMessage());
         }
         notificationCompat = new NotificationCompat.Builder(applicationContext, notificationChannelId)
-                .setVibrate(new long[]{0, 100, 100, 100})
-                .setSmallIcon(appIconResId)
-                .setAutoCancel(true);
+                .setVibrate(new long[]{0, 100, 100, 100, 100, 100})
+                .setAutoCancel(true)
+                .setDefaults(DEFAULT_ALL)
+                .setSmallIcon(appIconResId);
         return this;
     }
 
@@ -83,7 +86,7 @@ public class NotificationCompatBuilder {
         if (sound != null) {
             notificationCompat.setSound(deviceService.getSound(sound));
         } else {
-            RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            notificationCompat.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
         }
         return this;
     }
