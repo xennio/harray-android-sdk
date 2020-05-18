@@ -5,7 +5,7 @@ plugins {
 apply plugin: 'com.android.library'
 apply plugin: 'maven-publish'
 apply plugin: 'com.bmuschko.nexus'
-apply plugin: 'jacoco'
+apply plugin: 'jacoco-android'
 
 archivesBaseName = 'android-sdk'
 group = "io.xenn"
@@ -18,7 +18,7 @@ android {
         targetSdkVersion 28
         versionCode 1
         versionName "2.9.1"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         debug {
@@ -44,29 +44,6 @@ tasks.withType(Test) {
     jacoco.includeNoLocationClasses = true
 }
 
-task jacocoTestReport(type: JacocoReport, dependsOn: ['test']) {
-
-    reports {
-        xml.enabled = true
-        html.enabled = true
-    }
-
-    // The lines below make sure we can report against Kotlin and exclude some Android Stuff
-    def fileFilter = [
-            '**/*Activity.class',
-            '**/R.class', '**/R$*.class', '**/BuildConfig.*', '**/Manifest*.*',
-            '**/*Test*.*', 'android/**/*.*'
-    ]
-    def debugTree = fileTree(dir: "$project.buildDir/tmp/kotlin-classes/debug", excludes: fileFilter)
-    def mainSrc = "$project.projectDir/src/main/java"
-
-    sourceDirectories.from = files([mainSrc])
-    classDirectories.from = files([debugTree])
-    executionData.from = fileTree(dir: project.buildDir, includes: [
-            'jacoco/testDebugUnitTest.exec', 'outputs/code-coverage/connected/*coverage.ec'
-    ])
-}
-
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:28.0.0'
@@ -76,6 +53,7 @@ dependencies {
     testImplementation "androidx.test:core:1.2.0"
     testImplementation "androidx.test.ext:junit:1.1.1"
     testImplementation "androidx.test:runner:1.2.0"
+    androidTestImplementation "androidx.test:runner:1.2.0"
     testImplementation 'ch.qos.logback:logback-classic:1.2.3'
     testImplementation 'junit:junit:4.12'
     testImplementation "org.json:json:20180813"
