@@ -18,8 +18,6 @@ import io.xenn.android.service.DeviceService;
 import io.xenn.android.service.HttpService;
 import io.xenn.android.utils.XennioLogger;
 
-import static androidx.core.app.NotificationCompat.DEFAULT_ALL;
-
 public class NotificationCompatBuilder {
 
     private Context applicationContext;
@@ -51,9 +49,8 @@ public class NotificationCompatBuilder {
             XennioLogger.log(e.getMessage());
         }
         notificationCompat = new NotificationCompat.Builder(applicationContext, notificationChannelId)
-                .setVibrate(new long[]{0, 100, 100, 100, 100, 100})
                 .setAutoCancel(true)
-                .setDefaults(DEFAULT_ALL)
+                .setVibrate(new long[]{500, 1000})
                 .setSmallIcon(appIconResId);
         return this;
     }

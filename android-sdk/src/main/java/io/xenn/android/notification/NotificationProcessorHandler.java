@@ -86,7 +86,7 @@ public class NotificationProcessorHandler {
                         .withIntent(data)
                         .build();
 
-                notificationManager.notify(12, notificationCompatBuilder.build());
+                notificationManager.notify(0, notificationCompatBuilder.build());
             }
         } catch (Exception e) {
             XennioLogger.log("Xenn Push handle error:" + e.getMessage());

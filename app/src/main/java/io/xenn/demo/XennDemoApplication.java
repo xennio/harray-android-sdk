@@ -10,5 +10,6 @@ public class XennDemoApplication extends Application {
     public void onCreate() {
         super.onCreate();
         Xennio.configure(this, "XENN-XMjJ4RzzvbPc0T2");
+
     }
 }

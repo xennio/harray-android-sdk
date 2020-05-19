@@ -25,4 +25,6 @@ public class Constants {
     public static final String CAMPAIGN_ID_KEY = "campaignId";
     public static final String CAMPAIGN_DATE_KEY = "campaignDate";
     public static final String PUSH_FEED_BACK_PATH = "feedback";
+    public static final String UNKNOWN_PROPERTY_VALUE = "UNKNOWN";
+    public static final String ANDROID = "Android";
 }

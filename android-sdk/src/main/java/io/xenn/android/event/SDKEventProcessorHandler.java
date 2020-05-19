@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import io.xenn.android.common.Constants;
 import io.xenn.android.context.ApplicationContextHolder;
 import io.xenn.android.context.SessionContextHolder;
 import io.xenn.android.model.XennEvent;
@@ -44,12 +45,17 @@ public class SDKEventProcessorHandler {
             Map<String, Object> event = XennEvent.create("SS", applicationContextHolder.getPersistentId(), sessionContextHolder.getSessionIdAndExtendSession())
                     .addHeader("sv", applicationContextHolder.getSdkVersion())
                     .memberId(sessionContextHolder.getMemberId())
-                    .addBody("os", "Android " + deviceService.getOsVersion())
+                    .addBody("os", Constants.ANDROID)
+                    .addBody("osv", deviceService.getOsVersion())
                     .addBody("mn", deviceService.getManufacturer())
                     .addBody("br", deviceService.getBrand())
+                    .addBody("md", deviceService.getModel())
                     .addBody("op", deviceService.getCarrier())
                     .addBody("av", deviceService.getAppVersion())
                     .addBody("zn", applicationContextHolder.getTimezone())
+                    .addBody("ua", deviceService.getUserAgent())
+                    .addBody("sw", deviceService.getScreenWidth())
+                    .addBody("sh", deviceService.getScreenHeight())
                     .appendExtra(sessionContextHolder.getExternalParameters())
                     .toMap();
             String serializedEntity = entitySerializerService.serializeToBase64(event);
