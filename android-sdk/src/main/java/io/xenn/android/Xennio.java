@@ -23,7 +23,7 @@ public final class Xennio {
 
     private final EventProcessorHandler eventProcessorHandler;
     private final SDKEventProcessorHandler sdkEventProcessorHandler;
-    private final SessionContextHolder sessionContextHolder;
+    protected final SessionContextHolder sessionContextHolder;
     private final NotificationProcessorHandler notificationProcessorHandler;
 
     private static Xennio instance;
@@ -74,7 +74,9 @@ public final class Xennio {
     }
 
     public static void login(String memberId) {
-        getInstance().sessionContextHolder.login(memberId);
+        if (!"".equals(memberId)) {
+            getInstance().sessionContextHolder.login(memberId);
+        }
     }
 
     public static void logout() {
