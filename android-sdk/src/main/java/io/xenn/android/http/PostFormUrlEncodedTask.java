@@ -6,6 +6,7 @@ import java.io.DataOutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import io.xenn.android.common.Constants;
 import io.xenn.android.utils.XennioLogger;
 
 public class PostFormUrlEncodedTask extends AsyncTask<Void, Void, Integer> {
