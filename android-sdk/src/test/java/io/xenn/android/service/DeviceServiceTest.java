@@ -38,6 +38,16 @@ public class DeviceServiceTest {
         assertEquals("9", deviceService.getOsVersion());
     }
 
+    @Test
+    public void it_should_return_screen_width() {
+        assertEquals(720, deviceService.getScreenWidth());
+    }
+
+    @Test
+    public void it_should_return_screen_height() {
+        assertEquals(1280, deviceService.getScreenHeight());
+    }
+
     @Ignore
     public void it_should_get_manufacturer() {
         assertEquals("4.1.2", deviceService.getManufacturer());

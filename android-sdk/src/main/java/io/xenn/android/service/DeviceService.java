@@ -70,8 +70,4 @@ public class DeviceService {
             return RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         }
     }
-
-    public String getUserAgent() {
-        return System.getProperty("http.agent");
-    }
 }

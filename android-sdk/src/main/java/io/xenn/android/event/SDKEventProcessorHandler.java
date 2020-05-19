@@ -53,7 +53,6 @@ public class SDKEventProcessorHandler {
                     .addBody("op", deviceService.getCarrier())
                     .addBody("av", deviceService.getAppVersion())
                     .addBody("zn", applicationContextHolder.getTimezone())
-                    .addBody("ua", deviceService.getUserAgent())
                     .addBody("sw", deviceService.getScreenWidth())
                     .addBody("sh", deviceService.getScreenHeight())
                     .appendExtra(sessionContextHolder.getExternalParameters())

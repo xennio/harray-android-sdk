@@ -63,7 +63,6 @@ public class SDKEventProcessorHandlerTest {
         when(deviceService.getAppVersion()).thenReturn("1.2");
         when(deviceService.getScreenHeight()).thenReturn(724);
         when(deviceService.getScreenWidth()).thenReturn(1024);
-        when(deviceService.getUserAgent()).thenReturn("useragent");
 
         sdkEventProcessorHandler.sessionStart();
 
@@ -81,7 +80,6 @@ public class SDKEventProcessorHandlerTest {
         assertEquals("Android", body.get("os"));
         assertEquals("Kitkat", body.get("osv"));
         assertEquals("3", body.get("zn"));
-        assertEquals("useragent", body.get("ua"));
         assertEquals(724, body.get("sh"));
         assertEquals(1024, body.get("sw"));
         assertEquals("xennio", body.get("utm_source"));
