@@ -34,7 +34,7 @@ public class DeviceService {
     public String getCarrier() {
         TelephonyManager manager = (TelephonyManager) context
                 .getSystemService(Context.TELEPHONY_SERVICE);
-        return manager.getNetworkOperator();
+        return manager.getNetworkOperatorName();
     }
 
 

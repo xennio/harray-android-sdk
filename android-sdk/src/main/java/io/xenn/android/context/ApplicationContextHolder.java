@@ -12,7 +12,7 @@ import io.xenn.android.utils.RandomValueUtils;
 
 public class ApplicationContextHolder {
 
-    private final String sdkVersion = "2.9.2";
+    private final String sdkVersion = "2.9.3";
     private String persistentId;
 
     public ApplicationContextHolder(SharedPreferences sharedPreferences) {

@@ -83,7 +83,7 @@ public class DeviceServiceTest {
         DeviceService fakeDeviceService = new DeviceService(mockContext);
         TelephonyManager mockTelephonyManager = mock(TelephonyManager.class);
         when(mockContext.getSystemService(Context.TELEPHONY_SERVICE)).thenReturn(mockTelephonyManager);
-        when(mockTelephonyManager.getNetworkOperator()).thenReturn("AT");
+        when(mockTelephonyManager.getNetworkOperatorName()).thenReturn("AT");
         assertEquals("AT", fakeDeviceService.getCarrier());
     }
 
