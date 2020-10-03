@@ -21,16 +21,18 @@ import io.xenn.android.service.JsonSerializerService;
 
 public final class Xennio {
 
-    private final EventProcessorHandler eventProcessorHandler;
-    private final SDKEventProcessorHandler sdkEventProcessorHandler;
-    protected final SessionContextHolder sessionContextHolder;
-    private final NotificationProcessorHandler notificationProcessorHandler;
+    protected EventProcessorHandler eventProcessorHandler;
+    protected SDKEventProcessorHandler sdkEventProcessorHandler;
+    protected SessionContextHolder sessionContextHolder;
+    protected ApplicationContextHolder applicationContextHolder;
+    protected NotificationProcessorHandler notificationProcessorHandler;
+    protected String pushNotificationToken = "";
 
     private static Xennio instance;
 
     private Xennio(Context context, String sdkKey) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(Constants.PREF_COLLECTION_NAME, Context.MODE_PRIVATE);
-        ApplicationContextHolder applicationContextHolder = new ApplicationContextHolder(sharedPreferences);
+        this.applicationContextHolder = new ApplicationContextHolder(sharedPreferences);
         sessionContextHolder = new SessionContextHolder();
 
         HttpService httpService = new HttpService(new HttpRequestFactory(), sdkKey);
@@ -54,6 +56,11 @@ public final class Xennio {
         if (sessionContextHolder.getSessionState() != SessionState.SESSION_STARTED) {
             getInstance().sdkEventProcessorHandler.sessionStart();
             sessionContextHolder.startSession();
+            if (getInstance().applicationContextHolder.isNewInstallation()) {
+                getInstance().sdkEventProcessorHandler.newInstallation();
+                getInstance().applicationContextHolder.setInstallationCompleted();
+            }
+
         }
         return getInstance().eventProcessorHandler;
     }
@@ -75,11 +82,24 @@ public final class Xennio {
 
     public static void login(String memberId) {
         if (!"".equals(memberId)) {
-            getInstance().sessionContextHolder.login(memberId);
+            Xennio instance = getInstance();
+            instance.sessionContextHolder.login(memberId);
+            if (!"".equals(instance.pushNotificationToken)) {
+                instance.notificationProcessorHandler.savePushToken(instance.pushNotificationToken);
+            }
         }
     }
 
+    public static void savePushToken(String deviceToken) {
+        Xennio instance = getInstance();
+        instance.pushNotificationToken = deviceToken;
+        instance.notificationProcessorHandler.savePushToken(deviceToken);
+    }
+
     public static void logout() {
-        getInstance().sessionContextHolder.logout();
+        Xennio instance = getInstance();
+        instance.notificationProcessorHandler.removeTokenAssociation(instance.pushNotificationToken);
+        instance.pushNotificationToken = "";
+        instance.sessionContextHolder.logout();
     }
 }

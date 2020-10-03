@@ -8,13 +8,25 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import io.xenn.android.common.Constants;
+import io.xenn.android.context.ApplicationContextHolder;
+import io.xenn.android.context.SessionContextHolder;
+import io.xenn.android.context.SessionState;
+import io.xenn.android.event.EventProcessorHandler;
+import io.xenn.android.event.SDKEventProcessorHandler;
+import io.xenn.android.notification.NotificationProcessorHandler;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -70,6 +82,23 @@ public class XennioTest {
     }
 
     @Test
+    public void it_should_set_member_id_to_context_and_save_device_token_when_member_id_and_device_token_are_not_empty() {
+        when(context.getSharedPreferences(Constants.PREF_COLLECTION_NAME, Context.MODE_PRIVATE)).thenReturn(mockSharedPreferences);
+        when(mockSharedPreferences.edit()).thenReturn(mockEditor);
+
+        Xennio.configure(context, "SdkKey");
+
+        Xennio instance = Xennio.getInstance();
+        instance.notificationProcessorHandler = mock(NotificationProcessorHandler.class);
+        instance.pushNotificationToken = "deviceToken";
+
+        Xennio.login("memberId");
+
+        assertEquals("memberId", instance.sessionContextHolder.getMemberId());
+        verify(instance.notificationProcessorHandler).savePushToken("deviceToken");
+    }
+
+    @Test
     public void it_should_not_set_member_id_to_context_when_member_id_is_empty() {
         when(context.getSharedPreferences(Constants.PREF_COLLECTION_NAME, Context.MODE_PRIVATE)).thenReturn(mockSharedPreferences);
         when(mockSharedPreferences.edit()).thenReturn(mockEditor);
@@ -82,6 +111,7 @@ public class XennioTest {
         assertNull(instance.sessionContextHolder.getMemberId());
     }
 
+
     @Test
     public void it_should_set_null_as_member_id_when_log_out_invoked() {
         when(context.getSharedPreferences(Constants.PREF_COLLECTION_NAME, Context.MODE_PRIVATE)).thenReturn(mockSharedPreferences);
@@ -90,11 +120,67 @@ public class XennioTest {
         Xennio.configure(context, "SdkKey");
         Xennio.login("memberId");
         Xennio instance = Xennio.getInstance();
+        instance.pushNotificationToken = "deviceToken";
+        instance.notificationProcessorHandler = mock(NotificationProcessorHandler.class);
         assertEquals("memberId", instance.sessionContextHolder.getMemberId());
 
         Xennio.logout();
-
+        verify(instance.notificationProcessorHandler).removeTokenAssociation("deviceToken");
         assertNull(instance.sessionContextHolder.getMemberId());
+        assertEquals("", instance.pushNotificationToken);
+    }
+
+    @Test
+    public void it_should_call_session_start_and_new_installation_when_eventing_called() {
+        when(context.getSharedPreferences(Constants.PREF_COLLECTION_NAME, Context.MODE_PRIVATE)).thenReturn(mockSharedPreferences);
+        when(mockSharedPreferences.edit()).thenReturn(mockEditor);
+        Xennio.configure(context, "SdkKey");
+        Xennio instance = Xennio.getInstance();
+        instance.applicationContextHolder = mock(ApplicationContextHolder.class);
+        instance.sdkEventProcessorHandler = mock(SDKEventProcessorHandler.class);
+        instance.sessionContextHolder = mock(SessionContextHolder.class);
+
+        when(instance.sessionContextHolder.getSessionState()).thenReturn(SessionState.SESSION_INITIALIZED);
+        when(instance.applicationContextHolder.isNewInstallation()).thenReturn(true);
+        Xennio.eventing();
+
+        verify(instance.sessionContextHolder).startSession();
+        verify(instance.sdkEventProcessorHandler).newInstallation();
+        verify(instance.applicationContextHolder).setInstallationCompleted();
+
+    }
+
+    @Test
+    public void it_should_not_call_session_start_and_new_installation_when_eventing_called_second_time() {
+        when(context.getSharedPreferences(Constants.PREF_COLLECTION_NAME, Context.MODE_PRIVATE)).thenReturn(mockSharedPreferences);
+        when(mockSharedPreferences.edit()).thenReturn(mockEditor);
+        Xennio.configure(context, "SdkKey");
+        Xennio instance = Xennio.getInstance();
+        instance.applicationContextHolder = mock(ApplicationContextHolder.class);
+        instance.sdkEventProcessorHandler = mock(SDKEventProcessorHandler.class);
+        instance.sessionContextHolder = mock(SessionContextHolder.class);
+
+        when(instance.sessionContextHolder.getSessionState()).thenReturn(SessionState.SESSION_STARTED);
+        EventProcessorHandler handler = Xennio.eventing();
+
+        verify(instance.sessionContextHolder, never()).startSession();
+        verifyNoInteractions(instance.sdkEventProcessorHandler);
+        verifyNoInteractions(instance.applicationContextHolder);
+        assertEquals(handler, instance.eventProcessorHandler);
+
+    }
+
+    @Test
+    public void it_should_synchronize_intent_data() {
+        when(context.getSharedPreferences(Constants.PREF_COLLECTION_NAME, Context.MODE_PRIVATE)).thenReturn(mockSharedPreferences);
+        when(mockSharedPreferences.edit()).thenReturn(mockEditor);
+        Xennio.configure(context, "SdkKey");
+        Xennio instance = Xennio.getInstance();
+        instance.sessionContextHolder = mock(SessionContextHolder.class);
+        Map<String, Object> intent = new HashMap<>();
+        Xennio.synchronizeIntentData(intent);
+
+        verify(instance.sessionContextHolder).updateExternalParameters(intent);
     }
 
 }

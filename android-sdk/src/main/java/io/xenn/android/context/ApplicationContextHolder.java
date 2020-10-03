@@ -12,8 +12,9 @@ import io.xenn.android.utils.RandomValueUtils;
 
 public class ApplicationContextHolder {
 
-    private final String sdkVersion = "2.9.3";
+    private final String sdkVersion = "2.9.4";
     private String persistentId;
+    private boolean newInstallation = false;
 
     public ApplicationContextHolder(SharedPreferences sharedPreferences) {
         String value = sharedPreferences.getString(Constants.SDK_PERSISTENT_ID_KEY, null);
@@ -22,6 +23,7 @@ public class ApplicationContextHolder {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString(Constants.SDK_PERSISTENT_ID_KEY, value);
             editor.apply();
+            this.newInstallation = true;
         }
         this.persistentId = value;
     }
@@ -42,4 +44,11 @@ public class ApplicationContextHolder {
         return sdkVersion;
     }
 
+    public boolean isNewInstallation() {
+        return newInstallation;
+    }
+
+    public void setInstallationCompleted() {
+        this.newInstallation = false;
+    }
 }

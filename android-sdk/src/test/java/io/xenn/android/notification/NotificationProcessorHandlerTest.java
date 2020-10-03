@@ -146,4 +146,31 @@ public class NotificationProcessorHandlerTest {
         verifyNoInteractions(httpService);
     }
 
+    @Test
+    public void it_should_construct_remove_device_token_event_and_make_api_call() throws UnsupportedEncodingException {
+
+        ArgumentCaptor<Map<String, Object>> xennEventArgumentCaptor = ArgumentCaptor.forClass(Map.class);
+        when(applicationContextHolder.getPersistentId()).thenReturn("persistentId");
+        when(sessionContextHolder.getSessionIdAndExtendSession()).thenReturn("sessionId");
+        when(sessionContextHolder.getMemberId()).thenReturn("memberId");
+        when(entitySerializerService.serializeToBase64(xennEventArgumentCaptor.capture())).thenReturn("serializedEntity");
+
+        notificationProcessorHandler.removeTokenAssociation("device token");
+
+        Map<String, Object> xennEventMap = xennEventArgumentCaptor.getValue();
+        Map<String, Object> header = (Map<String, Object>) xennEventMap.get("h");
+        Map<String, Object> body = (Map<String, Object>) xennEventMap.get("b");
+
+        assertEquals("TR", header.get("n"));
+        assertEquals("sessionId", header.get("s"));
+        assertEquals("persistentId", header.get("p"));
+        assertEquals("memberId", body.get("memberId"));
+        assertEquals("pushToken", body.get("name"));
+        assertEquals("fcmToken", body.get("type"));
+        assertEquals("fcmAppPush", body.get("appType"));
+        assertEquals("device token", body.get("deviceToken"));
+
+        verify(httpService).postFormUrlEncoded("serializedEntity");
+    }
+
 }

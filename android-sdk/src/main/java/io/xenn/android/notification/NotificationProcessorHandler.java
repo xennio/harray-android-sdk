@@ -56,6 +56,24 @@ public class NotificationProcessorHandler {
         }
     }
 
+    public void removeTokenAssociation(String deviceToken) {
+        try {
+            Map<String, Object> event = XennEvent.create("TR", applicationContextHolder.getPersistentId(), sessionContextHolder.getSessionIdAndExtendSession())
+                    .memberId(sessionContextHolder.getMemberId())
+                    .addBody("name", "pushToken")
+                    .addBody("type", "fcmToken")
+                    .addBody("appType", "fcmAppPush")
+                    .addBody("deviceToken", deviceToken)
+                    .toMap();
+            String serializedEntity = entitySerializerService.serializeToBase64(event);
+            httpService.postFormUrlEncoded(serializedEntity);
+
+            XennioLogger.log("Token Removed");
+        } catch (Exception e) {
+            XennioLogger.log("Save Token remove error: " + e.getMessage());
+        }
+    }
+
     public void handlePushNotification(Context applicationContext, RemoteMessage remoteMessage) {
         try {
             Map<String, String> data = remoteMessage.getData();

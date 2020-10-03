@@ -65,6 +65,19 @@ public class SDKEventProcessorHandler {
         }
     }
 
+    public void newInstallation() {
+        try {
+            Map<String, Object> event = XennEvent.create("NI", applicationContextHolder.getPersistentId(), sessionContextHolder.getSessionIdAndExtendSession())
+                    .memberId(sessionContextHolder.getMemberId())
+                    .toMap();
+            String serializedEntity = entitySerializerService.serializeToBase64(event);
+            httpService.postFormUrlEncoded(serializedEntity);
+
+        } catch (Exception e) {
+            XennioLogger.log("New Installation error: " + e.getMessage());
+        }
+    }
+
     public void heartBeat() {
         if (sessionContextHolder.getLastActivityTime() < ClockUtils.getTime() - HEART_BEAT_INTERVAL) {
             try {

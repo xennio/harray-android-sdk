@@ -116,9 +116,31 @@ public class SDKEventProcessorHandlerTest {
     }
 
     @Test
+    public void it_should_construct_installation_event_and_make_api_call() throws UnsupportedEncodingException {
+
+        ArgumentCaptor<Map<String, Object>> xennEventArgumentCaptor = ArgumentCaptor.forClass(Map.class);
+        when(applicationContextHolder.getPersistentId()).thenReturn("persistentId");
+        when(sessionContextHolder.getSessionIdAndExtendSession()).thenReturn("sessionId");
+        when(sessionContextHolder.getMemberId()).thenReturn("memberId");
+        when(entitySerializerService.serializeToBase64(xennEventArgumentCaptor.capture())).thenReturn("serializedEntity");
+
+        sdkEventProcessorHandler.newInstallation();
+
+        Map<String, Object> xennEventMap = xennEventArgumentCaptor.getValue();
+        Map<String, Object> header = (Map<String, Object>) xennEventMap.get("h");
+        Map<String, Object> body = (Map<String, Object>) xennEventMap.get("b");
+
+        assertEquals("NI", header.get("n"));
+        assertEquals("sessionId", header.get("s"));
+        assertEquals("persistentId", header.get("p"));
+        assertEquals("memberId", body.get("memberId"));
+
+        verify(httpService).postFormUrlEncoded("serializedEntity");
+    }
+
+    @Test
     public void it_should_not_send_heart_beat_event_when_last_event_time_is_not_before_current_time_minus_interval() throws UnsupportedEncodingException {
         ClockUtils.freeze(1587237294000L);
-        ArgumentCaptor<Map<String, Object>> xennEventArgumentCaptor = ArgumentCaptor.forClass(Map.class);
         when(sessionContextHolder.getLastActivityTime()).thenReturn(1587237260000L);
 
         sdkEventProcessorHandler.heartBeat();

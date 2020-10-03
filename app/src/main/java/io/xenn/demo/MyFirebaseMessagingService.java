@@ -17,6 +17,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onNewToken(String s) {
         super.onNewToken(s);
-        Xennio.notifications().savePushToken(s);
+        Xennio.savePushToken(s);
     }
 }
