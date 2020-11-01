@@ -9,6 +9,7 @@ import io.xenn.android.common.Constants;
 import io.xenn.android.context.ApplicationContextHolder;
 import io.xenn.android.context.SessionContextHolder;
 import io.xenn.android.context.SessionState;
+import io.xenn.android.event.EcommerceEventProcessorHandler;
 import io.xenn.android.event.EventProcessorHandler;
 import io.xenn.android.event.SDKEventProcessorHandler;
 import io.xenn.android.http.HttpRequestFactory;
@@ -26,6 +27,7 @@ public final class Xennio {
     protected SessionContextHolder sessionContextHolder;
     protected ApplicationContextHolder applicationContextHolder;
     protected NotificationProcessorHandler notificationProcessorHandler;
+    protected EcommerceEventProcessorHandler ecommerceEventProcessorHandler;
     protected String pushNotificationToken = "";
 
     private static Xennio instance;
@@ -37,13 +39,14 @@ public final class Xennio {
 
         HttpService httpService = new HttpService(new HttpRequestFactory(), sdkKey);
         EntitySerializerService entitySerializerService = new EntitySerializerService(new EncodingService(), new JsonSerializerService());
-        this.eventProcessorHandler = new EventProcessorHandler(applicationContextHolder, sessionContextHolder, httpService, entitySerializerService);
+        EventProcessorHandler eventProcessorHandler = new EventProcessorHandler(applicationContextHolder, sessionContextHolder, httpService, entitySerializerService);
+        this.eventProcessorHandler = eventProcessorHandler;
 
         DeviceService deviceService = new DeviceService(context);
         this.sdkEventProcessorHandler = new SDKEventProcessorHandler(applicationContextHolder, sessionContextHolder, httpService, entitySerializerService, deviceService);
 
         this.notificationProcessorHandler = new NotificationProcessorHandler(applicationContextHolder, sessionContextHolder, httpService, entitySerializerService, deviceService);
-
+        this.ecommerceEventProcessorHandler = new EcommerceEventProcessorHandler(eventProcessorHandler);
     }
 
     public static void configure(Context context, String sdkKey) {
@@ -67,6 +70,10 @@ public final class Xennio {
 
     public static NotificationProcessorHandler notifications() {
         return getInstance().notificationProcessorHandler;
+    }
+
+    public static EcommerceEventProcessorHandler ecommerce() {
+        return getInstance().ecommerceEventProcessorHandler;
     }
 
     public static void synchronizeIntentData(Map<String, Object> intentData) {
