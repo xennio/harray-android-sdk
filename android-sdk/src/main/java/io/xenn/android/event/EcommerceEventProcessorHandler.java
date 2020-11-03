@@ -8,7 +8,9 @@ import io.xenn.android.model.ecommerce.OrderItem;
 
 public class EcommerceEventProcessorHandler {
 
+    public static final String ENTITY_NAME = "products";
     private final EventProcessorHandler eventProcessorHandler;
+
 
     public EcommerceEventProcessorHandler(EventProcessorHandler eventProcessorHandler) {
         this.eventProcessorHandler = eventProcessorHandler;
@@ -16,7 +18,7 @@ public class EcommerceEventProcessorHandler {
 
     public void productView(String productId, String variantId, double price, double discountedPrice, String currency, String supplierId, String path) {
         Map<String, Object> params = new HashMap<>();
-        params.put("entity", "products");
+        params.put("entity", ENTITY_NAME);
         params.put("id", productId);
         params.put("variant", variantId);
         params.put("price", price);
@@ -45,7 +47,8 @@ public class EcommerceEventProcessorHandler {
 
     public void addToCart(String productId, String variantId, int quantity, double price, double discountedPrice, String currency, String origin, String basketId, String supplierId) {
         Map<String, Object> params = new HashMap<>();
-        params.put("productId", productId);
+        params.put("entity", ENTITY_NAME);
+        params.put("id", productId);
         params.put("variantId", variantId);
         params.put("quantity", quantity);
         params.put("price", price);
@@ -59,7 +62,8 @@ public class EcommerceEventProcessorHandler {
 
     public void removeFromCart(String productId, String variantId, int quantity, String basketId) {
         Map<String, Object> params = new HashMap<>();
-        params.put("productId", productId);
+        params.put("entity", ENTITY_NAME);
+        params.put("id", productId);
         params.put("variantId", variantId);
         params.put("quantity", quantity);
         params.put("basketId", basketId);
@@ -95,7 +99,8 @@ public class EcommerceEventProcessorHandler {
                 order.getOrderItems()) {
             Map<String, Object> orderItemParams = new HashMap<>();
             orderItemParams.put("orderId", order.getOrderId());
-            orderItemParams.put("productId", orderItem.getProductId());
+            orderItemParams.put("entity", ENTITY_NAME);
+            orderItemParams.put("id", orderItem.getProductId());
             orderItemParams.put("variantId", orderItem.getVariantId());
             orderItemParams.put("quantity", orderItem.getQuantity());
             orderItemParams.put("price", orderItem.getPrice());

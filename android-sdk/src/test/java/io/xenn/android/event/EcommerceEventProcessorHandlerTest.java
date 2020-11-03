@@ -93,7 +93,8 @@ public class EcommerceEventProcessorHandlerTest {
         verify(eventProcessorHandler).actionResult(eq("addToCart"), eventArgumentCaptor.capture());
         Map<String, Object> params = eventArgumentCaptor.getValue();
 
-        assertEquals("productId", params.get("productId"));
+        assertEquals("productId", params.get("id"));
+        assertEquals("products", params.get("entity"));
         assertEquals("variantId", params.get("variantId"));
         assertEquals(3, params.get("quantity"));
         assertEquals(300d, params.get("price"));
@@ -114,7 +115,8 @@ public class EcommerceEventProcessorHandlerTest {
         verify(eventProcessorHandler).actionResult(eq("removeFromCart"), eventArgumentCaptor.capture());
         Map<String, Object> params = eventArgumentCaptor.getValue();
 
-        assertEquals("productId", params.get("productId"));
+        assertEquals("productId", params.get("id"));
+        assertEquals("products", params.get("entity"));
         assertEquals("variantId", params.get("variantId"));
         assertEquals(3, params.get("quantity"));
         assertEquals("basketId", params.get("basketId"));
@@ -181,7 +183,8 @@ public class EcommerceEventProcessorHandlerTest {
         List<Map<String, Object>> conversionParams = conversionArgumentCaptor.getAllValues();
 
         Map<String,Object> conversion1Params = conversionParams.get(0);
-        assertEquals("product1", conversion1Params.get("productId"));
+        assertEquals("product1", conversion1Params.get("id"));
+        assertEquals("products", conversion1Params.get("entity"));
         assertEquals("variant1", conversion1Params.get("variantId"));
         assertEquals("orderId", conversion1Params.get("orderId"));
         assertEquals(3, conversion1Params.get("quantity"));
@@ -192,7 +195,8 @@ public class EcommerceEventProcessorHandlerTest {
         assertEquals("supplier1", conversion1Params.get("supplierId"));
 
         Map<String,Object> conversion2Params = conversionParams.get(1);
-        assertEquals("product2", conversion2Params.get("productId"));
+        assertEquals("product2", conversion2Params.get("id"));
+        assertEquals("products", conversion2Params.get("entity"));
         assertEquals("variant2", conversion2Params.get("variantId"));
         assertEquals("orderId", conversion2Params.get("orderId"));
         assertEquals(1, conversion2Params.get("quantity"));
@@ -203,7 +207,9 @@ public class EcommerceEventProcessorHandlerTest {
         assertEquals("supplier2", conversion2Params.get("supplierId"));
 
         Map<String,Object> conversion3Params = conversionParams.get(2);
-        assertEquals("product3", conversion3Params.get("productId"));
+        assertEquals("product3", conversion3Params.get("id"));
+        assertEquals("products", conversion3Params.get("entity"));
+
         assertEquals("variant3", conversion3Params.get("variantId"));
         assertEquals("orderId", conversion3Params.get("orderId"));
         assertEquals(4, conversion3Params.get("quantity"));
