@@ -7,7 +7,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import io.xenn.android.model.ecommerce.Order;
@@ -40,7 +39,7 @@ public class EcommerceEventProcessorHandlerTest {
 
         assertEquals("products", params.get("entity"));
         assertEquals("productId", params.get("id"));
-        assertEquals("variantId", params.get("variant"));
+        assertEquals("small", params.get("variant"));
         assertEquals(400d, params.get("price"));
         assertEquals(300d, params.get("discountedPrice"));
         assertEquals("USD", params.get("currency"));

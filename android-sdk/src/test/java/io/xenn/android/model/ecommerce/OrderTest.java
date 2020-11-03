@@ -36,7 +36,7 @@ public class OrderTest {
         assertEquals("USD", orderItem1.getCurrency());
         assertEquals("supplier1", orderItem1.getSupplierId());
 
-        OrderItem orderItem2 = order.getOrderItems().get(0);
+        OrderItem orderItem2 = order.getOrderItems().get(1);
 
         assertEquals("product2", orderItem2.getProductId());
         assertEquals("variant2", orderItem2.getVariantId());
@@ -46,7 +46,7 @@ public class OrderTest {
         assertEquals("USD", orderItem2.getCurrency());
         assertEquals("supplier2", orderItem2.getSupplierId());
 
-        OrderItem orderItem3 = order.getOrderItems().get(0);
+        OrderItem orderItem3 = order.getOrderItems().get(2);
 
         assertEquals("product3", orderItem3.getProductId());
         assertEquals("variant2", orderItem3.getVariantId());
