@@ -14,7 +14,6 @@ import io.xenn.android.model.ecommerce.Order;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -178,7 +177,6 @@ public class EcommerceEventProcessorHandlerTest {
         assertEquals("promotionName", params.get("promotionName"));
         assertEquals("creditCard", params.get("paymentMethod"));
 
-
         verify(eventProcessorHandler, times(3)).actionResult(eq("conversion"), conversionArgumentCaptor.capture());
         List<Map<String, Object>> conversionParams = conversionArgumentCaptor.getAllValues();
 
@@ -214,7 +212,5 @@ public class EcommerceEventProcessorHandlerTest {
         assertEquals("USD", conversion3Params.get("currency"));
         assertEquals("orderId", conversion3Params.get("orderId"));
         assertEquals("supplier3", conversion3Params.get("supplierId"));
-
-
     }
 }

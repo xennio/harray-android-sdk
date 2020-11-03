@@ -19,8 +19,6 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
-import org.json.JSONObject;
-
 import java.util.HashMap;
 
 import io.xenn.android.Xennio;
@@ -39,16 +37,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        Xennio.login("300");
         Xennio.logout();
+        Xennio.login("300");
 
         Xennio.eventing().pageView("homePage");
         Xennio.eventing().actionResult("test Action");
         Xennio.eventing().impression("productdetail");
         Xennio.eventing().custom("customEvent", new HashMap<String, Object>());
+
+        Xennio.ecommerce().productView("1003", "small", 200d, 180d, "USD", null, "https://commercedemo.xenn.io/proteus-fitness-jackshirt.html");
+
         Intent intent = getIntent();
-        // XennioAPI.handlePushOpen(intent, Arrays.asList("Insider", "xennio"));
         Log.d("Xennio", "Source:" + intent.getStringExtra("source"));
         Log.d("Xennio", "Realty List:" + intent.getStringExtra("realty_list"));
         setContentView(R.layout.activity_main);
