@@ -54,7 +54,7 @@ public class EcommerceEventProcessorHandlerTest {
                 "categoryId", "resolvedPath"
         );
 
-        verify(eventProcessorHandler).pageView(eq("categoryView"), eventArgumentCaptor.capture());
+        verify(eventProcessorHandler).pageView(eq("categoryPage"), eventArgumentCaptor.capture());
         Map<String, Object> params = eventArgumentCaptor.getValue();
 
         assertEquals("categories", params.get("entity"));
