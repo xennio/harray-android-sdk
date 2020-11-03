@@ -166,7 +166,7 @@ public class EcommerceEventProcessorHandlerTest {
                 "basketId", order
         );
 
-        verify(eventProcessorHandler).pageView(eq("orderFunnel"), pageViewEventArgumentCaptor.capture());
+        verify(eventProcessorHandler).pageView(eq("orderSuccess"), pageViewEventArgumentCaptor.capture());
         Map<String, Object> params = pageViewEventArgumentCaptor.getValue();
         assertEquals("basketId", params.get("basketId"));
         assertEquals("orderId", params.get("orderId"));
@@ -175,7 +175,7 @@ public class EcommerceEventProcessorHandlerTest {
         assertEquals("discountName", params.get("discountName"));
         assertEquals("couponName", params.get("couponName"));
         assertEquals("promotionName", params.get("promotionName"));
-        assertEquals("paymentMethod", params.get("paymentMethod"));
+        assertEquals("creditCard", params.get("paymentMethod"));
 
 
         verify(eventProcessorHandler).actionResult(eq("conversion"), conversion1ArgumentCaptor.capture());
