@@ -102,7 +102,7 @@ public class EcommerceEventProcessorHandler {
             orderItemParams.put("discountedPrice", orderItem.getDiscountedPrice());
             orderItemParams.put("currency", orderItem.getCurrency());
             orderItemParams.put("supplierId", orderItem.getSupplierId());
-            eventProcessorHandler.actionResult("conversion", params);
+            eventProcessorHandler.actionResult("conversion", orderItemParams);
         }
     }
 }

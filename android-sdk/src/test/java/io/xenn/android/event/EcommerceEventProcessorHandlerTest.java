@@ -7,12 +7,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.List;
 import java.util.Map;
 
 import io.xenn.android.model.ecommerce.Order;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.timeout;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -146,14 +149,12 @@ public class EcommerceEventProcessorHandlerTest {
     @Test
     public void it_should_create_order_success_events() {
         ArgumentCaptor<Map<String, Object>> pageViewEventArgumentCaptor = ArgumentCaptor.forClass(Map.class);
-        ArgumentCaptor<Map<String, Object>> conversion1ArgumentCaptor = ArgumentCaptor.forClass(Map.class);
-        ArgumentCaptor<Map<String, Object>> conversion2ArgumentCaptor = ArgumentCaptor.forClass(Map.class);
-        ArgumentCaptor<Map<String, Object>> conversion3ArgumentCaptor = ArgumentCaptor.forClass(Map.class);
+        ArgumentCaptor<Map<String, Object>> conversionArgumentCaptor = ArgumentCaptor.forClass(Map.class);
 
         Order order = Order.create("orderId")
                 .addItem("product1", "variant1", 3, 300d, 200d, "USD", "supplier1")
                 .addItem("product2", "variant2", 1, 100d, 76d, "USD", "supplier2")
-                .addItem("product3", "variant2", 4, 1300d, 1200d, "USD", "supplier3")
+                .addItem("product3", "variant3", 4, 1300d, 1200d, "USD", "supplier3")
                 .paidWith("creditCard")
                 .totalAmount(3220d)
                 .discountAmount(2000d)
@@ -166,7 +167,7 @@ public class EcommerceEventProcessorHandlerTest {
                 "basketId", order
         );
 
-        verify(eventProcessorHandler).pageView(eq("orderFunnel"), pageViewEventArgumentCaptor.capture());
+        verify(eventProcessorHandler).pageView(eq("orderSuccess"), pageViewEventArgumentCaptor.capture());
         Map<String, Object> params = pageViewEventArgumentCaptor.getValue();
         assertEquals("basketId", params.get("basketId"));
         assertEquals("orderId", params.get("orderId"));
@@ -175,12 +176,13 @@ public class EcommerceEventProcessorHandlerTest {
         assertEquals("discountName", params.get("discountName"));
         assertEquals("couponName", params.get("couponName"));
         assertEquals("promotionName", params.get("promotionName"));
-        assertEquals("paymentMethod", params.get("paymentMethod"));
+        assertEquals("creditCard", params.get("paymentMethod"));
 
 
-        verify(eventProcessorHandler).actionResult(eq("conversion"), conversion1ArgumentCaptor.capture());
-        Map<String, Object> conversion1Params = conversion1ArgumentCaptor.getValue();
+        verify(eventProcessorHandler, times(3)).actionResult(eq("conversion"), conversionArgumentCaptor.capture());
+        List<Map<String, Object>> conversionParams = conversionArgumentCaptor.getAllValues();
 
+        Map<String,Object> conversion1Params = conversionParams.get(0);
         assertEquals("product1", conversion1Params.get("productId"));
         assertEquals("variant1", conversion1Params.get("variantId"));
         assertEquals("orderId", conversion1Params.get("orderId"));
@@ -191,10 +193,7 @@ public class EcommerceEventProcessorHandlerTest {
         assertEquals("orderId", conversion1Params.get("orderId"));
         assertEquals("supplier1", conversion1Params.get("supplierId"));
 
-
-        verify(eventProcessorHandler).actionResult(eq("conversion"), conversion2ArgumentCaptor.capture());
-        Map<String, Object> conversion2Params = conversion2ArgumentCaptor.getValue();
-
+        Map<String,Object> conversion2Params = conversionParams.get(1);
         assertEquals("product2", conversion2Params.get("productId"));
         assertEquals("variant2", conversion2Params.get("variantId"));
         assertEquals("orderId", conversion2Params.get("orderId"));
@@ -203,11 +202,9 @@ public class EcommerceEventProcessorHandlerTest {
         assertEquals(76d, conversion2Params.get("discountedPrice"));
         assertEquals("USD", conversion2Params.get("currency"));
         assertEquals("orderId", conversion2Params.get("orderId"));
-        assertEquals("supplier1", conversion2Params.get("supplierId"));
+        assertEquals("supplier2", conversion2Params.get("supplierId"));
 
-        verify(eventProcessorHandler).actionResult(eq("conversion"), conversion3ArgumentCaptor.capture());
-        Map<String, Object> conversion3Params = conversion2ArgumentCaptor.getValue();
-
+        Map<String,Object> conversion3Params = conversionParams.get(2);
         assertEquals("product3", conversion3Params.get("productId"));
         assertEquals("variant3", conversion3Params.get("variantId"));
         assertEquals("orderId", conversion3Params.get("orderId"));
