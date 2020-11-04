@@ -16,11 +16,11 @@ public class EcommerceEventProcessorHandler {
         this.eventProcessorHandler = eventProcessorHandler;
     }
 
-    public void productView(String productId, String variantId, double price, double discountedPrice, String currency, String supplierId, String path) {
+    public void productView(String productId, String variant, double price, double discountedPrice, String currency, String supplierId, String path) {
         Map<String, Object> params = new HashMap<>();
         params.put("entity", ENTITY_NAME);
         params.put("id", productId);
-        params.put("variant", variantId);
+        params.put("variant", variant);
         params.put("price", price);
         params.put("discountedPrice", discountedPrice);
         params.put("currency", currency);
@@ -45,11 +45,11 @@ public class EcommerceEventProcessorHandler {
         eventProcessorHandler.pageView("searchPage", params);
     }
 
-    public void addToCart(String productId, String variantId, int quantity, double price, double discountedPrice, String currency, String origin, String basketId, String supplierId) {
+    public void addToCart(String productId, String variant, int quantity, double price, double discountedPrice, String currency, String origin, String basketId, String supplierId) {
         Map<String, Object> params = new HashMap<>();
         params.put("entity", ENTITY_NAME);
         params.put("id", productId);
-        params.put("variantId", variantId);
+        params.put("variant", variant);
         params.put("quantity", quantity);
         params.put("price", price);
         params.put("discountedPrice", discountedPrice);
@@ -60,11 +60,11 @@ public class EcommerceEventProcessorHandler {
         eventProcessorHandler.actionResult("addToCart", params);
     }
 
-    public void removeFromCart(String productId, String variantId, int quantity, String basketId) {
+    public void removeFromCart(String productId, String variant, int quantity, String basketId) {
         Map<String, Object> params = new HashMap<>();
         params.put("entity", ENTITY_NAME);
         params.put("id", productId);
-        params.put("variantId", variantId);
+        params.put("variant", variant);
         params.put("quantity", quantity);
         params.put("basketId", basketId);
         eventProcessorHandler.actionResult("removeFromCart", params);
@@ -101,7 +101,7 @@ public class EcommerceEventProcessorHandler {
             orderItemParams.put("orderId", order.getOrderId());
             orderItemParams.put("entity", ENTITY_NAME);
             orderItemParams.put("id", orderItem.getProductId());
-            orderItemParams.put("variantId", orderItem.getVariantId());
+            orderItemParams.put("variant", orderItem.getVariant());
             orderItemParams.put("quantity", orderItem.getQuantity());
             orderItemParams.put("price", orderItem.getPrice());
             orderItemParams.put("discountedPrice", orderItem.getDiscountedPrice());

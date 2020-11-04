@@ -2,7 +2,7 @@ package io.xenn.android.model.ecommerce;
 
 public class OrderItem {
     private final String productId;
-    private final String variantId;
+    private final String variant;
     private final int quantity;
     private final Double price;
     private final Double discountedPrice;
@@ -10,9 +10,9 @@ public class OrderItem {
     private final String supplierId;
 
 
-    OrderItem(String productId, String variantId, int quantity, Double price, Double discountedPrice, String currency, String supplierId) {
+    OrderItem(String productId, String variant, int quantity, Double price, Double discountedPrice, String currency, String supplierId) {
         this.productId = productId;
-        this.variantId = variantId;
+        this.variant = variant;
         this.quantity = quantity;
         this.price = price;
         this.discountedPrice = discountedPrice;
@@ -24,8 +24,8 @@ public class OrderItem {
         return productId;
     }
 
-    public String getVariantId() {
-        return variantId;
+    public String getVariant() {
+        return variant;
     }
 
     public int getQuantity() {

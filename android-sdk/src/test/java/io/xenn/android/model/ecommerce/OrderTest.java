@@ -29,7 +29,7 @@ public class OrderTest {
         OrderItem orderItem1 = order.getOrderItems().get(0);
 
         assertEquals("product1", orderItem1.getProductId());
-        assertEquals("variant1", orderItem1.getVariantId());
+        assertEquals("variant1", orderItem1.getVariant());
         assertEquals(3, orderItem1.getQuantity());
         assertEquals(Double.valueOf(300d), orderItem1.getPrice());
         assertEquals(Double.valueOf(200d), orderItem1.getDiscountedPrice());
@@ -39,7 +39,7 @@ public class OrderTest {
         OrderItem orderItem2 = order.getOrderItems().get(1);
 
         assertEquals("product2", orderItem2.getProductId());
-        assertEquals("variant2", orderItem2.getVariantId());
+        assertEquals("variant2", orderItem2.getVariant());
         assertEquals(1, orderItem2.getQuantity());
         assertEquals(Double.valueOf(100d), orderItem2.getPrice());
         assertEquals(Double.valueOf(76d), orderItem2.getDiscountedPrice());
@@ -49,7 +49,7 @@ public class OrderTest {
         OrderItem orderItem3 = order.getOrderItems().get(2);
 
         assertEquals("product3", orderItem3.getProductId());
-        assertEquals("variant2", orderItem3.getVariantId());
+        assertEquals("variant2", orderItem3.getVariant());
         assertEquals(4, orderItem3.getQuantity());
         assertEquals(Double.valueOf(1300d), orderItem3.getPrice());
         assertEquals(Double.valueOf(1200d), orderItem3.getDiscountedPrice());
