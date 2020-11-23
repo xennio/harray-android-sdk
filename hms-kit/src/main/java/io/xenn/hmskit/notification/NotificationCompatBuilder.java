@@ -1,4 +1,4 @@
-package io.xenn.android.notification;
+package io.xenn.hmskit.notification;
 
 import android.app.PendingIntent;
 import android.content.ComponentName;
@@ -13,10 +13,10 @@ import androidx.core.app.NotificationCompat;
 
 import java.util.Map;
 
-import io.xenn.android.common.Constants;
 import io.xenn.android.service.DeviceService;
 import io.xenn.android.service.HttpService;
 import io.xenn.android.utils.XennioLogger;
+import io.xenn.hmskit.common.Constants;
 
 public class NotificationCompatBuilder {
 

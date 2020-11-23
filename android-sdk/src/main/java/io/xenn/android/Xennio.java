@@ -3,17 +3,19 @@ package io.xenn.android;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import java.util.List;
 import java.util.Map;
 
 import io.xenn.android.common.Constants;
 import io.xenn.android.context.ApplicationContextHolder;
 import io.xenn.android.context.SessionContextHolder;
 import io.xenn.android.context.SessionState;
+import io.xenn.android.context.XennPlugin;
+import io.xenn.android.context.XennPlugins;
 import io.xenn.android.event.EcommerceEventProcessorHandler;
 import io.xenn.android.event.EventProcessorHandler;
 import io.xenn.android.event.SDKEventProcessorHandler;
 import io.xenn.android.http.HttpRequestFactory;
-import io.xenn.android.notification.NotificationProcessorHandler;
 import io.xenn.android.service.DeviceService;
 import io.xenn.android.service.EncodingService;
 import io.xenn.android.service.EntitySerializerService;
@@ -22,36 +24,46 @@ import io.xenn.android.service.JsonSerializerService;
 
 public final class Xennio {
 
+    private EntitySerializerService entitySerializerService;
     protected EventProcessorHandler eventProcessorHandler;
     protected SDKEventProcessorHandler sdkEventProcessorHandler;
     protected SessionContextHolder sessionContextHolder;
     protected ApplicationContextHolder applicationContextHolder;
-    protected NotificationProcessorHandler notificationProcessorHandler;
     protected EcommerceEventProcessorHandler ecommerceEventProcessorHandler;
+    //todo kontrol
     protected String pushNotificationToken = "";
+    protected HttpService httpService;
+    protected DeviceService deviceService;
+    protected XennPlugins xennPlugins;
 
     private static Xennio instance;
 
     private Xennio(Context context, String sdkKey) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(Constants.PREF_COLLECTION_NAME, Context.MODE_PRIVATE);
         this.applicationContextHolder = new ApplicationContextHolder(sharedPreferences);
-        sessionContextHolder = new SessionContextHolder();
+        this.sessionContextHolder = new SessionContextHolder();
 
-        HttpService httpService = new HttpService(new HttpRequestFactory(), sdkKey);
-        EntitySerializerService entitySerializerService = new EntitySerializerService(new EncodingService(), new JsonSerializerService());
+        this.httpService = new HttpService(new HttpRequestFactory(), sdkKey);
+        this.entitySerializerService = new EntitySerializerService(new EncodingService(), new JsonSerializerService());
         EventProcessorHandler eventProcessorHandler = new EventProcessorHandler(applicationContextHolder, sessionContextHolder, httpService, entitySerializerService);
         this.eventProcessorHandler = eventProcessorHandler;
 
-        DeviceService deviceService = new DeviceService(context);
+        this.deviceService = new DeviceService(context);
         this.sdkEventProcessorHandler = new SDKEventProcessorHandler(applicationContextHolder, sessionContextHolder, httpService, entitySerializerService, deviceService);
 
-        this.notificationProcessorHandler = new NotificationProcessorHandler(applicationContextHolder, sessionContextHolder, httpService, entitySerializerService, deviceService);
         this.ecommerceEventProcessorHandler = new EcommerceEventProcessorHandler(eventProcessorHandler);
+
+        this.xennPlugins = new XennPlugins();
     }
 
     public static void configure(Context context, String sdkKey) {
         instance = new Xennio(context, sdkKey);
-        instance.notificationProcessorHandler.resetBadgeCounts(context);
+        plugins().initAll(context);
+    }
+
+    public static void configure(Context context, String sdkKey, List<? extends XennPlugin> xennPlugins) {
+        configure(context, sdkKey);
+        plugins().addAll(xennPlugins);
     }
 
     public static EventProcessorHandler eventing() {
@@ -68,12 +80,12 @@ public final class Xennio {
         return getInstance().eventProcessorHandler;
     }
 
-    public static NotificationProcessorHandler notifications() {
-        return getInstance().notificationProcessorHandler;
-    }
-
     public static EcommerceEventProcessorHandler ecommerce() {
         return getInstance().ecommerceEventProcessorHandler;
+    }
+
+    public static XennPlugins plugins() {
+        return getInstance().xennPlugins;
     }
 
     public static void synchronizeIntentData(Map<String, Object> intentData) {
@@ -91,22 +103,38 @@ public final class Xennio {
         if (!"".equals(memberId)) {
             Xennio instance = getInstance();
             instance.sessionContextHolder.login(memberId);
-            if (!"".equals(instance.pushNotificationToken)) {
-                instance.notificationProcessorHandler.savePushToken(instance.pushNotificationToken);
-            }
+            //todo kontrol
+//            if (!"".equals(instance.pushNotificationToken)) {
+//                instance.notificationProcessorHandler.savePushToken(instance.pushNotificationToken);
+//            }
         }
-    }
-
-    public static void savePushToken(String deviceToken) {
-        Xennio instance = getInstance();
-        instance.pushNotificationToken = deviceToken;
-        instance.notificationProcessorHandler.savePushToken(deviceToken);
     }
 
     public static void logout() {
         Xennio instance = getInstance();
-        instance.notificationProcessorHandler.removeTokenAssociation(instance.pushNotificationToken);
-        instance.pushNotificationToken = "";
+        //todo kontrol
+//        instance.notificationProcessorHandler.removeTokenAssociation(instance.pushNotificationToken);
+//        instance.pushNotificationToken = "";
         instance.sessionContextHolder.logout();
+    }
+
+    public static EntitySerializerService getEntitySerializerService() {
+        return getInstance().entitySerializerService;
+    }
+
+    public static ApplicationContextHolder getApplicationContextHolder() {
+        return getInstance().applicationContextHolder;
+    }
+
+    public static SessionContextHolder getSessionContextHolder() {
+        return getInstance().sessionContextHolder;
+    }
+
+    public static HttpService getHttpService() {
+        return getInstance().httpService;
+    }
+
+    public static DeviceService getDeviceService() {
+        return getInstance().deviceService;
     }
 }

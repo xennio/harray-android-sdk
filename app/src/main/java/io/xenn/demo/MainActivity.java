@@ -22,6 +22,7 @@ import com.google.firebase.iid.InstanceIdResult;
 import java.util.HashMap;
 
 import io.xenn.android.Xennio;
+import io.xenn.hmskit.HmsKitPlugin;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -30,8 +31,8 @@ public class MainActivity extends AppCompatActivity {
         super.onNewIntent(intent);
         Log.d("Xennio", "Source:" + intent.getStringExtra("source"));
         Log.d("Xennio", "Realty List:" + intent.getStringExtra("realty_list"));
-        Xennio.notifications().pushMessageOpened(intent);
-        Xennio.notifications().resetBadgeCounts(this);
+        Xennio.plugins().get(HmsKitPlugin.class).pushMessageOpened(intent);
+        Xennio.plugins().get(HmsKitPlugin.class).resetBadgeCounts(this);
     }
 
     @Override
@@ -60,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
                 .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
                     @Override
                     public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                        Xennio.notifications().savePushToken(task.getResult().getToken());
+                        Xennio.plugins().get(HmsKitPlugin.class).savePushToken(task.getResult().getToken());
                     }
                 });
 

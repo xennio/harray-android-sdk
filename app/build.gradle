@@ -1,6 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
-
+apply plugin: 'com.huawei.agconnect'
 
 android {
     compileSdkVersion 28
@@ -29,5 +29,7 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation "androidx.test:runner:1.2.0"
     implementation project(path: ':android-sdk')
+    implementation project(path: ':hms-kit')
     implementation 'com.google.firebase:firebase-core:16.0.9'
+    implementation 'com.huawei.hms:push:4.0.3.301'
 }
