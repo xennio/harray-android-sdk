@@ -30,7 +30,11 @@ public class NotificationProcessorHandler {
     private final EntitySerializerService entitySerializerService;
     private final DeviceService deviceService;
 
-    public NotificationProcessorHandler(ApplicationContextHolder applicationContextHolder, SessionContextHolder sessionContextHolder, HttpService httpService, EntitySerializerService entitySerializerService, DeviceService deviceService) {
+    public NotificationProcessorHandler(ApplicationContextHolder applicationContextHolder,
+                                        SessionContextHolder sessionContextHolder,
+                                        HttpService httpService,
+                                        EntitySerializerService entitySerializerService,
+                                        DeviceService deviceService) {
         this.applicationContextHolder = applicationContextHolder;
         this.sessionContextHolder = sessionContextHolder;
         this.httpService = httpService;
@@ -139,7 +143,7 @@ public class NotificationProcessorHandler {
         pushMessageOpened(pushMessageDataWrapper);
     }
 
-    private void pushMessageOpened(PushMessageDataWrapper pushMessageDataWrapper) {
+    protected void pushMessageOpened(PushMessageDataWrapper pushMessageDataWrapper) {
         if (pushMessageDataWrapper.getSource().equals(Constants.PUSH_CHANNEL_ID)) {
             try {
                 Map<String, Object> event = new FeedbackEvent("o",
@@ -154,6 +158,5 @@ public class NotificationProcessorHandler {
                 XennioLogger.log("Push opened event error: " + e.getMessage());
             }
         }
-
     }
 }

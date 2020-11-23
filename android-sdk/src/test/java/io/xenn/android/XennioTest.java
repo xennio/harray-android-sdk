@@ -15,9 +15,11 @@ import io.xenn.android.common.Constants;
 import io.xenn.android.context.ApplicationContextHolder;
 import io.xenn.android.context.SessionContextHolder;
 import io.xenn.android.context.SessionState;
+import io.xenn.android.context.XennPlugin;
 import io.xenn.android.event.EventProcessorHandler;
 import io.xenn.android.event.SDKEventProcessorHandler;
 
+import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -39,6 +41,9 @@ public class XennioTest {
 
     @Mock
     private SharedPreferences.Editor mockEditor;
+
+    @Mock
+    private TestXennPlugin testXennPlugin;
 
     @Test
     public void it_should_return_same_instance_when_get_method_called_more_than_one_time() {
@@ -80,22 +85,20 @@ public class XennioTest {
         assertEquals("memberId", instance.sessionContextHolder.getMemberId());
     }
 
-//    @Test
-//    public void it_should_set_member_id_to_context_and_save_device_token_when_member_id_and_device_token_are_not_empty() {
-//        when(context.getSharedPreferences(Constants.PREF_COLLECTION_NAME, Context.MODE_PRIVATE)).thenReturn(mockSharedPreferences);
-//        when(mockSharedPreferences.edit()).thenReturn(mockEditor);
-//
-//        Xennio.configure(context, "SdkKey");
-//
-//        Xennio instance = Xennio.getInstance();
-//        instance.notificationProcessorHandler = mock(NotificationProcessorHandler.class);
-//        instance.pushNotificationToken = "deviceToken";
-//
-//        Xennio.login("memberId");
-//
-//        assertEquals("memberId", instance.sessionContextHolder.getMemberId());
-//        verify(instance.notificationProcessorHandler).savePushToken("deviceToken");
-//    }
+    @Test
+    public void it_should_set_member_id_to_context_when_member_id_is_not_empty_and_trigger_onLogin_method_of_plugins() {
+        when(context.getSharedPreferences(Constants.PREF_COLLECTION_NAME, Context.MODE_PRIVATE)).thenReturn(mockSharedPreferences);
+        when(mockSharedPreferences.edit()).thenReturn(mockEditor);
+
+        Xennio.configure(context, "SdkKey", singletonList(testXennPlugin));
+
+        Xennio instance = Xennio.getInstance();
+
+        Xennio.login("memberId");
+
+        assertEquals("memberId", instance.sessionContextHolder.getMemberId());
+        verify(testXennPlugin).onLogin();
+    }
 
     @Test
     public void it_should_not_set_member_id_to_context_when_member_id_is_empty() {
@@ -110,24 +113,21 @@ public class XennioTest {
         assertNull(instance.sessionContextHolder.getMemberId());
     }
 
+    @Test
+    public void it_should_set_null_as_member_id_when_log_out_invoked() {
+        when(context.getSharedPreferences(Constants.PREF_COLLECTION_NAME, Context.MODE_PRIVATE)).thenReturn(mockSharedPreferences);
+        when(mockSharedPreferences.edit()).thenReturn(mockEditor);
 
-//    @Test
-//    public void it_should_set_null_as_member_id_when_log_out_invoked() {
-//        when(context.getSharedPreferences(Constants.PREF_COLLECTION_NAME, Context.MODE_PRIVATE)).thenReturn(mockSharedPreferences);
-//        when(mockSharedPreferences.edit()).thenReturn(mockEditor);
-//
-//        Xennio.configure(context, "SdkKey");
-//        Xennio.login("memberId");
-//        Xennio instance = Xennio.getInstance();
-//        instance.pushNotificationToken = "deviceToken";
-//        instance.notificationProcessorHandler = mock(NotificationProcessorHandler.class);
-//        assertEquals("memberId", instance.sessionContextHolder.getMemberId());
-//
-//        Xennio.logout();
-//        verify(instance.notificationProcessorHandler).removeTokenAssociation("deviceToken");
-//        assertNull(instance.sessionContextHolder.getMemberId());
-//        assertEquals("", instance.pushNotificationToken);
-//    }
+        Xennio.configure(context, "SdkKey", singletonList(testXennPlugin));
+        Xennio.login("memberId");
+        Xennio instance = Xennio.getInstance();
+        assertEquals("memberId", instance.sessionContextHolder.getMemberId());
+
+        Xennio.logout();
+
+        assertNull(instance.sessionContextHolder.getMemberId());
+        verify(testXennPlugin).onLogout();
+    }
 
     @Test
     public void it_should_call_session_start_and_new_installation_when_eventing_called() {
@@ -182,4 +182,22 @@ public class XennioTest {
         verify(instance.sessionContextHolder).updateExternalParameters(intent);
     }
 
+}
+
+class TestXennPlugin extends XennPlugin {
+
+    @Override
+    public void init(Context context) {
+        super.init(context);
+    }
+
+    @Override
+    public void onLogin() {
+        super.onLogin();
+    }
+
+    @Override
+    public void onLogout() {
+        super.onLogout();
+    }
 }

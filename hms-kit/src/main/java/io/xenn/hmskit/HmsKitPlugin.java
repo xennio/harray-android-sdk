@@ -14,9 +14,10 @@ import static io.xenn.android.Xennio.getEntitySerializerService;
 import static io.xenn.android.Xennio.getHttpService;
 import static io.xenn.android.Xennio.getSessionContextHolder;
 
-public class HmsKitPlugin implements XennPlugin {
+public class HmsKitPlugin extends XennPlugin {
 
     private NotificationProcessorHandler notificationProcessorHandler;
+    private String pushNotificationToken = "";
 
     public HmsKitPlugin() {
         this.notificationProcessorHandler = new NotificationProcessorHandler(
@@ -33,11 +34,25 @@ public class HmsKitPlugin implements XennPlugin {
         resetBadgeCounts(context);
     }
 
+    @Override
+    public void onLogin() {
+        if (!"".equals(pushNotificationToken)) {
+            this.savePushToken(pushNotificationToken);
+        }
+    }
+
+    @Override
+    public void onLogout() {
+        removeTokenAssociation(this.pushNotificationToken);
+    }
+
     public void savePushToken(String deviceToken) {
+        this.pushNotificationToken = deviceToken;
         notificationProcessorHandler.savePushToken(deviceToken);
     }
 
     public void removeTokenAssociation(String deviceToken) {
+        this.pushNotificationToken = "";
         notificationProcessorHandler.removeTokenAssociation(deviceToken);
     }
 

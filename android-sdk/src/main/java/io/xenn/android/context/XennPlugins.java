@@ -28,4 +28,16 @@ public class XennPlugins {
             entry.getValue().init(context);
         }
     }
+
+    public void onLogin() {
+        for (Map.Entry<Class<? extends XennPlugin>, XennPlugin> entry : pluginMap.entrySet()) {
+            entry.getValue().onLogin();
+        }
+    }
+
+    public void onLogout() {
+        for (Map.Entry<Class<? extends XennPlugin>, XennPlugin> entry : pluginMap.entrySet()) {
+            entry.getValue().onLogout();
+        }
+    }
 }

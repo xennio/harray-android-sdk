@@ -32,11 +32,18 @@ android {
         }
     }
 
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+            returnDefaultValues = true
+        }
+    }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     compileOnly project(path: ':android-sdk')
+    testCompileOnly project(path: ':android-sdk')
     implementation 'androidx.appcompat:appcompat:1.0.2'
     implementation 'com.huawei.hms:push:4.0.3.301'
     testImplementation 'junit:junit:4.12'

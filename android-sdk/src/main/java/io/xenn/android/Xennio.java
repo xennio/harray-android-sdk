@@ -30,8 +30,6 @@ public final class Xennio {
     protected SessionContextHolder sessionContextHolder;
     protected ApplicationContextHolder applicationContextHolder;
     protected EcommerceEventProcessorHandler ecommerceEventProcessorHandler;
-    //todo kontrol
-    protected String pushNotificationToken = "";
     protected HttpService httpService;
     protected DeviceService deviceService;
     protected XennPlugins xennPlugins;
@@ -103,18 +101,13 @@ public final class Xennio {
         if (!"".equals(memberId)) {
             Xennio instance = getInstance();
             instance.sessionContextHolder.login(memberId);
-            //todo kontrol
-//            if (!"".equals(instance.pushNotificationToken)) {
-//                instance.notificationProcessorHandler.savePushToken(instance.pushNotificationToken);
-//            }
+            instance.xennPlugins.onLogin();
         }
     }
 
     public static void logout() {
         Xennio instance = getInstance();
-        //todo kontrol
-//        instance.notificationProcessorHandler.removeTokenAssociation(instance.pushNotificationToken);
-//        instance.pushNotificationToken = "";
+        instance.xennPlugins.onLogout();
         instance.sessionContextHolder.logout();
     }
 

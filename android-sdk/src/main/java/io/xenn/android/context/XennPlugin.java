@@ -2,7 +2,14 @@ package io.xenn.android.context;
 
 import android.content.Context;
 
-public interface XennPlugin {
+public class XennPlugin {
 
-    void init(Context context);
+    public void init(Context context) {
+    }
+
+    public void onLogin() {
+    }
+
+    public void onLogout() {
+    }
 }
