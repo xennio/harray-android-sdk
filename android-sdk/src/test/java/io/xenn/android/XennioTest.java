@@ -187,8 +187,8 @@ public class XennioTest {
 class TestXennPlugin extends XennPlugin {
 
     @Override
-    public void init(Context context) {
-        super.init(context);
+    public void onCreate(Context context) {
+        super.onCreate(context);
     }
 
     @Override

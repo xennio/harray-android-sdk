@@ -4,7 +4,7 @@ import android.content.Context;
 
 public class XennPlugin {
 
-    public void init(Context context) {
+    public void onCreate(Context context) {
     }
 
     public void onLogin() {

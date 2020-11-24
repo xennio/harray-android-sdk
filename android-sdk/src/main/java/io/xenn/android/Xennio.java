@@ -3,7 +3,7 @@ package io.xenn.android;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import java.util.List;
+import java.util.Arrays;
 import java.util.Map;
 
 import io.xenn.android.common.Constants;
@@ -54,14 +54,11 @@ public final class Xennio {
         this.xennPlugins = new XennPlugins();
     }
 
-    public static void configure(Context context, String sdkKey) {
+    @SafeVarargs
+    public static void configure(Context context, String sdkKey, Class<? extends XennPlugin>... xennPlugins) {
         instance = new Xennio(context, sdkKey);
-        plugins().initAll(context);
-    }
-
-    public static void configure(Context context, String sdkKey, List<? extends XennPlugin> xennPlugins) {
-        configure(context, sdkKey);
-        plugins().addAll(xennPlugins);
+        plugins().initAll(Arrays.asList(xennPlugins));
+        plugins().onCreate(context);
     }
 
     public static EventProcessorHandler eventing() {

@@ -17,15 +17,19 @@ public class XennPlugins {
         return type.cast(pluginMap.get(type));
     }
 
-    public void addAll(List<? extends XennPlugin> xennPlugins) {
-        for (XennPlugin xennPlugin : xennPlugins) {
-            pluginMap.put(xennPlugin.getClass(), xennPlugin);
+    public void initAll(List<Class<? extends XennPlugin>> xennPlugins) {
+        for (Class<? extends XennPlugin> xennPlugin : xennPlugins) {
+            try {
+                pluginMap.put(xennPlugin, xennPlugin.getConstructor().newInstance());
+            } catch (Exception e) {
+                throw new IllegalArgumentException("Plugin initialization error", e);
+            }
         }
     }
 
-    public void initAll(Context context) {
+    public void onCreate(Context context) {
         for (Map.Entry<Class<? extends XennPlugin>, XennPlugin> entry : pluginMap.entrySet()) {
-            entry.getValue().init(context);
+            entry.getValue().onCreate(context);
         }
     }
 

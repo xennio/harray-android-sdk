@@ -30,7 +30,7 @@ public class HmsKitPlugin extends XennPlugin {
     }
 
     @Override
-    public void init(Context context) {
+    public void onCreate(Context context) {
         resetBadgeCounts(context);
     }
 

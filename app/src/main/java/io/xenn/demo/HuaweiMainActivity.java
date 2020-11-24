@@ -22,7 +22,7 @@ import io.xenn.android.Xennio;
 import io.xenn.android.utils.XennioLogger;
 import io.xenn.hmskit.HmsKitPlugin;
 
-public class MainActivity extends AppCompatActivity {
+public class HuaweiMainActivity extends AppCompatActivity {
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -55,21 +55,13 @@ public class MainActivity extends AppCompatActivity {
 
         // XennioAPI.pageView("300", "homePage", new HashMap<String, Object>());
 
-//        FirebaseInstanceId.getInstance().getInstanceId()
-//                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
-//                        Xennio.plugins().get(HmsKitPlugin.class).savePushToken(task.getResult().getToken());
-//                    }
-//                });
-
         new Thread() {
             @Override
             public void run() {
                 try {
-                    String appId = AGConnectServicesConfig.fromContext(MainActivity.this)
+                    String appId = AGConnectServicesConfig.fromContext(HuaweiMainActivity.this)
                             .getString("client/app_id");
-                    String token = HmsInstanceId.getInstance(MainActivity.this)
+                    String token = HmsInstanceId.getInstance(HuaweiMainActivity.this)
                             .getToken(appId, "HCM");
                     Xennio.plugins().get(HmsKitPlugin.class).savePushToken(token);
                 } catch (ApiException e) {
