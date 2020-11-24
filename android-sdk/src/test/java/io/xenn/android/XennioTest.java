@@ -19,7 +19,6 @@ import io.xenn.android.context.XennPlugin;
 import io.xenn.android.event.EventProcessorHandler;
 import io.xenn.android.event.SDKEventProcessorHandler;
 
-import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -90,7 +89,7 @@ public class XennioTest {
         when(context.getSharedPreferences(Constants.PREF_COLLECTION_NAME, Context.MODE_PRIVATE)).thenReturn(mockSharedPreferences);
         when(mockSharedPreferences.edit()).thenReturn(mockEditor);
 
-        Xennio.configure(context, "SdkKey", singletonList(testXennPlugin));
+        Xennio.configure(context, "SdkKey", TestXennPlugin.class);
 
         Xennio instance = Xennio.getInstance();
 
@@ -118,7 +117,7 @@ public class XennioTest {
         when(context.getSharedPreferences(Constants.PREF_COLLECTION_NAME, Context.MODE_PRIVATE)).thenReturn(mockSharedPreferences);
         when(mockSharedPreferences.edit()).thenReturn(mockEditor);
 
-        Xennio.configure(context, "SdkKey", singletonList(testXennPlugin));
+        Xennio.configure(context, "SdkKey", TestXennPlugin.class);
         Xennio.login("memberId");
         Xennio instance = Xennio.getInstance();
         assertEquals("memberId", instance.sessionContextHolder.getMemberId());
