@@ -7,20 +7,21 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
-import com.huawei.agconnect.config.AGConnectServicesConfig;
-import com.huawei.hms.aaid.HmsInstanceId;
-import com.huawei.hms.common.ApiException;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import java.util.HashMap;
 
 import io.xenn.android.Xennio;
-import io.xenn.android.utils.XennioLogger;
-import io.xenn.hmskit.HmsKitPlugin;
+import io.xenn.fcmkit.FcmKitPlugin;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -29,8 +30,8 @@ public class MainActivity extends AppCompatActivity {
         super.onNewIntent(intent);
         Log.d("Xennio", "Source:" + intent.getStringExtra("source"));
         Log.d("Xennio", "Realty List:" + intent.getStringExtra("realty_list"));
-        Xennio.plugins().get(HmsKitPlugin.class).pushMessageOpened(intent);
-        Xennio.plugins().get(HmsKitPlugin.class).resetBadgeCounts(this);
+        Xennio.plugins().get(FcmKitPlugin.class).pushMessageOpened(intent);
+        Xennio.plugins().get(FcmKitPlugin.class).resetBadgeCounts(this);
     }
 
     @Override
@@ -55,28 +56,13 @@ public class MainActivity extends AppCompatActivity {
 
         // XennioAPI.pageView("300", "homePage", new HashMap<String, Object>());
 
-//        FirebaseInstanceId.getInstance().getInstanceId()
-//                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
-//                        Xennio.plugins().get(HmsKitPlugin.class).savePushToken(task.getResult().getToken());
-//                    }
-//                });
-
-        new Thread() {
-            @Override
-            public void run() {
-                try {
-                    String appId = AGConnectServicesConfig.fromContext(MainActivity.this)
-                            .getString("client/app_id");
-                    String token = HmsInstanceId.getInstance(MainActivity.this)
-                            .getToken(appId, "HCM");
-                    Xennio.plugins().get(HmsKitPlugin.class).savePushToken(token);
-                } catch (ApiException e) {
-                    XennioLogger.log("Receiving Token Failed: " + e.getMessage());
-                }
-            }
-        }.start();
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        Xennio.plugins().get(FcmKitPlugin.class).savePushToken(task.getResult().getToken());
+                    }
+                });
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
