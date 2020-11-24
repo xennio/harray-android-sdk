@@ -1,5 +1,4 @@
-package io.xenn.android.notification;
-
+package io.xenn.fcmkit.notification;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,11 +11,11 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.xenn.android.common.PushMessageDataWrapper;
 import io.xenn.android.context.ApplicationContextHolder;
 import io.xenn.android.context.SessionContextHolder;
 import io.xenn.android.service.EntitySerializerService;
 import io.xenn.android.service.HttpService;
+import io.xenn.fcmkit.common.PushMessageDataWrapper;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
@@ -40,7 +39,6 @@ public class NotificationProcessorHandlerTest {
 
     @Mock
     private HttpService httpService;
-
 
     @Test
     public void it_should_construct_save_device_token_event_and_make_api_call() throws UnsupportedEncodingException {
@@ -70,7 +68,7 @@ public class NotificationProcessorHandlerTest {
     }
 
     @Test
-    public void it_should_construct_push_message_receive_event_and_make_api_call() throws UnsupportedEncodingException {
+    public void it_should_construct_push_message_receive_event_and_make_api_call() {
 
         ArgumentCaptor<Map<String, Object>> xennEventArgumentCaptor = ArgumentCaptor.forClass(Map.class);
         Map<String, String> externalParameters = new HashMap<>();
@@ -128,7 +126,7 @@ public class NotificationProcessorHandlerTest {
     }
 
     @Test
-    public void it_should_not_make_push_open_when_source_is_not_xenn_io() throws UnsupportedEncodingException {
+    public void it_should_not_make_push_open_when_source_is_not_xenn_io() {
 
         Map<String, String> externalParameters = new HashMap<>();
         externalParameters.put("pushId", "pushId");

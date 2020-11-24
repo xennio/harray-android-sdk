@@ -7,6 +7,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.TimeZone;
+
 import io.xenn.android.common.Constants;
 import io.xenn.android.utils.RandomValueUtils;
 
@@ -51,7 +53,7 @@ public class ApplicationContextHolderTest {
 
     @Test
     public void it_should_return_time_zone() {
-        System.setProperty("user.timezone", "UTC");
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
         String value = "stored-persistent-id";
         when(sharedPreferences.getString(Constants.SDK_PERSISTENT_ID_KEY, null)).thenReturn(value);
         ApplicationContextHolder applicationContextHolder = new ApplicationContextHolder(sharedPreferences);

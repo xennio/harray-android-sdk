@@ -7,7 +7,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -22,6 +21,7 @@ import com.google.firebase.iid.InstanceIdResult;
 import java.util.HashMap;
 
 import io.xenn.android.Xennio;
+import io.xenn.fcmkit.FcmKitPlugin;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -30,8 +30,8 @@ public class MainActivity extends AppCompatActivity {
         super.onNewIntent(intent);
         Log.d("Xennio", "Source:" + intent.getStringExtra("source"));
         Log.d("Xennio", "Realty List:" + intent.getStringExtra("realty_list"));
-        Xennio.notifications().pushMessageOpened(intent);
-        Xennio.notifications().resetBadgeCounts(this);
+        Xennio.plugins().get(FcmKitPlugin.class).pushMessageOpened(intent);
+        Xennio.plugins().get(FcmKitPlugin.class).resetBadgeCounts(this);
     }
 
     @Override
@@ -60,10 +60,9 @@ public class MainActivity extends AppCompatActivity {
                 .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
                     @Override
                     public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                        Xennio.notifications().savePushToken(task.getResult().getToken());
+                        Xennio.plugins().get(FcmKitPlugin.class).savePushToken(task.getResult().getToken());
                     }
                 });
-
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {

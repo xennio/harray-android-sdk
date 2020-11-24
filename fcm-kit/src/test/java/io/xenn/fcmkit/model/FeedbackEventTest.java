@@ -1,4 +1,4 @@
-package io.xenn.android.model;
+package io.xenn.fcmkit.model;
 
 import org.junit.Test;
 

@@ -11,12 +11,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
-        Xennio.notifications().handlePushNotification(this, remoteMessage);
+//        Xennio.notifications().handlePushNotification(this, remoteMessage);
     }
 
     @Override
     public void onNewToken(String s) {
         super.onNewToken(s);
-        Xennio.savePushToken(s);
+//        Xennio.savePushToken(s);
     }
 }

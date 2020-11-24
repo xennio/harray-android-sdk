@@ -1,4 +1,4 @@
-package io.xenn.android.common;
+package io.xenn.fcmkit.common;
 
 import android.content.Intent;
 import android.os.Bundle;

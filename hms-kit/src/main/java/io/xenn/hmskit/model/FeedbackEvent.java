@@ -1,4 +1,4 @@
-package io.xenn.android.model;
+package io.xenn.hmskit.model;
 
 import java.util.HashMap;
 import java.util.Map;

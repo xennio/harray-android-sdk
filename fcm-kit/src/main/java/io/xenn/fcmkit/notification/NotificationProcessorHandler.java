@@ -1,4 +1,4 @@
-package io.xenn.android.notification;
+package io.xenn.fcmkit.notification;
 
 import android.app.NotificationManager;
 import android.content.Context;
@@ -11,16 +11,16 @@ import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.Map;
 
-import io.xenn.android.common.Constants;
-import io.xenn.android.common.PushMessageDataWrapper;
 import io.xenn.android.context.ApplicationContextHolder;
 import io.xenn.android.context.SessionContextHolder;
-import io.xenn.android.model.FeedbackEvent;
 import io.xenn.android.model.XennEvent;
 import io.xenn.android.service.DeviceService;
 import io.xenn.android.service.EntitySerializerService;
 import io.xenn.android.service.HttpService;
 import io.xenn.android.utils.XennioLogger;
+import io.xenn.fcmkit.common.Constants;
+import io.xenn.fcmkit.common.PushMessageDataWrapper;
+import io.xenn.fcmkit.model.FeedbackEvent;
 
 public class NotificationProcessorHandler {
 
@@ -30,8 +30,11 @@ public class NotificationProcessorHandler {
     private final EntitySerializerService entitySerializerService;
     private final DeviceService deviceService;
 
-
-    public NotificationProcessorHandler(ApplicationContextHolder applicationContextHolder, SessionContextHolder sessionContextHolder, HttpService httpService, EntitySerializerService entitySerializerService, DeviceService deviceService) {
+    public NotificationProcessorHandler(ApplicationContextHolder applicationContextHolder,
+                                        SessionContextHolder sessionContextHolder,
+                                        HttpService httpService,
+                                        EntitySerializerService entitySerializerService,
+                                        DeviceService deviceService) {
         this.applicationContextHolder = applicationContextHolder;
         this.sessionContextHolder = sessionContextHolder;
         this.httpService = httpService;
@@ -113,14 +116,14 @@ public class NotificationProcessorHandler {
 
     public void resetBadgeCounts(Context applicationContext) {
         NotificationManager notificationManager = (NotificationManager) applicationContext.getSystemService(Context.NOTIFICATION_SERVICE);
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (notificationManager != null) {
                 notificationManager.cancelAll();
             }
         }
     }
 
-    protected void pushMessageDelivered(PushMessageDataWrapper pushMessageDataWrapper) {
+    public void pushMessageDelivered(PushMessageDataWrapper pushMessageDataWrapper) {
         try {
             Map<String, Object> event = new FeedbackEvent("d",
                     pushMessageDataWrapper.getPushId(),
@@ -155,6 +158,5 @@ public class NotificationProcessorHandler {
                 XennioLogger.log("Push opened event error: " + e.getMessage());
             }
         }
-
     }
 }

@@ -1,0 +1,90 @@
+plugins {
+    id "com.bmuschko.nexus" version "2.3.1"
+    id "com.github.kt3k.coveralls" version "2.6.3"
+}
+apply plugin: 'com.android.library'
+apply plugin: 'maven-publish'
+apply plugin: 'com.bmuschko.nexus'
+apply plugin: 'jacoco-android'
+
+archivesBaseName = 'hms-kit'
+group = "io.xenn"
+version = "1.0.0"
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion "29.0.3"
+
+    defaultConfig {
+        minSdkVersion 19
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles 'consumer-rules.pro'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+            returnDefaultValues = true
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    compileOnly project(path: ':android-sdk')
+    testImplementation project(path: ':android-sdk')
+    implementation 'androidx.appcompat:appcompat:1.0.2'
+    implementation 'com.huawei.hms:push:4.0.3.301'
+    testImplementation 'junit:junit:4.12'
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: '3.3.3'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+}
+
+modifyPom {
+    project {
+        name 'hms-kit'
+        description 'Xenn.io Android SDK Hms Kit'
+        url 'https://xenn.io'
+        inceptionYear '2020'
+        developers {
+            developer {
+                id 'devxenn'
+                name 'Xenn Developer'
+                email 'developer@xenn.io'
+            }
+        }
+        scm {
+            url 'https://xenn.io'
+        }
+        licenses {
+            license {
+                name 'The Apache Software License, Version 2.0'
+                url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+            }
+        }
+
+    }
+}
+
+publishing {
+    publications {
+        androidSdk(MavenPublication) {
+            groupId "io.xenn"
+            artifactId "hms-kit"
+            version "1.0.0"
+            artifact "$buildDir/outputs/aar/hms-kit-release.aar"
+        }
+    }
+}
