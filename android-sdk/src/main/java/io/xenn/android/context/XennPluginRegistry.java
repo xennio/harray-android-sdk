@@ -6,11 +6,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class XennPlugins {
+public class XennPluginRegistry {
 
     private Map<Class<? extends XennPlugin>, XennPlugin> pluginMap = new HashMap<>();
 
-    public XennPlugins() {
+    public XennPluginRegistry() {
     }
 
     public <T extends XennPlugin> T get(Class<T> type) {
@@ -21,6 +21,8 @@ public class XennPlugins {
         for (Class<? extends XennPlugin> xennPlugin : xennPlugins) {
             try {
                 pluginMap.put(xennPlugin, xennPlugin.getConstructor().newInstance());
+            } catch (NoSuchMethodException e) {
+                throw new IllegalArgumentException("Default no-arg constructor must be exists on the xenn plugin", e);
             } catch (Exception e) {
                 throw new IllegalArgumentException("Plugin initialization error", e);
             }

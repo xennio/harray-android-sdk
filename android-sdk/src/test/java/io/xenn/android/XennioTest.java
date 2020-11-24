@@ -15,9 +15,10 @@ import io.xenn.android.common.Constants;
 import io.xenn.android.context.ApplicationContextHolder;
 import io.xenn.android.context.SessionContextHolder;
 import io.xenn.android.context.SessionState;
-import io.xenn.android.context.XennPlugin;
+import io.xenn.android.context.XennPluginRegistry;
 import io.xenn.android.event.EventProcessorHandler;
 import io.xenn.android.event.SDKEventProcessorHandler;
+import io.xenn.android.model.TestXennPlugin;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -40,9 +41,6 @@ public class XennioTest {
 
     @Mock
     private SharedPreferences.Editor mockEditor;
-
-    @Mock
-    private TestXennPlugin testXennPlugin;
 
     @Test
     public void it_should_return_same_instance_when_get_method_called_more_than_one_time() {
@@ -92,11 +90,12 @@ public class XennioTest {
         Xennio.configure(context, "SdkKey", TestXennPlugin.class);
 
         Xennio instance = Xennio.getInstance();
+        instance.xennPluginRegistry = mock(XennPluginRegistry.class);
 
         Xennio.login("memberId");
 
         assertEquals("memberId", instance.sessionContextHolder.getMemberId());
-        verify(testXennPlugin).onLogin();
+        verify(instance.xennPluginRegistry).onLogin();
     }
 
     @Test
@@ -120,12 +119,13 @@ public class XennioTest {
         Xennio.configure(context, "SdkKey", TestXennPlugin.class);
         Xennio.login("memberId");
         Xennio instance = Xennio.getInstance();
+        instance.xennPluginRegistry = mock(XennPluginRegistry.class);
         assertEquals("memberId", instance.sessionContextHolder.getMemberId());
 
         Xennio.logout();
 
         assertNull(instance.sessionContextHolder.getMemberId());
-        verify(testXennPlugin).onLogout();
+        verify(instance.xennPluginRegistry).onLogout();
     }
 
     @Test
@@ -179,24 +179,5 @@ public class XennioTest {
         Xennio.synchronizeIntentData(intent);
 
         verify(instance.sessionContextHolder).updateExternalParameters(intent);
-    }
-
-}
-
-class TestXennPlugin extends XennPlugin {
-
-    @Override
-    public void onCreate(Context context) {
-        super.onCreate(context);
-    }
-
-    @Override
-    public void onLogin() {
-        super.onLogin();
-    }
-
-    @Override
-    public void onLogout() {
-        super.onLogout();
     }
 }

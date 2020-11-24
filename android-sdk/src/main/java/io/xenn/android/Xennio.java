@@ -11,7 +11,7 @@ import io.xenn.android.context.ApplicationContextHolder;
 import io.xenn.android.context.SessionContextHolder;
 import io.xenn.android.context.SessionState;
 import io.xenn.android.context.XennPlugin;
-import io.xenn.android.context.XennPlugins;
+import io.xenn.android.context.XennPluginRegistry;
 import io.xenn.android.event.EcommerceEventProcessorHandler;
 import io.xenn.android.event.EventProcessorHandler;
 import io.xenn.android.event.SDKEventProcessorHandler;
@@ -32,7 +32,7 @@ public final class Xennio {
     protected EcommerceEventProcessorHandler ecommerceEventProcessorHandler;
     protected HttpService httpService;
     protected DeviceService deviceService;
-    protected XennPlugins xennPlugins;
+    protected XennPluginRegistry xennPluginRegistry;
 
     private static Xennio instance;
 
@@ -51,7 +51,7 @@ public final class Xennio {
 
         this.ecommerceEventProcessorHandler = new EcommerceEventProcessorHandler(eventProcessorHandler);
 
-        this.xennPlugins = new XennPlugins();
+        this.xennPluginRegistry = new XennPluginRegistry();
     }
 
     @SafeVarargs
@@ -79,8 +79,8 @@ public final class Xennio {
         return getInstance().ecommerceEventProcessorHandler;
     }
 
-    public static XennPlugins plugins() {
-        return getInstance().xennPlugins;
+    public static XennPluginRegistry plugins() {
+        return getInstance().xennPluginRegistry;
     }
 
     public static void synchronizeIntentData(Map<String, Object> intentData) {
@@ -98,13 +98,13 @@ public final class Xennio {
         if (!"".equals(memberId)) {
             Xennio instance = getInstance();
             instance.sessionContextHolder.login(memberId);
-            instance.xennPlugins.onLogin();
+            instance.xennPluginRegistry.onLogin();
         }
     }
 
     public static void logout() {
         Xennio instance = getInstance();
-        instance.xennPlugins.onLogout();
+        instance.xennPluginRegistry.onLogout();
         instance.sessionContextHolder.logout();
     }
 
