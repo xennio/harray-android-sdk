@@ -1,0 +1,13 @@
+#!/usr/bin/env groovy
+
+node {
+    stage('checkout') {
+        checkout scm
+    }
+    stage('build') {
+        sh "./gradlew clean build"
+    }
+    stage('publish to Sonatype OSS Stage') {
+        sh "./gradlew uploadArchives"
+    }
+}
