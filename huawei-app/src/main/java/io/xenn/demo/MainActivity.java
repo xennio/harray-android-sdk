@@ -22,7 +22,7 @@ import io.xenn.android.Xennio;
 import io.xenn.android.utils.XennioLogger;
 import io.xenn.hmskit.HmsKitPlugin;
 
-public class HuaweiMainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -59,9 +59,9 @@ public class HuaweiMainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    String appId = AGConnectServicesConfig.fromContext(HuaweiMainActivity.this)
+                    String appId = AGConnectServicesConfig.fromContext(MainActivity.this)
                             .getString("client/app_id");
-                    String token = HmsInstanceId.getInstance(HuaweiMainActivity.this)
+                    String token = HmsInstanceId.getInstance(MainActivity.this)
                             .getToken(appId, "HCM");
                     Xennio.plugins().get(HmsKitPlugin.class).savePushToken(token);
                 } catch (ApiException e) {

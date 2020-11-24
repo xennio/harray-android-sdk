@@ -1,1 +1,1 @@
-include ':app', ':xennio', ':android-sdk', ':hms-kit', ':fcm-kit'
+include ':app', ':huawei-app', ':xennio', ':android-sdk', ':hms-kit', ':fcm-kit'
