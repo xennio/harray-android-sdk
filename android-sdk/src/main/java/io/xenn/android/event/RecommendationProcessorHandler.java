@@ -7,8 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.xenn.android.common.ResultConsumer;
 import io.xenn.android.common.ResponseBodyHandler;
+import io.xenn.android.common.ResultConsumer;
 import io.xenn.android.context.ApplicationContextHolder;
 import io.xenn.android.context.SessionContextHolder;
 import io.xenn.android.service.HttpService;
@@ -37,7 +37,7 @@ public class RecommendationProcessorHandler {
 
     public void getRecommendations(@NonNull String boxId,
                                    @Nullable String entityId,
-                                   @Nullable Integer size,
+                                   int size,
                                    @NonNull ResultConsumer<List<Map<String, String>>> callback) {
         Map<String, String> params = new HashMap<>();
         params.put("sdkKey", sdkKey);
@@ -49,9 +49,7 @@ public class RecommendationProcessorHandler {
         if (entityId != null) {
             params.put("entityId", entityId);
         }
-        if (size != null) {
-            params.put("size", size.toString());
-        }
+        params.put("size", String.valueOf(size));
         httpService.getApiRequest("/recommendation", params, new ResponseBodyHandler<List<Map<String, String>>>() {
             @Override
             public List<Map<String, String>> handle(String rawResponseBody) {
