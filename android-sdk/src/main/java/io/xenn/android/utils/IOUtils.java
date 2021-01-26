@@ -30,10 +30,10 @@ public final class IOUtils {
         }
     }
 
-    public static String readAll(InputStream in) {
+    public static String readAll(InputStream inputStream) {
         BufferedReader bufferedReader = null;
         try {
-            bufferedReader = new BufferedReader(new InputStreamReader(in));
+            bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
             StringBuilder sb = new StringBuilder();
             String line;
             while ((line = bufferedReader.readLine()) != null) {
