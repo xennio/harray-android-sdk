@@ -19,8 +19,12 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import io.xenn.android.Xennio;
+import io.xenn.android.common.ResultConsumer;
+import io.xenn.android.utils.XennioLogger;
 import io.xenn.fcmkit.FcmKitPlugin;
 
 public class MainActivity extends AppCompatActivity {
@@ -46,6 +50,12 @@ public class MainActivity extends AppCompatActivity {
         Xennio.eventing().custom("customEvent", new HashMap<String, Object>());
 
         Xennio.ecommerce().productView("1003", "small", 200d, 180d, "USD", null, "https://commercedemo.xenn.io/proteus-fitness-jackshirt.html");
+        Xennio.recommendations().getRecommendations("boxId", null, 4, new ResultConsumer<List<Map<String, String>>>() {
+            @Override
+            public void consume(List<Map<String, String>> data) {
+                XennioLogger.log("Reco data is here! : " + data);
+            }
+        });
 
         Intent intent = getIntent();
         Log.d("Xennio", "Source:" + intent.getStringExtra("source"));

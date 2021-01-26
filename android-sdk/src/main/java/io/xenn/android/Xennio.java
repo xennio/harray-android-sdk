@@ -14,12 +14,14 @@ import io.xenn.android.context.XennPlugin;
 import io.xenn.android.context.XennPluginRegistry;
 import io.xenn.android.event.EcommerceEventProcessorHandler;
 import io.xenn.android.event.EventProcessorHandler;
+import io.xenn.android.event.RecommendationProcessorHandler;
 import io.xenn.android.event.SDKEventProcessorHandler;
 import io.xenn.android.http.HttpRequestFactory;
 import io.xenn.android.service.DeviceService;
 import io.xenn.android.service.EncodingService;
 import io.xenn.android.service.EntitySerializerService;
 import io.xenn.android.service.HttpService;
+import io.xenn.android.service.JsonDeserializerService;
 import io.xenn.android.service.JsonSerializerService;
 
 public final class Xennio {
@@ -30,6 +32,7 @@ public final class Xennio {
     protected SessionContextHolder sessionContextHolder;
     protected ApplicationContextHolder applicationContextHolder;
     protected EcommerceEventProcessorHandler ecommerceEventProcessorHandler;
+    protected RecommendationProcessorHandler recommendationProcessorHandler;
     protected HttpService httpService;
     protected DeviceService deviceService;
     protected XennPluginRegistry xennPluginRegistry;
@@ -50,6 +53,8 @@ public final class Xennio {
         this.sdkEventProcessorHandler = new SDKEventProcessorHandler(applicationContextHolder, sessionContextHolder, httpService, entitySerializerService, deviceService);
 
         this.ecommerceEventProcessorHandler = new EcommerceEventProcessorHandler(eventProcessorHandler);
+
+        this.recommendationProcessorHandler = new RecommendationProcessorHandler(applicationContextHolder, sessionContextHolder, httpService, sdkKey, new JsonDeserializerService());
 
         this.xennPluginRegistry = new XennPluginRegistry();
     }
@@ -77,6 +82,10 @@ public final class Xennio {
 
     public static EcommerceEventProcessorHandler ecommerce() {
         return getInstance().ecommerceEventProcessorHandler;
+    }
+
+    public static RecommendationProcessorHandler recommendations() {
+        return getInstance().recommendationProcessorHandler;
     }
 
     public static XennPluginRegistry plugins() {
