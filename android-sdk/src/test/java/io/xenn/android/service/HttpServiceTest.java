@@ -5,7 +5,17 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
+
+import io.xenn.android.common.ResponseBodyHandler;
+import io.xenn.android.common.ResultConsumer;
 import io.xenn.android.http.BitmapDownloadTask;
+import io.xenn.android.http.HttpGetTask;
 import io.xenn.android.http.HttpRequestFactory;
 import io.xenn.android.http.PostFormUrlEncodedTask;
 import io.xenn.android.http.PostJsonEncodedTask;
@@ -24,6 +34,9 @@ public class HttpServiceTest {
 
     @Mock
     private PostFormUrlEncodedTask mockPostFormUrlEncodedTask;
+
+    @Mock
+    private HttpGetTask<String> mockRecommendationHttpGetTask;
 
     @Mock
     private PostJsonEncodedTask mockPostJsonEncodedTask;
@@ -70,5 +83,32 @@ public class HttpServiceTest {
         String endpoint = "endpoint";
         HttpService httpService = new HttpService(httpRequestFactory, "sdk-key");
         assertEquals("https://c.xenn.io:443/feedback", httpService.getCollectorUrl("feedback"));
+    }
+
+    @Test
+    public void it_should_make_get_request() throws InterruptedException, ExecutionException, TimeoutException {
+        ResponseBodyHandler<String> rh = new ResponseBodyHandler<String>() {
+            @Override
+            public String handle(String rawResponseBody) {
+                return rawResponseBody;
+            }
+        };
+        ResultConsumer<String> callback = new ResultConsumer<String>() {
+            @Override
+            public void consume(String data) {
+            }
+        };
+        Map<String, String> params = new HashMap<>();
+        params.put("param1", "val1");
+        params.put("param2", "val2");
+        HttpService httpService = new HttpService(httpRequestFactory, "sdk-key");
+        when(httpRequestFactory.getHttpGetTask(
+                "https://api.xenn.io:443/reco?param1=val1&param2=val2&",
+                rh, callback
+        )).thenReturn(mockRecommendationHttpGetTask);
+
+        httpService.getApiRequest("/reco", params, rh, callback);
+
+        verify(mockRecommendationHttpGetTask).execute();
     }
 }
