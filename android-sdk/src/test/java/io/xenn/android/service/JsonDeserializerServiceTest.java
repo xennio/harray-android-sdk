@@ -14,7 +14,9 @@ public class JsonDeserializerServiceTest {
     @Test
     public void it_should_deserialize_json_to_map_list() {
 
-        List<Map<String, String>> result = service.deserializeToMapList("[ { \"id\": \"id1\",  \"name\": \"name1\"  }, {  \"id\": \"id2\",  \"name\": \"name2\"  } ]");
+        List<Map<String, String>> result = service.deserializeToMapList(
+                "[ { \"id\": \"id1\",  \"name\": \"name1\"  }, {  \"id\": \"id2\",  \"name\": \"name2\"  } ]"
+        );
 
         assertEquals(result.size(), 2);
         assertEquals(result.get(0).get("id"), "id1");
