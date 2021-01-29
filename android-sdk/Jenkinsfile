@@ -8,6 +8,6 @@ node {
         sh "./gradlew clean build"
     }
     stage('publish to Sonatype OSS Stage') {
-        sh "./gradlew uploadArchives"
+        sh "./gradlew android-sdk:uploadArchives"
     }
 }
