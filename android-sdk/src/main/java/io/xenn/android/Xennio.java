@@ -24,6 +24,8 @@ import io.xenn.android.service.HttpService;
 import io.xenn.android.service.JsonDeserializerService;
 import io.xenn.android.service.JsonSerializerService;
 
+import static io.xenn.android.utils.UrlUtils.validateCollectorUrl;
+
 public final class Xennio {
 
     private EntitySerializerService entitySerializerService;
@@ -39,12 +41,12 @@ public final class Xennio {
 
     private static Xennio instance;
 
-    private Xennio(Context context, String sdkKey) {
+    private Xennio(Context context, String sdkKey, String collectorUrl) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(Constants.PREF_COLLECTION_NAME, Context.MODE_PRIVATE);
         this.applicationContextHolder = new ApplicationContextHolder(sharedPreferences);
         this.sessionContextHolder = new SessionContextHolder();
 
-        this.httpService = new HttpService(new HttpRequestFactory(), sdkKey);
+        this.httpService = new HttpService(new HttpRequestFactory(), sdkKey, collectorUrl);
         this.entitySerializerService = new EntitySerializerService(new EncodingService(), new JsonSerializerService());
         EventProcessorHandler eventProcessorHandler = new EventProcessorHandler(applicationContextHolder, sessionContextHolder, httpService, entitySerializerService);
         this.eventProcessorHandler = eventProcessorHandler;
@@ -60,8 +62,8 @@ public final class Xennio {
     }
 
     @SafeVarargs
-    public static void configure(Context context, String sdkKey, Class<? extends XennPlugin>... xennPlugins) {
-        instance = new Xennio(context, sdkKey);
+    public static void configure(Context context, String sdkKey, String collectorUrl, Class<? extends XennPlugin>... xennPlugins) {
+        instance = new Xennio(context, sdkKey, validateCollectorUrl(collectorUrl));
         plugins().initAll(Arrays.asList(xennPlugins));
         plugins().onCreate(context);
     }
@@ -98,7 +100,7 @@ public final class Xennio {
 
     protected static Xennio getInstance() {
         if (instance == null) {
-            throw new IllegalStateException("Xennio.configure(Context context, String sdkKey) must be called before getting instance");
+            throw new IllegalStateException("Xennio.configure(Context context, String sdkKey, String collectorUrl) must be called before getting instance");
         }
         return instance;
     }

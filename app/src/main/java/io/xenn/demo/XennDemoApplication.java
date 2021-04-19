@@ -10,6 +10,6 @@ public class XennDemoApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Xennio.configure(this, "XENN-XMjJ4RzzvbPc0T2", FcmKitPlugin.class);
+        Xennio.configure(this, "XENN-XMjJ4RzzvbPc0T2", "https://c.xenn.io:443/", FcmKitPlugin.class);
     }
 }

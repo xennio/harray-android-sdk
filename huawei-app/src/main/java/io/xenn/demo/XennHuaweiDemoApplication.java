@@ -10,6 +10,6 @@ public class XennHuaweiDemoApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Xennio.configure(this, "XENN-XMjJ4RzzvbPc0T2", HmsKitPlugin.class);
+        Xennio.configure(this, "XENN-XMjJ4RzzvbPc0T2", "https://c.xenn.io:443/", HmsKitPlugin.class);
     }
 }

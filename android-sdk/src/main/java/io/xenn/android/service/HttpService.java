@@ -11,16 +11,18 @@ import io.xenn.android.http.HttpRequestFactory;
 import io.xenn.android.http.PostFormUrlEncodedTask;
 import io.xenn.android.http.PostJsonEncodedTask;
 
+import static io.xenn.android.utils.UrlUtils.XENN_API_URL;
+
 public class HttpService {
 
-    private static final String collectorUrl = "https://c.xenn.io:443/";
-    private static final String apiUrl = "https://api.xenn.io:443";
     private final String sdkKey;
+    private final String collectorUrl;
     private final HttpRequestFactory httpRequestFactory;
 
-    public HttpService(HttpRequestFactory httpRequestFactory, String sdkKey) {
+    public HttpService(HttpRequestFactory httpRequestFactory, String sdkKey, String collectorUrl) {
         this.httpRequestFactory = httpRequestFactory;
         this.sdkKey = sdkKey;
+        this.collectorUrl = collectorUrl;
     }
 
     public <T> void getApiRequest(String path,
@@ -64,6 +66,6 @@ public class HttpService {
                     .append(paramEntry.getValue())
                     .append("&");
         }
-        return apiUrl + path + paramsAsStr.toString();
+        return XENN_API_URL + path + paramsAsStr.toString();
     }
 }
