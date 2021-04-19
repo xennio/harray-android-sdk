@@ -12,13 +12,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import io.xenn.android.common.Constants;
+import io.xenn.android.common.XennConfig;
 import io.xenn.android.context.ApplicationContextHolder;
 import io.xenn.android.context.SessionContextHolder;
 import io.xenn.android.context.SessionState;
 import io.xenn.android.context.XennPluginRegistry;
 import io.xenn.android.event.EventProcessorHandler;
 import io.xenn.android.event.SDKEventProcessorHandler;
-import io.xenn.android.model.TestXennPlugin;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -46,7 +46,7 @@ public class XennioTest {
     public void it_should_return_same_instance_when_get_method_called_more_than_one_time() {
         when(context.getSharedPreferences(Constants.PREF_COLLECTION_NAME, Context.MODE_PRIVATE)).thenReturn(mockSharedPreferences);
         when(mockSharedPreferences.edit()).thenReturn(mockEditor);
-        Xennio.configure(context, "SdkKey", "collectorUrl");
+        Xennio.configure(context, XennConfig.init("SdkKey", "https://c.xenn.io:443"));
         Xennio xennio = Xennio.getInstance();
         Xennio xennio2 = Xennio.getInstance();
         assertEquals(xennio, xennio2);
@@ -62,7 +62,7 @@ public class XennioTest {
         when(context.getSharedPreferences(Constants.PREF_COLLECTION_NAME, Context.MODE_PRIVATE)).thenReturn(mockSharedPreferences);
         when(mockSharedPreferences.edit()).thenReturn(mockEditor);
 
-        Xennio.configure(context, "SdkKey", "collectorUrl");
+        Xennio.configure(context, XennConfig.init("SdkKey", "https://c.xenn.io:443"));
 
         verify(mockSharedPreferences).getString(Constants.SDK_PERSISTENT_ID_KEY, null);
         verify(mockEditor).putString(eq(Constants.SDK_PERSISTENT_ID_KEY), anyString());
@@ -74,7 +74,7 @@ public class XennioTest {
         when(context.getSharedPreferences(Constants.PREF_COLLECTION_NAME, Context.MODE_PRIVATE)).thenReturn(mockSharedPreferences);
         when(mockSharedPreferences.edit()).thenReturn(mockEditor);
 
-        Xennio.configure(context, "SdkKey", "collectorUrl");
+        Xennio.configure(context, XennConfig.init("SdkKey", "https://c.xenn.io:443"));
         Xennio.login("memberId");
 
         Xennio instance = Xennio.getInstance();
@@ -87,7 +87,7 @@ public class XennioTest {
         when(context.getSharedPreferences(Constants.PREF_COLLECTION_NAME, Context.MODE_PRIVATE)).thenReturn(mockSharedPreferences);
         when(mockSharedPreferences.edit()).thenReturn(mockEditor);
 
-        Xennio.configure(context, "SdkKey", "collectorUrl", TestXennPlugin.class);
+        Xennio.configure(context, XennConfig.init("SdkKey", "https://c.xenn.io:443"));
 
         Xennio instance = Xennio.getInstance();
         instance.xennPluginRegistry = mock(XennPluginRegistry.class);
@@ -103,7 +103,7 @@ public class XennioTest {
         when(context.getSharedPreferences(Constants.PREF_COLLECTION_NAME, Context.MODE_PRIVATE)).thenReturn(mockSharedPreferences);
         when(mockSharedPreferences.edit()).thenReturn(mockEditor);
 
-        Xennio.configure(context, "SdkKey", "collectorUrl");
+        Xennio.configure(context, XennConfig.init("SdkKey", "https://c.xenn.io:443"));
         Xennio.login("");
 
         Xennio instance = Xennio.getInstance();
@@ -116,7 +116,7 @@ public class XennioTest {
         when(context.getSharedPreferences(Constants.PREF_COLLECTION_NAME, Context.MODE_PRIVATE)).thenReturn(mockSharedPreferences);
         when(mockSharedPreferences.edit()).thenReturn(mockEditor);
 
-        Xennio.configure(context, "SdkKey", "collectorUrl", TestXennPlugin.class);
+        Xennio.configure(context, XennConfig.init("SdkKey", "https://c.xenn.io:443"));
         Xennio.login("memberId");
         Xennio instance = Xennio.getInstance();
         instance.xennPluginRegistry = mock(XennPluginRegistry.class);
@@ -132,7 +132,7 @@ public class XennioTest {
     public void it_should_call_session_start_and_new_installation_when_eventing_called() {
         when(context.getSharedPreferences(Constants.PREF_COLLECTION_NAME, Context.MODE_PRIVATE)).thenReturn(mockSharedPreferences);
         when(mockSharedPreferences.edit()).thenReturn(mockEditor);
-        Xennio.configure(context, "SdkKey", "collectorUrl");
+        Xennio.configure(context, XennConfig.init("SdkKey", "https://c.xenn.io:443"));
         Xennio instance = Xennio.getInstance();
         instance.applicationContextHolder = mock(ApplicationContextHolder.class);
         instance.sdkEventProcessorHandler = mock(SDKEventProcessorHandler.class);
@@ -152,7 +152,7 @@ public class XennioTest {
     public void it_should_not_call_session_start_and_new_installation_when_eventing_called_second_time() {
         when(context.getSharedPreferences(Constants.PREF_COLLECTION_NAME, Context.MODE_PRIVATE)).thenReturn(mockSharedPreferences);
         when(mockSharedPreferences.edit()).thenReturn(mockEditor);
-        Xennio.configure(context, "SdkKey", "collectorUrl");
+        Xennio.configure(context, XennConfig.init("SdkKey", "https://c.xenn.io:443"));
         Xennio instance = Xennio.getInstance();
         instance.applicationContextHolder = mock(ApplicationContextHolder.class);
         instance.sdkEventProcessorHandler = mock(SDKEventProcessorHandler.class);
@@ -172,7 +172,7 @@ public class XennioTest {
     public void it_should_synchronize_intent_data() {
         when(context.getSharedPreferences(Constants.PREF_COLLECTION_NAME, Context.MODE_PRIVATE)).thenReturn(mockSharedPreferences);
         when(mockSharedPreferences.edit()).thenReturn(mockEditor);
-        Xennio.configure(context, "SdkKey", "collectorUrl");
+        Xennio.configure(context, XennConfig.init("SdkKey", "https://c.xenn.io:443"));
         Xennio instance = Xennio.getInstance();
         instance.sessionContextHolder = mock(SessionContextHolder.class);
         Map<String, Object> intent = new HashMap<>();

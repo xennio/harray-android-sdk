@@ -1,28 +1,32 @@
 package io.xenn.android.service;
 
 import android.graphics.Bitmap;
+import android.net.Uri;
 
+import java.net.URL;
 import java.util.Map;
 
-import io.xenn.android.common.ResultConsumer;
 import io.xenn.android.common.ResponseBodyHandler;
+import io.xenn.android.common.ResultConsumer;
 import io.xenn.android.http.BitmapDownloadTask;
 import io.xenn.android.http.HttpRequestFactory;
 import io.xenn.android.http.PostFormUrlEncodedTask;
 import io.xenn.android.http.PostJsonEncodedTask;
 
-import static io.xenn.android.utils.UrlUtils.XENN_API_URL;
+import static io.xenn.android.utils.UrlUtils.appendPath;
 
 public class HttpService {
 
     private final String sdkKey;
     private final String collectorUrl;
+    private final String apiUrl;
     private final HttpRequestFactory httpRequestFactory;
 
-    public HttpService(HttpRequestFactory httpRequestFactory, String sdkKey, String collectorUrl) {
+    public HttpService(HttpRequestFactory httpRequestFactory, String sdkKey, String collectorUrl, String apiUrl) {
         this.httpRequestFactory = httpRequestFactory;
         this.sdkKey = sdkKey;
         this.collectorUrl = collectorUrl;
+        this.apiUrl = apiUrl;
     }
 
     public <T> void getApiRequest(String path,
@@ -50,11 +54,11 @@ public class HttpService {
     }
 
     public String getCollectorUrl() {
-        return collectorUrl + sdkKey;
+        return appendPath(collectorUrl, sdkKey);
     }
 
     public String getCollectorUrl(String feedback) {
-        return collectorUrl + feedback;
+        return appendPath(collectorUrl, feedback);
     }
 
     private String getApiUrl(String path, Map<String, String> params) {
@@ -66,6 +70,6 @@ public class HttpService {
                     .append(paramEntry.getValue())
                     .append("&");
         }
-        return XENN_API_URL + path + paramsAsStr.toString();
+        return appendPath(this.apiUrl, path) + paramsAsStr.toString();
     }
 }

@@ -5,18 +5,30 @@ import java.net.URL;
 
 public final class UrlUtils {
 
-    public static final String XENN_API_URL = "https://api.xenn.io:443";
+    public static String appendPath(String url, String path) {
+        if (path.startsWith("/")) {
+            return url + path;
+        }
+        return url + "/" + path;
+    }
 
-    public static String validateCollectorUrl(String collectorUrl) {
+    public static String getValidUrl(String url) {
+        validateUrl(url);
+        return removeTrailingSlash(url);
+    }
+
+    protected static void validateUrl(String url) {
         try {
-            new URL(collectorUrl);
+            new URL(url);
         } catch (MalformedURLException e) {
-            throw new IllegalArgumentException("Invalid collectorUrl: " + collectorUrl + ". Please be sure the url is valid");
+            throw new IllegalArgumentException("Invalid url: " + url + ". Please be sure the url is in valid format");
         }
-        if (!collectorUrl.endsWith("/")) {
-            return collectorUrl + "/";
-        } else {
-            return collectorUrl;
+    }
+
+    protected static String removeTrailingSlash(String url) {
+        if (url.endsWith("/")) {
+            return url.substring(0, url.lastIndexOf("/"));
         }
+        return url;
     }
 }
