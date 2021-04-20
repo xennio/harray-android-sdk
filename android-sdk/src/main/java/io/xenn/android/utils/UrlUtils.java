@@ -17,7 +17,7 @@ public final class UrlUtils {
         return removeTrailingSlash(url);
     }
 
-    protected static void validateUrl(String url) {
+    private static void validateUrl(String url) {
         try {
             new URL(url);
         } catch (MalformedURLException e) {
@@ -25,7 +25,7 @@ public final class UrlUtils {
         }
     }
 
-    protected static String removeTrailingSlash(String url) {
+    private static String removeTrailingSlash(String url) {
         if (url.endsWith("/")) {
             return url.substring(0, url.lastIndexOf("/"));
         }
