@@ -12,4 +12,5 @@ public class Constants {
     public static final List<String> EXTERNAL_PARAMETER_KEYS = Collections.unmodifiableList(Arrays.asList("campaignId", "campaignDate", "pushId", "url", "utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"));
     public static final String UNKNOWN_PROPERTY_VALUE = "UNKNOWN";
     public static final String ANDROID = "Android";
+    public static final String XENN_API_URL = "https://api.xenn.io:443";
 }

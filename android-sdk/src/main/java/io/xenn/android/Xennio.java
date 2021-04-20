@@ -3,14 +3,15 @@ package io.xenn.android;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import java.util.Arrays;
+import androidx.annotation.NonNull;
+
 import java.util.Map;
 
 import io.xenn.android.common.Constants;
+import io.xenn.android.common.XennConfig;
 import io.xenn.android.context.ApplicationContextHolder;
 import io.xenn.android.context.SessionContextHolder;
 import io.xenn.android.context.SessionState;
-import io.xenn.android.context.XennPlugin;
 import io.xenn.android.context.XennPluginRegistry;
 import io.xenn.android.event.EcommerceEventProcessorHandler;
 import io.xenn.android.event.EventProcessorHandler;
@@ -39,12 +40,12 @@ public final class Xennio {
 
     private static Xennio instance;
 
-    private Xennio(Context context, String sdkKey) {
+    private Xennio(Context context, XennConfig xennConfig) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(Constants.PREF_COLLECTION_NAME, Context.MODE_PRIVATE);
         this.applicationContextHolder = new ApplicationContextHolder(sharedPreferences);
         this.sessionContextHolder = new SessionContextHolder();
 
-        this.httpService = new HttpService(new HttpRequestFactory(), sdkKey);
+        this.httpService = new HttpService(new HttpRequestFactory(), xennConfig.getSdkKey(), xennConfig.getCollectorUrl(), xennConfig.getApiUrl());
         this.entitySerializerService = new EntitySerializerService(new EncodingService(), new JsonSerializerService());
         EventProcessorHandler eventProcessorHandler = new EventProcessorHandler(applicationContextHolder, sessionContextHolder, httpService, entitySerializerService);
         this.eventProcessorHandler = eventProcessorHandler;
@@ -54,15 +55,14 @@ public final class Xennio {
 
         this.ecommerceEventProcessorHandler = new EcommerceEventProcessorHandler(eventProcessorHandler);
 
-        this.recommendationProcessorHandler = new RecommendationProcessorHandler(applicationContextHolder, sessionContextHolder, httpService, sdkKey, new JsonDeserializerService());
+        this.recommendationProcessorHandler = new RecommendationProcessorHandler(applicationContextHolder, sessionContextHolder, httpService, xennConfig.getSdkKey(), new JsonDeserializerService());
 
         this.xennPluginRegistry = new XennPluginRegistry();
     }
 
-    @SafeVarargs
-    public static void configure(Context context, String sdkKey, Class<? extends XennPlugin>... xennPlugins) {
-        instance = new Xennio(context, sdkKey);
-        plugins().initAll(Arrays.asList(xennPlugins));
+    public static void configure(Context context, @NonNull XennConfig xennConfig) {
+        instance = new Xennio(context, xennConfig);
+        plugins().initAll(xennConfig.getXennPlugins());
         plugins().onCreate(context);
     }
 
@@ -98,7 +98,7 @@ public final class Xennio {
 
     protected static Xennio getInstance() {
         if (instance == null) {
-            throw new IllegalStateException("Xennio.configure(Context context, String sdkKey) must be called before getting instance");
+            throw new IllegalStateException("Xennio.configure(Context context, String sdkKey, String collectorUrl) must be called before getting instance");
         }
         return instance;
     }
