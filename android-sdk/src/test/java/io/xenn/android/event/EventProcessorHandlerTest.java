@@ -47,7 +47,6 @@ public class EventProcessorHandlerTest {
         when(sessionContextHolder.getSessionIdAndExtendSession()).thenReturn("sessionId");
         HashMap<String, Object> externalParameters = new HashMap<>();
         externalParameters.put("utm_source", "xennio");
-        when(sessionContextHolder.getExternalParameters()).thenReturn(externalParameters);
         when(sessionContextHolder.getMemberId()).thenReturn("memberId");
         when(entitySerializerService.serializeToBase64(xennEventArgumentCaptor.capture())).thenReturn("serializedEntity");
 
@@ -62,7 +61,6 @@ public class EventProcessorHandlerTest {
         assertEquals("persistentId", header.get("p"));
         assertEquals("memberId", body.get("memberId"));
         assertEquals("homePage", body.get("pageType"));
-        assertEquals("xennio", body.get("utm_source"));
 
         verify(httpService).postFormUrlEncoded("serializedEntity");
     }
