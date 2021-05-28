@@ -13,7 +13,7 @@ public class XennHuaweiDemoApplication extends Application {
         super.onCreate();
         XennConfig xennConfig =
                 XennConfig
-                        .init("XENN-XMjJ4RzzvbPc0T2", "https://c.xenn.io:443/")
+                        .init("XENN-XMjJ4RzzvbPc0T2")
                         .useXennPlugin(HmsKitPlugin.class);
         Xennio.configure(this, xennConfig);
     }
