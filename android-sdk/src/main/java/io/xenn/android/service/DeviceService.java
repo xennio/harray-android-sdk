@@ -10,6 +10,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.telephony.TelephonyManager;
 
+import java.util.Locale;
+
 import io.xenn.android.common.Constants;
 
 
@@ -40,6 +42,10 @@ public class DeviceService {
 
     public String getOsVersion() {
         return (Build.VERSION.RELEASE == null) ? Constants.UNKNOWN_PROPERTY_VALUE : Build.VERSION.RELEASE;
+    }
+
+    public String getLang(){
+        return Locale.getDefault().getDisplayLanguage();
     }
 
     public String getModel() {

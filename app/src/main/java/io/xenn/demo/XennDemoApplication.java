@@ -13,8 +13,7 @@ public class XennDemoApplication extends Application {
         super.onCreate();
         XennConfig xennConfig =
                 XennConfig
-                        .init("XENN-XMjJ4RzzvbPc0T2", "https://c.xenn.io:443/")
-                        .apiUrl("newApiUrl")
+                        .init("XENN-XMjJ4RzzvbPc0T2")
                         .useXennPlugin(FcmKitPlugin.class);
         Xennio.configure(this, xennConfig);
     }

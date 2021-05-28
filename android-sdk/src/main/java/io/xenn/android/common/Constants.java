@@ -13,4 +13,5 @@ public class Constants {
     public static final String UNKNOWN_PROPERTY_VALUE = "UNKNOWN";
     public static final String ANDROID = "Android";
     public static final String XENN_API_URL = "https://api.xenn.io:443";
+    public static final String XENN_COLLECTOR_URL = "https://c.xenn.io:443";
 }

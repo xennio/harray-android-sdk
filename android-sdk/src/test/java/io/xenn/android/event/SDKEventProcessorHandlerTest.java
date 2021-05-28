@@ -61,6 +61,7 @@ public class SDKEventProcessorHandlerTest {
         when(deviceService.getBrand()).thenReturn("Galaxy 12");
         when(deviceService.getCarrier()).thenReturn("ATT");
         when(deviceService.getAppVersion()).thenReturn("1.2");
+        when(deviceService.getLang()).thenReturn("en");
         when(deviceService.getScreenHeight()).thenReturn(724);
         when(deviceService.getScreenWidth()).thenReturn(1024);
 
@@ -80,6 +81,7 @@ public class SDKEventProcessorHandlerTest {
         assertEquals("Android", body.get("os"));
         assertEquals("Kitkat", body.get("osv"));
         assertEquals("3", body.get("zn"));
+        assertEquals("en", body.get("ln"));
         assertEquals(724, body.get("sh"));
         assertEquals(1024, body.get("sw"));
         assertEquals("xennio", body.get("utm_source"));

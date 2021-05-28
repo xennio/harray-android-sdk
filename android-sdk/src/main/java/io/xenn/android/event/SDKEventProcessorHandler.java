@@ -55,6 +55,7 @@ public class SDKEventProcessorHandler {
                     .addBody("zn", applicationContextHolder.getTimezone())
                     .addBody("sw", deviceService.getScreenWidth())
                     .addBody("sh", deviceService.getScreenHeight())
+                    .addBody("ln", deviceService.getLang())
                     .appendExtra(sessionContextHolder.getExternalParameters())
                     .toMap();
             String serializedEntity = entitySerializerService.serializeToBase64(event);

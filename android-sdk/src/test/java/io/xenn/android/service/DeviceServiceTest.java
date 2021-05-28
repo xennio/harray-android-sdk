@@ -59,6 +59,11 @@ public class DeviceServiceTest {
     }
 
     @Test
+    public void it_should_get_lang() {
+        assertEquals("français", deviceService.getLang());
+    }
+
+    @Test
     public void it_should_get_default_sound_uri_when_sound_is_not_present() {
         Uri result = deviceService.getSound("soundnoexists");
         assertEquals(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION), result);

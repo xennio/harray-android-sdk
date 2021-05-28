@@ -11,21 +11,25 @@ import io.xenn.android.utils.UrlUtils;
 public final class XennConfig {
 
     private final String sdkKey;
-    private final String collectorUrl;
+    private  String collectorUrl = Constants.XENN_COLLECTOR_URL;
     private String apiUrl = Constants.XENN_API_URL;
     private List<Class<? extends XennPlugin>> xennPlugins = new ArrayList<>();
 
-    private XennConfig(String sdkKey, String collectorUrl) {
+    private XennConfig(String sdkKey) {
         this.sdkKey = sdkKey;
-        this.collectorUrl = collectorUrl;
     }
 
-    public static XennConfig init(String sdkKey, String collectorUrl) {
-        return new XennConfig(sdkKey, UrlUtils.getValidUrl(collectorUrl));
+    public static XennConfig init(String sdkKey) {
+        return new XennConfig(sdkKey);
     }
 
     public XennConfig apiUrl(String apiUrl) {
         this.apiUrl = UrlUtils.getValidUrl(apiUrl);
+        return this;
+    }
+
+    public XennConfig collectorUrl(String collectorUrl) {
+        this.collectorUrl = UrlUtils.getValidUrl(collectorUrl);
         return this;
     }
 
