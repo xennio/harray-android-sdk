@@ -41,9 +41,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Xennio.logout();
         Xennio.login("300");
-
         Xennio.eventing().pageView("homePage");
         Xennio.eventing().actionResult("test Action");
         Xennio.eventing().impression("productdetail");
@@ -78,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Xennio.logout();
                 Xennio.eventing().actionResult("click");
                 Snackbar.make(view, "Replace with your own action 2", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
