@@ -26,13 +26,18 @@ public class SessionContextHolder {
     public String getSessionIdAndExtendSession() {
         long now = ClockUtils.getTime();
         if (lastActivityTime + Constants.SESSION_DURATION < now) {
-            sessionId = RandomValueUtils.randomUUID();
-            sessionStartTime = now;
-            sessionState = SessionState.SESSION_RESTARTED;
-            externalParameters = new HashMap<>();
+            restartSession();
         }
         lastActivityTime = now;
         return sessionId;
+    }
+
+    public void restartSession() {
+        long now = ClockUtils.getTime();
+        sessionId = RandomValueUtils.randomUUID();
+        sessionStartTime = now;
+        sessionState = SessionState.SESSION_RESTARTED;
+        externalParameters = new HashMap<>();
     }
 
     protected String getSessionId() {

@@ -6,6 +6,7 @@ import android.content.Intent;
 import com.google.firebase.messaging.RemoteMessage;
 
 import io.xenn.android.context.XennPlugin;
+import io.xenn.fcmkit.common.Constants;
 import io.xenn.fcmkit.notification.NotificationProcessorHandler;
 
 import static io.xenn.android.Xennio.getApplicationContextHolder;
@@ -54,6 +55,11 @@ public class FcmKitPlugin extends XennPlugin {
     public void removeTokenAssociation(String deviceToken) {
         this.pushNotificationToken = "";
         notificationProcessorHandler.removeTokenAssociation(deviceToken);
+    }
+
+
+    public boolean isXennioNotification(RemoteMessage remoteMessage) {
+        return remoteMessage.getData().get(Constants.PUSH_PAYLOAD_SOURCE).equals(Constants.PUSH_CHANNEL_ID);
     }
 
     public void handlePushNotification(Context applicationContext, RemoteMessage remoteMessage) {

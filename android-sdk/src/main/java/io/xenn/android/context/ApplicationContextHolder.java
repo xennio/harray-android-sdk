@@ -12,7 +12,7 @@ import io.xenn.android.utils.RandomValueUtils;
 
 public class ApplicationContextHolder {
 
-    private final String sdkVersion = "3.1.2";
+    private final String sdkVersion = "3.1.3";
     private String persistentId;
     private boolean newInstallation = false;
 

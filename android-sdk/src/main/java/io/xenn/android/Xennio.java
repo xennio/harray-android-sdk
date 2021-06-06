@@ -104,9 +104,10 @@ public final class Xennio {
     }
 
     public static void login(String memberId) {
-        if (!"".equals(memberId)) {
-            Xennio instance = getInstance();
+        Xennio instance = getInstance();
+        if (!"".equals(memberId) && instance.sessionContextHolder.getMemberId() != memberId) {
             instance.sessionContextHolder.login(memberId);
+            instance.sessionContextHolder.restartSession();
             instance.xennPluginRegistry.onLogin();
         }
     }
@@ -115,6 +116,7 @@ public final class Xennio {
         Xennio instance = getInstance();
         instance.xennPluginRegistry.onLogout();
         instance.sessionContextHolder.logout();
+        instance.sessionContextHolder.restartSession();
     }
 
     public static EntitySerializerService getEntitySerializerService() {
