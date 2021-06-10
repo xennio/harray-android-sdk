@@ -11,7 +11,10 @@ public class MyHmsMessagingService extends HmsMessageService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
-        Xennio.plugins().get(HmsKitPlugin.class).handlePushNotification(this, remoteMessage);
+        HmsKitPlugin hmsKitPlugin = Xennio.plugins().get(HmsKitPlugin.class);
+        if(hmsKitPlugin.isXennioNotification(remoteMessage)){
+            hmsKitPlugin.handlePushNotification(this, remoteMessage);
+        }
     }
 
     @Override
