@@ -13,6 +13,7 @@ import io.xenn.android.context.ApplicationContextHolder;
 import io.xenn.android.context.SessionContextHolder;
 import io.xenn.android.context.SessionState;
 import io.xenn.android.context.XennPluginRegistry;
+import io.xenn.android.event.BrowsingHistoryProcessorHandler;
 import io.xenn.android.event.EcommerceEventProcessorHandler;
 import io.xenn.android.event.EventProcessorHandler;
 import io.xenn.android.event.RecommendationProcessorHandler;
@@ -34,6 +35,7 @@ public final class Xennio {
     protected ApplicationContextHolder applicationContextHolder;
     protected EcommerceEventProcessorHandler ecommerceEventProcessorHandler;
     protected RecommendationProcessorHandler recommendationProcessorHandler;
+    protected BrowsingHistoryProcessorHandler browsingHistoryProcessorHandler;
     protected HttpService httpService;
     protected DeviceService deviceService;
     protected XennPluginRegistry xennPluginRegistry;
@@ -55,7 +57,9 @@ public final class Xennio {
 
         this.ecommerceEventProcessorHandler = new EcommerceEventProcessorHandler(eventProcessorHandler);
 
-        this.recommendationProcessorHandler = new RecommendationProcessorHandler(applicationContextHolder, sessionContextHolder, httpService, xennConfig.getSdkKey(), new JsonDeserializerService());
+        JsonDeserializerService jsonDeserializerService = new JsonDeserializerService();
+        this.recommendationProcessorHandler = new RecommendationProcessorHandler(applicationContextHolder, sessionContextHolder, httpService, xennConfig.getSdkKey(), jsonDeserializerService);
+        this.browsingHistoryProcessorHandler = new BrowsingHistoryProcessorHandler(applicationContextHolder, sessionContextHolder, httpService, xennConfig.getSdkKey(), jsonDeserializerService);
 
         this.xennPluginRegistry = new XennPluginRegistry();
     }
@@ -86,6 +90,10 @@ public final class Xennio {
 
     public static RecommendationProcessorHandler recommendations() {
         return getInstance().recommendationProcessorHandler;
+    }
+
+    public static BrowsingHistoryProcessorHandler browsingHistory() {
+        return getInstance().browsingHistoryProcessorHandler;
     }
 
     public static XennPluginRegistry plugins() {
