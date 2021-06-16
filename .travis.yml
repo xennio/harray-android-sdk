@@ -23,7 +23,6 @@ jdk:
 
 before_install:
   - yes | sdkmanager "platforms;android-28"
-  - pip install --user codecov
 
 install: true
 
