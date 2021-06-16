@@ -13,7 +13,7 @@ public class XennDemoApplication extends Application {
         super.onCreate();
         XennConfig xennConfig =
                 XennConfig
-                        .init("XENN-c9s9cGMWHc186Ei")
+                        .init("XENN-XMjJ4RzzvbPc0T2")
                         .useXennPlugin(FcmKitPlugin.class);
         Xennio.configure(this, xennConfig);
     }
