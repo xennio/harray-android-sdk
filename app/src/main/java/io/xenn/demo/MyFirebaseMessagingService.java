@@ -11,7 +11,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
-        Xennio.plugins().get(FcmKitPlugin.class).handlePushNotification(this, remoteMessage);
+        FcmKitPlugin fcmKitPlugin = Xennio.plugins().get(FcmKitPlugin.class);
+        if (fcmKitPlugin.isXennioNotification(remoteMessage)) {
+            fcmKitPlugin.handlePushNotification(this, remoteMessage);
+        }
     }
 
     @Override

@@ -58,7 +58,7 @@ public class HmsKitPlugin extends XennPlugin {
     }
 
     public boolean isXennioNotification(RemoteMessage remoteMessage) {
-        return remoteMessage.getDataOfMap().get(Constants.PUSH_PAYLOAD_SOURCE).equals(Constants.PUSH_CHANNEL_ID);
+        return Constants.PUSH_CHANNEL_ID.equals(remoteMessage.getDataOfMap().get(Constants.PUSH_PAYLOAD_SOURCE));
     }
 
     public void handlePushNotification(Context applicationContext, RemoteMessage remoteMessage) {

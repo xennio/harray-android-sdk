@@ -59,7 +59,7 @@ public class FcmKitPlugin extends XennPlugin {
 
 
     public boolean isXennioNotification(RemoteMessage remoteMessage) {
-        return remoteMessage.getData().get(Constants.PUSH_PAYLOAD_SOURCE).equals(Constants.PUSH_CHANNEL_ID);
+        return Constants.PUSH_CHANNEL_ID.equals(remoteMessage.getData().get(Constants.PUSH_PAYLOAD_SOURCE));
     }
 
     public void handlePushNotification(Context applicationContext, RemoteMessage remoteMessage) {
