@@ -112,8 +112,11 @@ public final class Xennio {
     }
 
     public static void login(String memberId) {
+        if (memberId == null) {
+            throw new IllegalArgumentException("memberId argument cannot be null for login");
+        }
         Xennio instance = getInstance();
-        if (!"".equals(memberId) && instance.sessionContextHolder.getMemberId() != memberId) {
+        if (!"".equals(memberId) && !memberId.equals(instance.sessionContextHolder.getMemberId())) {
             instance.sessionContextHolder.login(memberId);
             instance.sessionContextHolder.restartSession();
             instance.xennPluginRegistry.onLogin();

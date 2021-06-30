@@ -128,6 +128,16 @@ public class XennioTest {
         verify(instance.xennPluginRegistry).onLogout();
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void it_should_fail_when_memberId_is_null_on_login() {
+        when(context.getSharedPreferences(Constants.PREF_COLLECTION_NAME, Context.MODE_PRIVATE)).thenReturn(mockSharedPreferences);
+        when(mockSharedPreferences.edit()).thenReturn(mockEditor);
+
+        Xennio.configure(context, XennConfig.init("SdkKey"));
+
+        Xennio.login(null);
+    }
+
     @Test
     public void it_should_call_session_start_and_new_installation_when_eventing_called() {
         when(context.getSharedPreferences(Constants.PREF_COLLECTION_NAME, Context.MODE_PRIVATE)).thenReturn(mockSharedPreferences);
