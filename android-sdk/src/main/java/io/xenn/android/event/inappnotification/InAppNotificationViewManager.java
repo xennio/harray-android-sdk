@@ -26,7 +26,7 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 public class InAppNotificationViewManager {
 
     private static final int POPUP_WINDOW_PADDING = 16;
-    private static final int HORIZONTAL_WINDOW_MARGIN = dpToPx(60);
+    private final int horizontalWindowMargin;
 
     private final Activity activity;
     private final InAppNotificationResponse inAppNotificationResponse;
@@ -42,6 +42,7 @@ public class InAppNotificationViewManager {
         this.activity = activity;
         this.inAppNotificationResponse = inAppNotificationResponse;
         this.closeHandler = closeHandler;
+        this.horizontalWindowMargin = dpToPx(60);
     }
 
     public void show() {
@@ -110,7 +111,7 @@ public class InAppNotificationViewManager {
     }
 
     private int getWindowMaxSizeX(Activity activity) {
-        return getDisplaySizePoint(activity).x - HORIZONTAL_WINDOW_MARGIN;
+        return getDisplaySizePoint(activity).x - horizontalWindowMargin;
     }
 
     private Point getDisplaySizePoint(@NonNull Activity activity) {

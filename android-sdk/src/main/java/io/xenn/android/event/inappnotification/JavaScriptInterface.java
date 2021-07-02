@@ -37,9 +37,4 @@ public class JavaScriptInterface {
             XennioLogger.log("JS message processing error", e);
         }
     }
-
-    @JavascriptInterface
-    public void log(String message) {
-        XennioLogger.log("JS message arrived: " + message);
-    }
 }
