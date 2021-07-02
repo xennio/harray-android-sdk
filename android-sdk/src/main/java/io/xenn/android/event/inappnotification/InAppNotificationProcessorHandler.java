@@ -82,9 +82,8 @@ public class InAppNotificationProcessorHandler {
     private void delayShowUntilAvailable(final Activity activity, final InAppNotificationResponse inAppNotificationResponse) {
         if (isActivityReady(activity)) {
             new InAppNotificationViewManager(
-                    activity, inAppNotificationResponse, createCloseEventHandler(inAppNotificationResponse)
+                    activity, inAppNotificationResponse, createShowEventHandler(inAppNotificationResponse), createCloseEventHandler(inAppNotificationResponse)
             ).show();
-            sendShowEvent(inAppNotificationResponse);
         } else {
             new Handler().postDelayed(new Runnable() {
                 @Override
@@ -99,11 +98,16 @@ public class InAppNotificationProcessorHandler {
         return activity.getWindow().getDecorView().getApplicationWindowToken() != null;
     }
 
-    private void sendShowEvent(InAppNotificationResponse inAppNotificationResponse) {
-        Map<String, Object> eventParams = new HashMap<>();
-        eventParams.put("entity", "banners");
-        eventParams.put("id", inAppNotificationResponse.getId());
-        eventProcessorHandler.impression("bannerShow", eventParams);
+    private Runnable createShowEventHandler(final InAppNotificationResponse inAppNotificationResponse) {
+        return new Runnable() {
+            @Override
+            public void run() {
+                Map<String, Object> eventParams = new HashMap<>();
+                eventParams.put("entity", "banners");
+                eventParams.put("id", inAppNotificationResponse.getId());
+                eventProcessorHandler.impression("bannerShow", eventParams);
+            }
+        };
     }
 
     private Runnable createCloseEventHandler(final InAppNotificationResponse inAppNotificationResponse) {

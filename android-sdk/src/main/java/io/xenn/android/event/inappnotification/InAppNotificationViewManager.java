@@ -30,6 +30,7 @@ public class InAppNotificationViewManager {
 
     private final Activity activity;
     private final InAppNotificationResponse inAppNotificationResponse;
+    private final Runnable showHandler;
     private final Runnable closeHandler;
 
     private WebView webView;
@@ -38,9 +39,11 @@ public class InAppNotificationViewManager {
     public InAppNotificationViewManager(
             Activity activity,
             InAppNotificationResponse inAppNotificationResponse,
+            Runnable showHandler,
             Runnable closeHandler) {
         this.activity = activity;
         this.inAppNotificationResponse = inAppNotificationResponse;
+        this.showHandler = showHandler;
         this.closeHandler = closeHandler;
         this.horizontalWindowMargin = dpToPx(60);
     }
@@ -69,6 +72,7 @@ public class InAppNotificationViewManager {
                 Gravity.CENTER,
                 0,
                 0);
+        showHandler.run();
     }
 
     public void dismiss() {
