@@ -1,2 +1,4 @@
 ignore:
   - "**/ActivityLifecycleListener.java"
+  - "**/XennioLogger.java"
+  - "**/InAppNotificationViewManager.java" # needs android view test
