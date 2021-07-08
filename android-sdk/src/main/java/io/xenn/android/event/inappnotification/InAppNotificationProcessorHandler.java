@@ -28,6 +28,7 @@ public class InAppNotificationProcessorHandler {
     private final HttpService httpService;
     private final String sdkKey;
     private final JsonDeserializerService jsonDeserializerService;
+    private final LinkClickHandler linkClickHandler;
 
     public InAppNotificationProcessorHandler(
             EventProcessorHandler eventProcessorHandler,
@@ -35,13 +36,15 @@ public class InAppNotificationProcessorHandler {
             SessionContextHolder sessionContextHolder,
             HttpService httpService,
             String sdkKey,
-            JsonDeserializerService jsonDeserializerService) {
+            JsonDeserializerService jsonDeserializerService,
+            LinkClickHandler linkClickHandler) {
         this.eventProcessorHandler = eventProcessorHandler;
         this.applicationContextHolder = applicationContextHolder;
         this.sessionContextHolder = sessionContextHolder;
         this.httpService = httpService;
         this.sdkKey = sdkKey;
         this.jsonDeserializerService = jsonDeserializerService;
+        this.linkClickHandler = linkClickHandler;
     }
 
     public void getInAppNotification() {
@@ -82,7 +85,7 @@ public class InAppNotificationProcessorHandler {
     private void delayShowUntilAvailable(final Activity activity, final InAppNotificationResponse inAppNotificationResponse) {
         if (isActivityReady(activity)) {
             new InAppNotificationViewManager(
-                    activity, inAppNotificationResponse, createShowEventHandler(inAppNotificationResponse), createCloseEventHandler(inAppNotificationResponse)
+                    activity, inAppNotificationResponse, linkClickHandler, createShowEventHandler(inAppNotificationResponse), createCloseEventHandler(inAppNotificationResponse)
             ).show();
         } else {
             new Handler().postDelayed(new Runnable() {

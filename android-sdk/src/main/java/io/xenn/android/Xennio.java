@@ -65,7 +65,8 @@ public final class Xennio {
         JsonDeserializerService jsonDeserializerService = new JsonDeserializerService();
         this.recommendationProcessorHandler = new RecommendationProcessorHandler(applicationContextHolder, sessionContextHolder, httpService, xennConfig.getSdkKey(), jsonDeserializerService);
         this.browsingHistoryProcessorHandler = new BrowsingHistoryProcessorHandler(applicationContextHolder, sessionContextHolder, httpService, xennConfig.getSdkKey(), jsonDeserializerService);
-        this.inAppNotificationProcessorHandler = new InAppNotificationProcessorHandler(eventProcessorHandler, applicationContextHolder, sessionContextHolder, httpService, xennConfig.getSdkKey(), jsonDeserializerService);
+        this.inAppNotificationProcessorHandler = new InAppNotificationProcessorHandler(
+                eventProcessorHandler, applicationContextHolder, sessionContextHolder, httpService, xennConfig.getSdkKey(), jsonDeserializerService, xennConfig.getInAppNotificationLinkClickHandler());
 
         this.xennPluginRegistry = new XennPluginRegistry();
     }

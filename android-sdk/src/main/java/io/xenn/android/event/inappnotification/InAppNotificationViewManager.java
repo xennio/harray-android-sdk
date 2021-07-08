@@ -30,6 +30,7 @@ public class InAppNotificationViewManager {
 
     private final Activity activity;
     private final InAppNotificationResponse inAppNotificationResponse;
+    private final LinkClickHandler linkClickHandler;
     private final Runnable showHandler;
     private final Runnable closeHandler;
 
@@ -39,10 +40,12 @@ public class InAppNotificationViewManager {
     public InAppNotificationViewManager(
             Activity activity,
             InAppNotificationResponse inAppNotificationResponse,
+            LinkClickHandler linkClickHandler,
             Runnable showHandler,
             Runnable closeHandler) {
         this.activity = activity;
         this.inAppNotificationResponse = inAppNotificationResponse;
+        this.linkClickHandler = linkClickHandler;
         this.showHandler = showHandler;
         this.closeHandler = closeHandler;
         this.horizontalWindowMargin = dpToPx(60);
@@ -100,6 +103,15 @@ public class InAppNotificationViewManager {
                         0);
             }
         }, TimeUnit.SECONDS.toMillis(1L));
+    }
+
+    public void triggerUserDefinedLinkClickHandler(String link) {
+        if (linkClickHandler != null) {
+            XennioLogger.log("User defined link click handler trigger for link:" + link);
+            linkClickHandler.handle(link);
+        } else {
+            XennioLogger.log("No user defined link click handler defined for link:" + link);
+        }
     }
 
     private String getBase64Str(InAppNotificationResponse inAppNotificationResponse) {

@@ -13,6 +13,7 @@ public class JavaScriptInterface {
     private static final String EVENT_TYPE_KEY = "eventType";
     private static final String CLOSE_POPUP_ACTION = "close";
     private static final String RENDER_COMPLETED_ACTION = "renderCompleted";
+    private static final String LINK_CLICK_ACTION = "linkClicked";
 
     private final InAppNotificationViewManager viewManager;
 
@@ -30,6 +31,10 @@ public class JavaScriptInterface {
                 viewManager.dismiss();
             } else if (RENDER_COMPLETED_ACTION.equals(eventType)) {
                 viewManager.adjustHeight();
+            } else if (LINK_CLICK_ACTION.equals(eventType)) {
+                String link = jsonObject.getString("link");
+                viewManager.dismiss();
+                viewManager.triggerUserDefinedLinkClickHandler(link);
             } else {
                 XennioLogger.log("Unhandled JS message: " + message);
             }
