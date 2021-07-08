@@ -48,10 +48,13 @@ public class InAppNotificationProcessorHandlerTest {
     @Captor
     private ArgumentCaptor<Map<String, String>> paramCaptor;
 
+    @Mock
+    private LinkClickHandler linkClickHandler;
+
     @Test
     public void it_should_get_in_app_notifications() {
         InAppNotificationProcessorHandler inAppNotificationProcessorHandler = new InAppNotificationProcessorHandler(
-                eventProcessorHandler, applicationContextHolder, sessionContextHolder, httpService, "sdk-key", jsonDeserializerService
+                eventProcessorHandler, applicationContextHolder, sessionContextHolder, httpService, "sdk-key", jsonDeserializerService, linkClickHandler
         );
 
         when(applicationContextHolder.getPersistentId()).thenReturn("pid");
@@ -70,7 +73,7 @@ public class InAppNotificationProcessorHandlerTest {
     @Test
     public void it_should_get_in_app_notifications_without_memberId_if_not_exists() {
         InAppNotificationProcessorHandler inAppNotificationProcessorHandler = new InAppNotificationProcessorHandler(
-                eventProcessorHandler, applicationContextHolder, sessionContextHolder, httpService, "sdk-key", jsonDeserializerService
+                eventProcessorHandler, applicationContextHolder, sessionContextHolder, httpService, "sdk-key", jsonDeserializerService, linkClickHandler
         );
 
         when(applicationContextHolder.getPersistentId()).thenReturn("pid");

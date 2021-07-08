@@ -33,6 +33,15 @@ public class JavaScriptInterfaceTest {
     }
 
     @Test
+    public void it_should_trigger_user_defined_link_click_handler_on_linkClicked_event() {
+        JavaScriptInterface javaScriptInterface = new JavaScriptInterface(inAppNotificationViewManager);
+
+        javaScriptInterface.postMessage("{\"eventType\": \"linkClicked\", \"link\": \"https://xenn.io\"}");
+
+        verify(inAppNotificationViewManager).triggerUserDefinedLinkClickHandler("https://xenn.io");
+    }
+
+    @Test
     public void it_should_not_do_anything_if_eventType_is_unknown() {
         JavaScriptInterface javaScriptInterface = new JavaScriptInterface(inAppNotificationViewManager);
 
