@@ -1,19 +1,19 @@
 package io.xenn.android.common;
 
-import androidx.annotation.NonNull;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import io.xenn.android.context.XennPlugin;
+import io.xenn.android.event.inappnotification.LinkClickHandler;
 import io.xenn.android.utils.UrlUtils;
 
 public final class XennConfig {
 
     private final String sdkKey;
-    private  String collectorUrl = Constants.XENN_COLLECTOR_URL;
+    private String collectorUrl = Constants.XENN_COLLECTOR_URL;
     private String apiUrl = Constants.XENN_API_URL;
     private List<Class<? extends XennPlugin>> xennPlugins = new ArrayList<>();
+    private LinkClickHandler inAppNotificationLinkClickHandler;
 
     private XennConfig(String sdkKey) {
         this.sdkKey = sdkKey;
@@ -43,6 +43,11 @@ public final class XennConfig {
         return this;
     }
 
+    public XennConfig inAppNotificationLinkClickHandler(LinkClickHandler linkClickHandler) {
+        this.inAppNotificationLinkClickHandler = linkClickHandler;
+        return this;
+    }
+
     public String getSdkKey() {
         return sdkKey;
     }
@@ -57,5 +62,9 @@ public final class XennConfig {
 
     public List<Class<? extends XennPlugin>> getXennPlugins() {
         return xennPlugins;
+    }
+
+    public LinkClickHandler getInAppNotificationLinkClickHandler() {
+        return inAppNotificationLinkClickHandler;
     }
 }

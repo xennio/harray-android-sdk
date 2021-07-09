@@ -8,4 +8,8 @@ public class XennioLogger {
     public static void log(String message) {
         Log.d(Constants.LOG_TAG, message);
     }
+
+    public static void log(String message, Throwable throwable) {
+        Log.d(Constants.LOG_TAG, message, throwable);
+    }
 }
