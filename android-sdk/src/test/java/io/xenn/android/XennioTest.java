@@ -112,6 +112,19 @@ public class XennioTest {
     }
 
     @Test
+    public void it_should_not_set_member_id_to_context_when_member_id_is_null() {
+        when(context.getSharedPreferences(Constants.PREF_COLLECTION_NAME, Context.MODE_PRIVATE)).thenReturn(mockSharedPreferences);
+        when(mockSharedPreferences.edit()).thenReturn(mockEditor);
+
+        Xennio.configure(context, XennConfig.init("SdkKey"));
+        Xennio.login(null);
+
+        Xennio instance = Xennio.getInstance();
+
+        assertNull(instance.sessionContextHolder.getMemberId());
+    }
+
+    @Test
     public void it_should_set_null_as_member_id_when_log_out_invoked() {
         when(context.getSharedPreferences(Constants.PREF_COLLECTION_NAME, Context.MODE_PRIVATE)).thenReturn(mockSharedPreferences);
         when(mockSharedPreferences.edit()).thenReturn(mockEditor);
@@ -126,16 +139,6 @@ public class XennioTest {
 
         assertNull(instance.sessionContextHolder.getMemberId());
         verify(instance.xennPluginRegistry).onLogout();
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void it_should_fail_when_memberId_is_null_on_login() {
-        when(context.getSharedPreferences(Constants.PREF_COLLECTION_NAME, Context.MODE_PRIVATE)).thenReturn(mockSharedPreferences);
-        when(mockSharedPreferences.edit()).thenReturn(mockEditor);
-
-        Xennio.configure(context, XennConfig.init("SdkKey"));
-
-        Xennio.login(null);
     }
 
     @Test
