@@ -1,5 +1,6 @@
 package io.xenn.android;
 
+import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 
@@ -9,6 +10,7 @@ import java.util.Map;
 
 import io.xenn.android.common.Constants;
 import io.xenn.android.common.XennConfig;
+import io.xenn.android.context.ActivityLifecycleListener;
 import io.xenn.android.context.ApplicationContextHolder;
 import io.xenn.android.context.SessionContextHolder;
 import io.xenn.android.context.SessionState;
@@ -16,6 +18,7 @@ import io.xenn.android.context.XennPluginRegistry;
 import io.xenn.android.event.BrowsingHistoryProcessorHandler;
 import io.xenn.android.event.EcommerceEventProcessorHandler;
 import io.xenn.android.event.EventProcessorHandler;
+import io.xenn.android.event.inappnotification.InAppNotificationProcessorHandler;
 import io.xenn.android.event.RecommendationProcessorHandler;
 import io.xenn.android.event.SDKEventProcessorHandler;
 import io.xenn.android.http.HttpRequestFactory;
@@ -25,6 +28,7 @@ import io.xenn.android.service.EntitySerializerService;
 import io.xenn.android.service.HttpService;
 import io.xenn.android.service.JsonDeserializerService;
 import io.xenn.android.service.JsonSerializerService;
+import io.xenn.android.utils.XennioLogger;
 
 public final class Xennio {
 
@@ -36,6 +40,7 @@ public final class Xennio {
     protected EcommerceEventProcessorHandler ecommerceEventProcessorHandler;
     protected RecommendationProcessorHandler recommendationProcessorHandler;
     protected BrowsingHistoryProcessorHandler browsingHistoryProcessorHandler;
+    protected InAppNotificationProcessorHandler inAppNotificationProcessorHandler;
     protected HttpService httpService;
     protected DeviceService deviceService;
     protected XennPluginRegistry xennPluginRegistry;
@@ -60,6 +65,8 @@ public final class Xennio {
         JsonDeserializerService jsonDeserializerService = new JsonDeserializerService();
         this.recommendationProcessorHandler = new RecommendationProcessorHandler(applicationContextHolder, sessionContextHolder, httpService, xennConfig.getSdkKey(), jsonDeserializerService);
         this.browsingHistoryProcessorHandler = new BrowsingHistoryProcessorHandler(applicationContextHolder, sessionContextHolder, httpService, xennConfig.getSdkKey(), jsonDeserializerService);
+        this.inAppNotificationProcessorHandler = new InAppNotificationProcessorHandler(
+                eventProcessorHandler, applicationContextHolder, sessionContextHolder, httpService, xennConfig.getSdkKey(), jsonDeserializerService, xennConfig.getInAppNotificationLinkClickHandler());
 
         this.xennPluginRegistry = new XennPluginRegistry();
     }
@@ -68,6 +75,7 @@ public final class Xennio {
         instance = new Xennio(context, xennConfig);
         plugins().initAll(xennConfig.getXennPlugins());
         plugins().onCreate(context);
+        registerActivityLifecycleListener(context);
     }
 
     public static EventProcessorHandler eventing() {
@@ -94,6 +102,10 @@ public final class Xennio {
 
     public static BrowsingHistoryProcessorHandler browsingHistory() {
         return getInstance().browsingHistoryProcessorHandler;
+    }
+
+    public static InAppNotificationProcessorHandler inAppNotifications() {
+        return getInstance().inAppNotificationProcessorHandler;
     }
 
     public static XennPluginRegistry plugins() {
@@ -145,5 +157,13 @@ public final class Xennio {
 
     public static DeviceService getDeviceService() {
         return getInstance().deviceService;
+    }
+
+    private static void registerActivityLifecycleListener(Context context) {
+        if (context instanceof Application) {
+            ((Application) context).registerActivityLifecycleCallbacks(new ActivityLifecycleListener());
+        } else {
+            XennioLogger.log("context parameter is not Application type");
+        }
     }
 }
