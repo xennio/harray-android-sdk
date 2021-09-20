@@ -5,9 +5,15 @@ import android.os.Handler;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleObserver;
+import androidx.lifecycle.OnLifecycleEvent;
+import androidx.lifecycle.ProcessLifecycleOwner;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import io.xenn.android.common.ResponseBodyHandler;
 import io.xenn.android.common.ResultConsumer;
@@ -21,6 +27,10 @@ import io.xenn.android.service.JsonDeserializerService;
 import io.xenn.android.utils.XennioLogger;
 
 public class InAppNotificationProcessorHandler {
+
+    private static final Long CHECK_NOTIFICATION_INTERVAL = 20 * 1000L;
+
+    private Timer timer = new Timer();
 
     private final EventProcessorHandler eventProcessorHandler;
     private final ApplicationContextHolder applicationContextHolder;
@@ -45,9 +55,23 @@ public class InAppNotificationProcessorHandler {
         this.sdkKey = sdkKey;
         this.jsonDeserializerService = jsonDeserializerService;
         this.linkClickHandler = linkClickHandler;
+        ProcessLifecycleOwner.get().getLifecycle().addObserver(
+                new LifecycleObserver() {
+                    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+                    void onMoveToForeground() {
+                        scheduleTimer();
+                    }
+
+                    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+                    void onMoveToBackground() {
+                        cancelTimer();
+                    }
+                });
+
     }
 
     public void getInAppNotification() {
+        XennioLogger.log("Trying to get xenn in-app notification");
         Map<String, String> params = new HashMap<>();
         params.put("source", "android");
         params.put("sdkKey", sdkKey);
@@ -67,6 +91,25 @@ public class InAppNotificationProcessorHandler {
                 return InAppNotificationResponse.fromMap(jsonDeserializerService.deserializeToMap(rawResponseBody));
             }
         }, callback);
+    }
+
+    private void scheduleTimer() {
+        timer.purge();
+        timer.cancel();
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                getInAppNotification();
+            }
+        }, 1L, CHECK_NOTIFICATION_INTERVAL);
+        XennioLogger.log("Xenn in-app notification task initialized");
+    }
+
+    private void cancelTimer() {
+        timer.purge();
+        timer.cancel();
+        XennioLogger.log("Xenn in-app notification task cancelled");
     }
 
     private void showInAppNotification(@Nullable InAppNotificationResponse inAppNotificationResponse) {

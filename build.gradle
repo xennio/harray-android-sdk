@@ -3,6 +3,7 @@
 buildscript {
     ext.jacocoVersion = '0.8.0'
     repositories {
+        mavenCentral()
         google()
         jcenter()
         maven { url 'https://developer.huawei.com/repo/' }
@@ -20,9 +21,9 @@ buildscript {
 
 allprojects {
     repositories {
+        mavenCentral()
         google()
         jcenter()
-        mavenCentral()
         maven { url 'https://developer.huawei.com/repo/' }
     }
 }

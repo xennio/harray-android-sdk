@@ -22,18 +22,19 @@ public class ActivityLifecycleListener implements Application.ActivityLifecycleC
     @Override
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
         XennioLogger.log("onActivityCreated:" + activity.getLocalClassName());
+        currentActivity = activity;
     }
 
     @Override
     public void onActivityStarted(Activity activity) {
         XennioLogger.log("onActivityStarted:" + activity.getLocalClassName());
+        currentActivity = activity;
     }
 
     @Override
     public void onActivityResumed(Activity activity) {
         XennioLogger.log("onActivityResumed:" + activity.getLocalClassName());
         currentActivity = activity;
-        Xennio.inAppNotifications().getInAppNotification();
     }
 
     @Override
