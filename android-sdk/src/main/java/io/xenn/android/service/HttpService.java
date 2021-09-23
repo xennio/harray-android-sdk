@@ -12,6 +12,7 @@ import io.xenn.android.http.BitmapDownloadTask;
 import io.xenn.android.http.HttpRequestFactory;
 import io.xenn.android.http.PostFormUrlEncodedTask;
 import io.xenn.android.http.PostJsonEncodedTask;
+import io.xenn.android.utils.XennioLogger;
 
 import static io.xenn.android.utils.UrlUtils.appendPath;
 
@@ -30,7 +31,7 @@ public class HttpService {
     }
 
     public <T> void getApiRequest(String path,
-                                  Map<String, String> params,
+                                  Map<String, Object> params,
                                   ResponseBodyHandler<T> rh,
                                   ResultConsumer<T> callback) {
         httpRequestFactory
@@ -61,15 +62,17 @@ public class HttpService {
         return appendPath(collectorUrl, feedback);
     }
 
-    private String getApiUrl(String path, Map<String, String> params) {
+    private String getApiUrl(String path, Map<String, Object> params) {
         StringBuilder paramsAsStr = new StringBuilder("?");
-        for (Map.Entry<String, String> paramEntry : params.entrySet()) {
+        for (Map.Entry<String, Object> paramEntry : params.entrySet()) {
             paramsAsStr
                     .append(paramEntry.getKey())
                     .append("=")
                     .append(paramEntry.getValue())
                     .append("&");
         }
-        return appendPath(this.apiUrl, path) + paramsAsStr.toString();
+        String url = appendPath(this.apiUrl, path) + paramsAsStr.toString();
+        XennioLogger.log("Url will be called" + url);
+        return url;
     }
 }

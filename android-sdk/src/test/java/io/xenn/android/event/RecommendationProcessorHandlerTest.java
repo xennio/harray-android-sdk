@@ -40,7 +40,7 @@ public class RecommendationProcessorHandlerTest {
     private JsonDeserializerService jsonDeserializerService;
 
     @Captor
-    private ArgumentCaptor<Map<String, String>> paramCaptor;
+    private ArgumentCaptor<Map<String, Object>> paramCaptor;
 
     @Test
     public void it_should_get_recommendation() {
@@ -60,7 +60,7 @@ public class RecommendationProcessorHandlerTest {
         recommendationProcessorHandler.getRecommendations("boxId", "entityId", 10, callback);
 
         verify(httpService).getApiRequest(eq("/recommendation"), paramCaptor.capture(), any(ResponseBodyHandler.class), eq(callback));
-        Map<String, String> capturedParams = paramCaptor.getValue();
+        Map<String, Object> capturedParams = paramCaptor.getValue();
         assertEquals(capturedParams.get("sdkKey"), "sdk-key");
         assertEquals(capturedParams.get("boxId"), "boxId");
         assertEquals(capturedParams.get("pid"), "pid");
@@ -87,7 +87,7 @@ public class RecommendationProcessorHandlerTest {
         recommendationProcessorHandler.getRecommendations("boxId", "entityId", 10, callback);
 
         verify(httpService).getApiRequest(eq("/recommendation"), paramCaptor.capture(), any(ResponseBodyHandler.class), eq(callback));
-        Map<String, String> capturedParams = paramCaptor.getValue();
+        Map<String, Object> capturedParams = paramCaptor.getValue();
         assertEquals(capturedParams.get("sdkKey"), "sdk-key");
         assertEquals(capturedParams.get("boxId"), "boxId");
         assertEquals(capturedParams.get("pid"), "pid");
@@ -114,7 +114,7 @@ public class RecommendationProcessorHandlerTest {
         recommendationProcessorHandler.getRecommendations("boxId", null, 10, callback);
 
         verify(httpService).getApiRequest(eq("/recommendation"), paramCaptor.capture(), any(ResponseBodyHandler.class), eq(callback));
-        Map<String, String> capturedParams = paramCaptor.getValue();
+        Map<String, Object> capturedParams = paramCaptor.getValue();
         assertEquals(capturedParams.get("sdkKey"), "sdk-key");
         assertEquals(capturedParams.get("boxId"), "boxId");
         assertEquals(capturedParams.get("pid"), "pid");

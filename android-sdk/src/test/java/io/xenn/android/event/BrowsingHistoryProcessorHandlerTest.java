@@ -40,7 +40,7 @@ public class BrowsingHistoryProcessorHandlerTest {
     private JsonDeserializerService jsonDeserializerService;
 
     @Captor
-    private ArgumentCaptor<Map<String, String>> paramCaptor;
+    private ArgumentCaptor<Map<String, Object>> paramCaptor;
 
     @Test
     public void it_should_get_browsing_history() {
@@ -60,7 +60,7 @@ public class BrowsingHistoryProcessorHandlerTest {
         browsingHistoryProcessorHandler.getBrowsingHistory("entityName", 5, callback);
 
         verify(httpService).getApiRequest(eq("/browsing-history"), paramCaptor.capture(), any(ResponseBodyHandler.class), eq(callback));
-        Map<String, String> capturedParams = paramCaptor.getValue();
+        Map<String, Object> capturedParams = paramCaptor.getValue();
         assertEquals(capturedParams.get("sdkKey"), "sdk-key");
         assertEquals(capturedParams.get("entityName"), "entityName");
         assertEquals(capturedParams.get("pid"), "pid");
@@ -86,7 +86,7 @@ public class BrowsingHistoryProcessorHandlerTest {
         browsingHistoryProcessorHandler.getBrowsingHistory("entityName", 5, callback);
 
         verify(httpService).getApiRequest(eq("/browsing-history"), paramCaptor.capture(), any(ResponseBodyHandler.class), eq(callback));
-        Map<String, String> capturedParams = paramCaptor.getValue();
+        Map<String, Object> capturedParams = paramCaptor.getValue();
         assertEquals(capturedParams.get("sdkKey"), "sdk-key");
         assertEquals(capturedParams.get("entityName"), "entityName");
         assertEquals(capturedParams.get("pid"), "pid");

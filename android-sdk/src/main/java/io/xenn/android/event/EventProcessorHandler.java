@@ -17,16 +17,18 @@ public class EventProcessorHandler {
     private final HttpService httpService;
     private final EntitySerializerService entitySerializerService;
     private final Map<String, Object> EMPTY_MAP = new HashMap<>();
+    private final ChainProcessorHandler chainProcessorHandler;
 
     public EventProcessorHandler(ApplicationContextHolder applicationContextHolder,
                                  SessionContextHolder sessionContextHolder,
                                  HttpService httpService,
-                                 EntitySerializerService entitySerializerService
-    ) {
+                                 EntitySerializerService entitySerializerService,
+                                 ChainProcessorHandler chainProcessorHandler) {
         this.applicationContextHolder = applicationContextHolder;
         this.sessionContextHolder = sessionContextHolder;
         this.httpService = httpService;
         this.entitySerializerService = entitySerializerService;
+        this.chainProcessorHandler = chainProcessorHandler;
     }
 
     public void pageView(String pageType) {
@@ -44,6 +46,7 @@ public class EventProcessorHandler {
         try {
             String serializedEvent = entitySerializerService.serializeToBase64(pageViewEvent);
             httpService.postFormUrlEncoded(serializedEvent);
+            chainProcessorHandler.callAll(pageType);
         } catch (Exception e) {
             XennioLogger.log("Page View Event Error:" + e.getMessage());
         }

@@ -17,80 +17,64 @@ import java.util.TimerTask;
 
 import io.xenn.android.common.ResponseBodyHandler;
 import io.xenn.android.common.ResultConsumer;
+import io.xenn.android.common.XennConfig;
 import io.xenn.android.context.ActivityLifecycleListener;
 import io.xenn.android.context.ApplicationContextHolder;
 import io.xenn.android.context.SessionContextHolder;
+import io.xenn.android.event.AfterPageViewEventHandler;
 import io.xenn.android.event.EventProcessorHandler;
+import io.xenn.android.model.inappnotification.InAppNotificationHandlerStrategy;
 import io.xenn.android.model.inappnotification.InAppNotificationResponse;
 import io.xenn.android.service.HttpService;
 import io.xenn.android.service.JsonDeserializerService;
 import io.xenn.android.utils.XennioLogger;
 
-public class InAppNotificationProcessorHandler {
+public class InAppNotificationProcessorHandler implements AfterPageViewEventHandler {
 
     private static final Long CHECK_NOTIFICATION_INTERVAL = 20 * 1000L;
 
     private Timer timer = new Timer();
 
     private final EventProcessorHandler eventProcessorHandler;
-    private final ApplicationContextHolder applicationContextHolder;
-    private final SessionContextHolder sessionContextHolder;
     private final HttpService httpService;
-    private final String sdkKey;
+    private final ApplicationContextHolder applicationContextHolder;
     private final JsonDeserializerService jsonDeserializerService;
-    private final LinkClickHandler linkClickHandler;
+    private final SessionContextHolder sessionContextHolder;
+    private final XennConfig xennConfig;
+    private final Map<String,Object> requestParameters = new HashMap<>();
 
     public InAppNotificationProcessorHandler(
             EventProcessorHandler eventProcessorHandler,
             ApplicationContextHolder applicationContextHolder,
             SessionContextHolder sessionContextHolder,
             HttpService httpService,
-            String sdkKey,
             JsonDeserializerService jsonDeserializerService,
-            LinkClickHandler linkClickHandler) {
+            XennConfig xennConfig
+            ) {
         this.eventProcessorHandler = eventProcessorHandler;
+        this.httpService = httpService;
+        this.xennConfig = xennConfig;
+        this.jsonDeserializerService = jsonDeserializerService;
         this.applicationContextHolder = applicationContextHolder;
         this.sessionContextHolder = sessionContextHolder;
-        this.httpService = httpService;
-        this.sdkKey = sdkKey;
-        this.jsonDeserializerService = jsonDeserializerService;
-        this.linkClickHandler = linkClickHandler;
-        ProcessLifecycleOwner.get().getLifecycle().addObserver(
-                new LifecycleObserver() {
-                    @OnLifecycleEvent(Lifecycle.Event.ON_START)
-                    void onMoveToForeground() {
-                        scheduleTimer();
-                    }
 
-                    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-                    void onMoveToBackground() {
-                        cancelTimer();
-                    }
-                });
+        if(this.xennConfig.getInAppNotificationHandlerStrategy() == InAppNotificationHandlerStrategy.TimerBased) {
+            ProcessLifecycleOwner.get().getLifecycle().addObserver(
+                    new LifecycleObserver() {
+                        @OnLifecycleEvent(Lifecycle.Event.ON_START)
+                        void onMoveToForeground() {
+                            scheduleTimer();
+                        }
 
-    }
-
-    public void getInAppNotification() {
-        XennioLogger.log("Trying to get xenn in-app notification");
-        Map<String, String> params = new HashMap<>();
-        params.put("source", "android");
-        params.put("sdkKey", sdkKey);
-        params.put("pid", applicationContextHolder.getPersistentId());
-        if (sessionContextHolder.getMemberId() != null) {
-            params.put("memberId", sessionContextHolder.getMemberId());
+                        @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+                        void onMoveToBackground() {
+                            cancelTimer();
+                        }
+                    });
         }
-        ResultConsumer<InAppNotificationResponse> callback = new ResultConsumer<InAppNotificationResponse>() {
-            @Override
-            public void consume(InAppNotificationResponse data) {
-                showInAppNotification(data);
-            }
-        };
-        httpService.getApiRequest("/in-app-notifications", params, new ResponseBodyHandler<InAppNotificationResponse>() {
-            @Override
-            public InAppNotificationResponse handle(String rawResponseBody) {
-                return InAppNotificationResponse.fromMap(jsonDeserializerService.deserializeToMap(rawResponseBody));
-            }
-        }, callback);
+
+        requestParameters.put("source", "android");
+
     }
 
     private void scheduleTimer() {
@@ -100,7 +84,7 @@ public class InAppNotificationProcessorHandler {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                getInAppNotification();
+                callAfter(null);
             }
         }, 1L, CHECK_NOTIFICATION_INTERVAL);
         XennioLogger.log("Xenn in-app notification task initialized");
@@ -128,7 +112,7 @@ public class InAppNotificationProcessorHandler {
     private void delayShowUntilAvailable(final Activity activity, final InAppNotificationResponse inAppNotificationResponse) {
         if (isActivityReady(activity)) {
             new InAppNotificationViewManager(
-                    activity, inAppNotificationResponse, linkClickHandler, createShowEventHandler(inAppNotificationResponse), createCloseEventHandler(inAppNotificationResponse)
+                    activity, inAppNotificationResponse, xennConfig.getInAppNotificationLinkClickHandler(), createShowEventHandler(inAppNotificationResponse), createCloseEventHandler(inAppNotificationResponse)
             ).show();
         } else {
             new Handler().postDelayed(new Runnable() {
@@ -167,5 +151,30 @@ public class InAppNotificationProcessorHandler {
                 eventProcessorHandler.actionResult("bannerClose", eventParams);
             }
         };
+    }
+
+    @Override
+    public void callAfter(String pageType) {
+        XennioLogger.log("Trying to get xenn in-app notification");
+        requestParameters.put("sdkKey", xennConfig.getSdkKey());
+        requestParameters.put("pid", applicationContextHolder.getPersistentId());
+        if (sessionContextHolder.getMemberId() != null) {
+            requestParameters.put("memberId", sessionContextHolder.getMemberId());
+        }
+        if(pageType!=null){
+            requestParameters.put("pageType", pageType);
+        }
+        ResultConsumer<InAppNotificationResponse> callback = new ResultConsumer<InAppNotificationResponse>() {
+            @Override
+            public void consume(InAppNotificationResponse data) {
+                showInAppNotification(data);
+            }
+        };
+        httpService.getApiRequest("/in-app-notifications", requestParameters, new ResponseBodyHandler<InAppNotificationResponse>() {
+            @Override
+            public InAppNotificationResponse handle(String rawResponseBody) {
+                return InAppNotificationResponse.fromMap(jsonDeserializerService.deserializeToMap(rawResponseBody));
+            }
+        }, callback);
     }
 }

@@ -39,7 +39,7 @@ public class RecommendationProcessorHandler {
                                    @Nullable String entityId,
                                    int size,
                                    @NonNull ResultConsumer<List<Map<String, String>>> callback) {
-        Map<String, String> params = new HashMap<>();
+        Map<String, Object> params = new HashMap<>();
         params.put("sdkKey", sdkKey);
         params.put("pid", applicationContextHolder.getPersistentId());
         params.put("boxId", boxId);

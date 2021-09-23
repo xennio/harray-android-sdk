@@ -96,7 +96,7 @@ public class HttpServiceTest {
             public void consume(String data) {
             }
         };
-        Map<String, String> params = new HashMap<>();
+        Map<String, Object> params = new HashMap<>();
         params.put("param1", "val1");
         params.put("param2", "val2");
         HttpService httpService = new HttpService(httpRequestFactory, "sdk-key", "https://c.xenn.io:443", "https://api.xenn.io:443");

@@ -13,6 +13,7 @@ import java.util.Map;
 
 import io.xenn.android.common.ResponseBodyHandler;
 import io.xenn.android.common.ResultConsumer;
+import io.xenn.android.common.XennConfig;
 import io.xenn.android.context.ApplicationContextHolder;
 import io.xenn.android.context.SessionContextHolder;
 import io.xenn.android.event.EventProcessorHandler;
@@ -46,24 +47,26 @@ public class InAppNotificationProcessorHandlerTest {
     private JsonDeserializerService jsonDeserializerService;
 
     @Captor
-    private ArgumentCaptor<Map<String, String>> paramCaptor;
+    private ArgumentCaptor<Map<String, Object>> paramCaptor;
 
     @Mock
     private LinkClickHandler linkClickHandler;
 
+
     @Test
     public void it_should_get_in_app_notifications() {
+        XennConfig xennConfig = XennConfig.init("sdk-key").inAppNotificationLinkClickHandler(linkClickHandler);
+
         InAppNotificationProcessorHandler inAppNotificationProcessorHandler = new InAppNotificationProcessorHandler(
-                eventProcessorHandler, applicationContextHolder, sessionContextHolder, httpService, "sdk-key", jsonDeserializerService, linkClickHandler
+                eventProcessorHandler, applicationContextHolder, sessionContextHolder, httpService, jsonDeserializerService, xennConfig
         );
 
         when(applicationContextHolder.getPersistentId()).thenReturn("pid");
         when(sessionContextHolder.getMemberId()).thenReturn("memberId");
-
-        inAppNotificationProcessorHandler.getInAppNotification();
+        inAppNotificationProcessorHandler.callAfter(null);
 
         verify(httpService).getApiRequest(eq("/in-app-notifications"), paramCaptor.capture(), any(ResponseBodyHandler.class), any(ResultConsumer.class));
-        Map<String, String> capturedParams = paramCaptor.getValue();
+        Map<String, Object> capturedParams = paramCaptor.getValue();
         assertEquals(capturedParams.get("sdkKey"), "sdk-key");
         assertEquals(capturedParams.get("source"), "android");
         assertEquals(capturedParams.get("pid"), "pid");
@@ -72,20 +75,44 @@ public class InAppNotificationProcessorHandlerTest {
 
     @Test
     public void it_should_get_in_app_notifications_without_memberId_if_not_exists() {
+
+        XennConfig xennConfig = XennConfig.init("sdk-key").inAppNotificationLinkClickHandler(linkClickHandler);
+
         InAppNotificationProcessorHandler inAppNotificationProcessorHandler = new InAppNotificationProcessorHandler(
-                eventProcessorHandler, applicationContextHolder, sessionContextHolder, httpService, "sdk-key", jsonDeserializerService, linkClickHandler
+                eventProcessorHandler, applicationContextHolder, sessionContextHolder, httpService,  jsonDeserializerService, xennConfig
         );
 
         when(applicationContextHolder.getPersistentId()).thenReturn("pid");
         when(sessionContextHolder.getMemberId()).thenReturn(null);
-
-        inAppNotificationProcessorHandler.getInAppNotification();
+        inAppNotificationProcessorHandler.callAfter(null);
 
         verify(httpService).getApiRequest(eq("/in-app-notifications"), paramCaptor.capture(), any(ResponseBodyHandler.class), any(ResultConsumer.class));
-        Map<String, String> capturedParams = paramCaptor.getValue();
+        Map<String, Object> capturedParams = paramCaptor.getValue();
         assertEquals(capturedParams.get("sdkKey"), "sdk-key");
         assertEquals(capturedParams.get("source"), "android");
         assertEquals(capturedParams.get("pid"), "pid");
+        assertEquals(capturedParams.get("memberId"), null);
+    }
+
+    @Test
+    public void it_should_add_page_type_when_page_type_exists() {
+
+        XennConfig xennConfig = XennConfig.init("sdk-key").inAppNotificationLinkClickHandler(linkClickHandler);
+
+        InAppNotificationProcessorHandler inAppNotificationProcessorHandler = new InAppNotificationProcessorHandler(
+                eventProcessorHandler, applicationContextHolder, sessionContextHolder, httpService,  jsonDeserializerService, xennConfig
+        );
+
+        when(applicationContextHolder.getPersistentId()).thenReturn("pid");
+        when(sessionContextHolder.getMemberId()).thenReturn(null);
+        inAppNotificationProcessorHandler.callAfter("homePage");
+
+        verify(httpService).getApiRequest(eq("/in-app-notifications"), paramCaptor.capture(), any(ResponseBodyHandler.class), any(ResultConsumer.class));
+        Map<String, Object> capturedParams = paramCaptor.getValue();
+        assertEquals(capturedParams.get("sdkKey"), "sdk-key");
+        assertEquals(capturedParams.get("source"), "android");
+        assertEquals(capturedParams.get("pid"), "pid");
+        assertEquals(capturedParams.get("pageType"), "homePage");
         assertEquals(capturedParams.get("memberId"), null);
     }
 }

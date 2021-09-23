@@ -16,12 +16,14 @@ import io.xenn.android.context.SessionContextHolder;
 import io.xenn.android.context.SessionState;
 import io.xenn.android.context.XennPluginRegistry;
 import io.xenn.android.event.BrowsingHistoryProcessorHandler;
+import io.xenn.android.event.ChainProcessorHandler;
 import io.xenn.android.event.EcommerceEventProcessorHandler;
 import io.xenn.android.event.EventProcessorHandler;
 import io.xenn.android.event.inappnotification.InAppNotificationProcessorHandler;
 import io.xenn.android.event.RecommendationProcessorHandler;
 import io.xenn.android.event.SDKEventProcessorHandler;
 import io.xenn.android.http.HttpRequestFactory;
+import io.xenn.android.model.inappnotification.InAppNotificationHandlerStrategy;
 import io.xenn.android.service.DeviceService;
 import io.xenn.android.service.EncodingService;
 import io.xenn.android.service.EntitySerializerService;
@@ -54,7 +56,8 @@ public final class Xennio {
 
         this.httpService = new HttpService(new HttpRequestFactory(), xennConfig.getSdkKey(), xennConfig.getCollectorUrl(), xennConfig.getApiUrl());
         this.entitySerializerService = new EntitySerializerService(new EncodingService(), new JsonSerializerService());
-        EventProcessorHandler eventProcessorHandler = new EventProcessorHandler(applicationContextHolder, sessionContextHolder, httpService, entitySerializerService);
+        ChainProcessorHandler chainProcessorHandler = new ChainProcessorHandler();
+        EventProcessorHandler eventProcessorHandler = new EventProcessorHandler(applicationContextHolder, sessionContextHolder, httpService, entitySerializerService, chainProcessorHandler);
         this.eventProcessorHandler = eventProcessorHandler;
 
         this.deviceService = new DeviceService(context);
@@ -66,9 +69,15 @@ public final class Xennio {
         this.recommendationProcessorHandler = new RecommendationProcessorHandler(applicationContextHolder, sessionContextHolder, httpService, xennConfig.getSdkKey(), jsonDeserializerService);
         this.browsingHistoryProcessorHandler = new BrowsingHistoryProcessorHandler(applicationContextHolder, sessionContextHolder, httpService, xennConfig.getSdkKey(), jsonDeserializerService);
         this.inAppNotificationProcessorHandler = new InAppNotificationProcessorHandler(
-                eventProcessorHandler, applicationContextHolder, sessionContextHolder, httpService, xennConfig.getSdkKey(), jsonDeserializerService, xennConfig.getInAppNotificationLinkClickHandler());
+                eventProcessorHandler, applicationContextHolder, sessionContextHolder, httpService, jsonDeserializerService, xennConfig);
 
         this.xennPluginRegistry = new XennPluginRegistry();
+
+        if(xennConfig.getInAppNotificationHandlerStrategy() == InAppNotificationHandlerStrategy.PageViewEvent){
+            chainProcessorHandler.addHandler(inAppNotificationProcessorHandler);
+        }
+
+
     }
 
     public static void configure(Context context, @NonNull XennConfig xennConfig) {

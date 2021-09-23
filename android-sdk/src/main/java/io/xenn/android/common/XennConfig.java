@@ -5,6 +5,7 @@ import java.util.List;
 
 import io.xenn.android.context.XennPlugin;
 import io.xenn.android.event.inappnotification.LinkClickHandler;
+import io.xenn.android.model.inappnotification.InAppNotificationHandlerStrategy;
 import io.xenn.android.utils.UrlUtils;
 
 public final class XennConfig {
@@ -14,6 +15,7 @@ public final class XennConfig {
     private String apiUrl = Constants.XENN_API_URL;
     private List<Class<? extends XennPlugin>> xennPlugins = new ArrayList<>();
     private LinkClickHandler inAppNotificationLinkClickHandler;
+    private InAppNotificationHandlerStrategy inAppNotificationHandlerStrategy = InAppNotificationHandlerStrategy.PageViewEvent;
 
     private XennConfig(String sdkKey) {
         this.sdkKey = sdkKey;
@@ -48,6 +50,11 @@ public final class XennConfig {
         return this;
     }
 
+    public XennConfig inAppNotificationHandlerStrategy(InAppNotificationHandlerStrategy inAppNotificationHandlerStrategy) {
+        this.inAppNotificationHandlerStrategy = inAppNotificationHandlerStrategy;
+        return this;
+    }
+
     public String getSdkKey() {
         return sdkKey;
     }
@@ -66,5 +73,9 @@ public final class XennConfig {
 
     public LinkClickHandler getInAppNotificationLinkClickHandler() {
         return inAppNotificationLinkClickHandler;
+    }
+
+    public InAppNotificationHandlerStrategy getInAppNotificationHandlerStrategy() {
+        return inAppNotificationHandlerStrategy;
     }
 }
