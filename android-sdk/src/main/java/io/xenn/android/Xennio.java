@@ -19,6 +19,7 @@ import io.xenn.android.event.BrowsingHistoryProcessorHandler;
 import io.xenn.android.event.ChainProcessorHandler;
 import io.xenn.android.event.EcommerceEventProcessorHandler;
 import io.xenn.android.event.EventProcessorHandler;
+import io.xenn.android.event.PushMessagesHistoryProcessorHandler;
 import io.xenn.android.event.inappnotification.InAppNotificationProcessorHandler;
 import io.xenn.android.event.RecommendationProcessorHandler;
 import io.xenn.android.event.SDKEventProcessorHandler;
@@ -43,6 +44,7 @@ public final class Xennio {
     protected RecommendationProcessorHandler recommendationProcessorHandler;
     protected BrowsingHistoryProcessorHandler browsingHistoryProcessorHandler;
     protected InAppNotificationProcessorHandler inAppNotificationProcessorHandler;
+    protected PushMessagesHistoryProcessorHandler pushMessagesHistoryProcessorHandler;
     protected HttpService httpService;
     protected DeviceService deviceService;
     protected XennPluginRegistry xennPluginRegistry;
@@ -70,6 +72,7 @@ public final class Xennio {
         this.browsingHistoryProcessorHandler = new BrowsingHistoryProcessorHandler(applicationContextHolder, sessionContextHolder, httpService, xennConfig.getSdkKey(), jsonDeserializerService);
         this.inAppNotificationProcessorHandler = new InAppNotificationProcessorHandler(
                 eventProcessorHandler, applicationContextHolder, sessionContextHolder, httpService, jsonDeserializerService, xennConfig);
+        this.pushMessagesHistoryProcessorHandler = new PushMessagesHistoryProcessorHandler(sessionContextHolder, httpService, xennConfig.getSdkKey(), jsonDeserializerService);
 
         this.xennPluginRegistry = new XennPluginRegistry();
 
@@ -115,6 +118,10 @@ public final class Xennio {
 
     public static InAppNotificationProcessorHandler inAppNotifications() {
         return getInstance().inAppNotificationProcessorHandler;
+    }
+
+    public static PushMessagesHistoryProcessorHandler pushMessagesHistory() {
+        return getInstance().pushMessagesHistoryProcessorHandler;
     }
 
     public static XennPluginRegistry plugins() {

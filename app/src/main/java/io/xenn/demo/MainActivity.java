@@ -60,6 +60,12 @@ public class MainActivity extends AppCompatActivity {
                 XennioLogger.log("BrowsingHistory data is here! : " + data);
             }
         });
+        Xennio.pushMessagesHistory().getPushMessagesHistory(10, new ResultConsumer<List<Map<String, String>>>() {
+            @Override
+            public void consume(List<Map<String, String>> data) {
+                XennioLogger.log("PushMessagesHistory data is here! : " + data);
+            }
+        });
 
         Intent intent = getIntent();
         Log.d("Xennio", "Source:" + intent.getStringExtra("source"));
