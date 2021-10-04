@@ -135,7 +135,7 @@ public class InAppNotificationProcessorHandler implements AfterPageViewEventHand
                 Map<String, Object> eventParams = new HashMap<>();
                 eventParams.put("entity", "banners");
                 eventParams.put("id", inAppNotificationResponse.getId());
-                eventProcessorHandler.impression("bannerShow", eventParams);
+                eventProcessorHandler.actionResult("bannerShow", eventParams);
             }
         };
     }
