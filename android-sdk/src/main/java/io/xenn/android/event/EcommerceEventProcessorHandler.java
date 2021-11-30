@@ -16,7 +16,7 @@ public class EcommerceEventProcessorHandler {
         this.eventProcessorHandler = eventProcessorHandler;
     }
 
-    public void productView(String productId, String variant, double price, double discountedPrice, String currency, String supplierId, String path) {
+    public void productView(String productId, String variant, double price, Double discountedPrice, String currency, String supplierId, String path) {
         Map<String, Object> params = new HashMap<>();
         params.put("entity", ENTITY_NAME);
         params.put("id", productId);
@@ -45,7 +45,7 @@ public class EcommerceEventProcessorHandler {
         eventProcessorHandler.pageView("searchPage", params);
     }
 
-    public void addToCart(String productId, String variant, int quantity, double price, double discountedPrice, String currency, String origin, String basketId, String supplierId) {
+    public void addToCart(String productId, String variant, int quantity, double price, Double discountedPrice, String currency, String origin, String basketId, String supplierId) {
         Map<String, Object> params = new HashMap<>();
         params.put("entity", ENTITY_NAME);
         params.put("id", productId);
