@@ -17,6 +17,7 @@ import android.widget.PopupWindow;
 import androidx.annotation.NonNull;
 
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 import io.xenn.android.model.inappnotification.InAppNotificationResponse;
 import io.xenn.android.utils.XennioLogger;
@@ -93,14 +94,18 @@ public class InAppNotificationViewManager {
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
-                popupWindow.dismiss();
-                webView.setLayoutParams(new LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
-                popupWindow.setHeight(dpToPx(webView.getContentHeight() + POPUP_WINDOW_PADDING));
-                popupWindow.showAtLocation(
-                        activity.getWindow().getDecorView().getRootView(),
-                        Gravity.CENTER,
-                        0,
-                        0);
+                try {
+                    popupWindow.dismiss();
+                    webView.setLayoutParams(new LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
+                    popupWindow.setHeight(dpToPx(webView.getContentHeight() + POPUP_WINDOW_PADDING));
+                    popupWindow.showAtLocation(
+                            activity.getWindow().getDecorView().getRootView(),
+                            Gravity.CENTER,
+                            0,
+                            0);
+                }catch(Exception e){
+                    XennioLogger.log("Adjust Height", e);
+                }
             }
         }, TimeUnit.SECONDS.toMillis(1L));
     }
