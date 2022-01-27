@@ -111,7 +111,7 @@ public class NotificationCompatBuilder {
         for (Map.Entry<String, String> entry : intentData.entrySet()) {
             notificationIntent.putExtra(entry.getKey(), entry.getValue());
         }
-        PendingIntent contentIntent = PendingIntent.getActivity(applicationContext, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent contentIntent = PendingIntent.getActivity(applicationContext, 0, notificationIntent, (PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE));
         notificationCompat.setContentIntent(contentIntent);
         return this;
     }
