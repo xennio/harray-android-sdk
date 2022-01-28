@@ -9,7 +9,7 @@ apply plugin: 'jacoco-android'
 
 archivesBaseName = 'fcm-kit'
 group = "io.xenn"
-version = "1.0.5"
+version = "1.0.6"
 
 android {
     compileSdkVersion 28
@@ -19,7 +19,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 28
         versionCode 1
-        versionName "1.0.5"
+        versionName "1.0.6"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles 'consumer-rules.pro'
@@ -93,7 +93,7 @@ publishing {
         androidSdk(MavenPublication) {
             groupId "io.xenn"
             artifactId "fcm-kit"
-            version "1.0.5"
+            version "1.0.6"
             artifact "$buildDir/outputs/aar/fcm-kit-release.aar"
         }
     }

@@ -41,11 +41,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Xennio.login("300");
+        Xennio.login("2448544");
         Xennio.pushMessagesHistory().getPushMessagesHistory(10, new ResultConsumer<List<Map<String, String>>>() {
             @Override
             public void consume(List<Map<String, String>> data) {
-
+                System.out.println("push notifications count: " + data.size());
             }
         });
         Xennio.eventing().pageView("homePage");
