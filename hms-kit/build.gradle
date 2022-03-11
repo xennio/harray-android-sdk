@@ -9,7 +9,7 @@ apply plugin: 'jacoco-android'
 
 archivesBaseName = 'hms-kit'
 group = "io.xenn"
-version = "1.0.2"
+version = "1.0.3"
 
 android {
     compileSdkVersion 29
@@ -19,7 +19,7 @@ android {
         minSdkVersion 19
         targetSdkVersion 29
         versionCode 1
-        versionName "1.0.2"
+        versionName "1.0.3"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles 'consumer-rules.pro'
@@ -45,7 +45,7 @@ dependencies {
     compileOnly project(path: ':android-sdk')
     testImplementation project(path: ':android-sdk')
     implementation 'androidx.appcompat:appcompat:1.0.2'
-    implementation 'com.huawei.hms:push:4.0.3.301'
+    implementation 'com.huawei.hms:push:5.3.0.304'
     testImplementation 'junit:junit:4.12'
     testImplementation group: 'org.mockito', name: 'mockito-core', version: '3.3.3'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
@@ -83,7 +83,7 @@ publishing {
         androidSdk(MavenPublication) {
             groupId "io.xenn"
             artifactId "hms-kit"
-            version "1.0.2"
+            version "1.0.3"
             artifact "$buildDir/outputs/aar/hms-kit-release.aar"
         }
     }
