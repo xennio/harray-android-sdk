@@ -14,7 +14,7 @@ public class XennDemoApplication extends Application {
         super.onCreate();
         XennConfig xennConfig =
                 XennConfig
-                        .init("XENN-AOIGFmDmOwsnblf")
+                        .init("XENN-du9tOT0w09jx8Kg")
                         .useXennPlugin(FcmKitPlugin.class).inAppNotificationLinkClickHandler(
                         new LinkClickHandler() {
                             @Override

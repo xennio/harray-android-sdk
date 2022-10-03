@@ -59,4 +59,13 @@ public class JsonDeserializerService {
             return new HashMap<>();
         }
     }
+
+    public JSONObject toJsonObject(String rawResponseBody) {
+        try{
+            return new JSONObject(rawResponseBody);
+        }catch (JSONException e){
+            XennioLogger.log("Json object deserialize error: " + e.getMessage());
+            return null;
+        }
+    }
 }

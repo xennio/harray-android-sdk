@@ -18,6 +18,8 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
+import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,10 +56,10 @@ public class MainActivity extends AppCompatActivity {
         Xennio.eventing().custom("customEvent", new HashMap<String, Object>());
 
         Xennio.ecommerce().productView("1003", "small", 200d, 180d, "USD", null, "https://commercedemo.xenn.io/proteus-fitness-jackshirt.html");
-        Xennio.recommendations().getRecommendations("boxId", null, 4, new ResultConsumer<List<Map<String, String>>>() {
+        Xennio.memberSummary().getDetails("cf07c143-76fb-45b4-9d34-ff450eb4bc08", new ResultConsumer<JSONObject>() {
             @Override
-            public void consume(List<Map<String, String>> data) {
-                XennioLogger.log("Reco data is here! : " + data);
+            public void consume(JSONObject data) {
+                XennioLogger.log("Reco data is here! : " + data.toString());
             }
         });
         Xennio.browsingHistory().getBrowsingHistory("listings", 10, new ResultConsumer<List<Map<String, String>>>() {

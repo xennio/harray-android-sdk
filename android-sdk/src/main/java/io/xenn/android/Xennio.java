@@ -19,6 +19,7 @@ import io.xenn.android.event.BrowsingHistoryProcessorHandler;
 import io.xenn.android.event.ChainProcessorHandler;
 import io.xenn.android.event.EcommerceEventProcessorHandler;
 import io.xenn.android.event.EventProcessorHandler;
+import io.xenn.android.event.MemberSummaryProcessorHandler;
 import io.xenn.android.event.PushMessagesHistoryProcessorHandler;
 import io.xenn.android.event.inappnotification.InAppNotificationProcessorHandler;
 import io.xenn.android.event.RecommendationProcessorHandler;
@@ -45,6 +46,7 @@ public final class Xennio {
     protected BrowsingHistoryProcessorHandler browsingHistoryProcessorHandler;
     protected InAppNotificationProcessorHandler inAppNotificationProcessorHandler;
     protected PushMessagesHistoryProcessorHandler pushMessagesHistoryProcessorHandler;
+    protected MemberSummaryProcessorHandler memberSummaryProcessorHandler;
     protected HttpService httpService;
     protected DeviceService deviceService;
     protected XennPluginRegistry xennPluginRegistry;
@@ -73,7 +75,7 @@ public final class Xennio {
         this.inAppNotificationProcessorHandler = new InAppNotificationProcessorHandler(
                 eventProcessorHandler, applicationContextHolder, sessionContextHolder, httpService, jsonDeserializerService, xennConfig);
         this.pushMessagesHistoryProcessorHandler = new PushMessagesHistoryProcessorHandler(sessionContextHolder, httpService, xennConfig.getSdkKey(), jsonDeserializerService);
-
+        this.memberSummaryProcessorHandler = new MemberSummaryProcessorHandler(applicationContextHolder, sessionContextHolder,httpService,xennConfig.getSdkKey(),jsonDeserializerService);
         this.xennPluginRegistry = new XennPluginRegistry();
 
         if(xennConfig.getInAppNotificationHandlerStrategy() == InAppNotificationHandlerStrategy.PageViewEvent){
@@ -114,6 +116,10 @@ public final class Xennio {
 
     public static BrowsingHistoryProcessorHandler browsingHistory() {
         return getInstance().browsingHistoryProcessorHandler;
+    }
+
+    public static MemberSummaryProcessorHandler memberSummary() {
+        return getInstance().memberSummaryProcessorHandler;
     }
 
     public static InAppNotificationProcessorHandler inAppNotifications() {
