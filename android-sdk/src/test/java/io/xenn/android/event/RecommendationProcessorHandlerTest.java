@@ -14,6 +14,7 @@ import io.xenn.android.common.ResponseBodyHandler;
 import io.xenn.android.common.ResultConsumer;
 import io.xenn.android.context.ApplicationContextHolder;
 import io.xenn.android.context.SessionContextHolder;
+import io.xenn.android.service.EncodingService;
 import io.xenn.android.service.HttpService;
 import io.xenn.android.service.JsonDeserializerService;
 
@@ -39,13 +40,17 @@ public class RecommendationProcessorHandlerTest {
     @Mock
     private JsonDeserializerService jsonDeserializerService;
 
+
+    @Mock
+    private EncodingService encodingService;
+
     @Captor
     private ArgumentCaptor<Map<String, Object>> paramCaptor;
 
     @Test
     public void it_should_get_recommendation() {
         RecommendationProcessorHandler recommendationProcessorHandler = new RecommendationProcessorHandler(
-                applicationContextHolder, sessionContextHolder, httpService, "sdk-key", jsonDeserializerService
+                applicationContextHolder, sessionContextHolder, httpService, "sdk-key", jsonDeserializerService, encodingService
         );
 
         ResultConsumer<List<Map<String, String>>> callback = new ResultConsumer<List<Map<String, String>>>() {
@@ -72,7 +77,7 @@ public class RecommendationProcessorHandlerTest {
     @Test
     public void it_should_get_recommendation_with_null_memberId() {
         RecommendationProcessorHandler recommendationProcessorHandler = new RecommendationProcessorHandler(
-                applicationContextHolder, sessionContextHolder, httpService, "sdk-key", jsonDeserializerService
+                applicationContextHolder, sessionContextHolder, httpService, "sdk-key", jsonDeserializerService, encodingService
         );
 
         ResultConsumer<List<Map<String, String>>> callback = new ResultConsumer<List<Map<String, String>>>() {
@@ -99,7 +104,7 @@ public class RecommendationProcessorHandlerTest {
     @Test
     public void it_should_get_recommendation_with_null_entityId() {
         RecommendationProcessorHandler recommendationProcessorHandler = new RecommendationProcessorHandler(
-                applicationContextHolder, sessionContextHolder, httpService, "sdk-key", jsonDeserializerService
+                applicationContextHolder, sessionContextHolder, httpService, "sdk-key", jsonDeserializerService, encodingService
         );
 
         ResultConsumer<List<Map<String, String>>> callback = new ResultConsumer<List<Map<String, String>>>() {
