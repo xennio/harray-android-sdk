@@ -3,6 +3,8 @@ package io.xenn.android.event;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +15,7 @@ import io.xenn.android.context.ApplicationContextHolder;
 import io.xenn.android.context.SessionContextHolder;
 import io.xenn.android.service.HttpService;
 import io.xenn.android.service.JsonDeserializerService;
+import io.xenn.android.utils.XennioLogger;
 
 public class RecommendationProcessorHandler {
 
@@ -71,18 +74,22 @@ public class RecommendationProcessorHandler {
             params.put("memberId", sessionContextHolder.getMemberId());
         }
         if (filterExpression != null) {
-            params.put("filterExpression", filterExpression);
-        }
-        if (sortingFactors != null) {
-            params.put("sortExpression", sortingFactors);
-        }
-        params.put("size", String.valueOf(size));
-        httpService.getApiRequest("/recommendation", params, new ResponseBodyHandler<List<Map<String, String>>>() {
-            @Override
-            public List<Map<String, String>> handle(String rawResponseBody) {
-                return jsonDeserializerService.deserializeToMapList(rawResponseBody);
+            try {
+                params.put("filterExpression", URLEncoder.encode(filterExpression, "UTF-8"));
+                if (sortingFactors != null) {
+                    params.put("sortExpression", sortingFactors);
+                }
+                params.put("size", String.valueOf(size));
+                httpService.getApiRequest("/recommendation", params, new ResponseBodyHandler<List<Map<String, String>>>() {
+                    @Override
+                    public List<Map<String, String>> handle(String rawResponseBody) {
+                        return jsonDeserializerService.deserializeToMapList(rawResponseBody);
+                    }
+                }, callback);
+            } catch (UnsupportedEncodingException e) {
+                XennioLogger.log("Filter Encoding Error", e);
             }
-        }, callback);
+        }
     }
 
 

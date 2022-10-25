@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Xennio.login("2448544");
+        Xennio.login("2398336");
         Xennio.pushMessagesHistory().getPushMessagesHistory(10, new ResultConsumer<List<Map<String, String>>>() {
             @Override
             public void consume(List<Map<String, String>> data) {
@@ -62,6 +62,15 @@ public class MainActivity extends AppCompatActivity {
                 XennioLogger.log("Reco data is here! : " + data.toString());
             }
         });
+
+        Xennio.recommendations().getRecommendations("3b1d5ae7-3c95-4aa0-9ddc-a26765b1ad55",50,"city:Konya|Mardin,roomInfo:5+1","", new ResultConsumer<List<Map<String, String>>>() {
+            @Override
+            public void consume(List<Map<String, String>> data) {
+                System.out.println("push notifications count: " + data.size());
+            }
+        });
+
+
         Xennio.browsingHistory().getBrowsingHistory("listings", 10, new ResultConsumer<List<Map<String, String>>>() {
             @Override
             public void consume(List<Map<String, String>> data) {
