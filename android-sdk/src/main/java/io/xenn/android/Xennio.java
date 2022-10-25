@@ -57,9 +57,10 @@ public final class Xennio {
         SharedPreferences sharedPreferences = context.getSharedPreferences(Constants.PREF_COLLECTION_NAME, Context.MODE_PRIVATE);
         this.applicationContextHolder = new ApplicationContextHolder(sharedPreferences);
         this.sessionContextHolder = new SessionContextHolder();
+        EncodingService encodingService = new EncodingService();
 
         this.httpService = new HttpService(new HttpRequestFactory(), xennConfig.getSdkKey(), xennConfig.getCollectorUrl(), xennConfig.getApiUrl());
-        this.entitySerializerService = new EntitySerializerService(new EncodingService(), new JsonSerializerService());
+        this.entitySerializerService = new EntitySerializerService(encodingService, new JsonSerializerService());
         ChainProcessorHandler chainProcessorHandler = new ChainProcessorHandler();
         EventProcessorHandler eventProcessorHandler = new EventProcessorHandler(applicationContextHolder, sessionContextHolder, httpService, entitySerializerService, chainProcessorHandler);
         this.eventProcessorHandler = eventProcessorHandler;
@@ -70,15 +71,15 @@ public final class Xennio {
         this.ecommerceEventProcessorHandler = new EcommerceEventProcessorHandler(eventProcessorHandler);
 
         JsonDeserializerService jsonDeserializerService = new JsonDeserializerService();
-        this.recommendationProcessorHandler = new RecommendationProcessorHandler(applicationContextHolder, sessionContextHolder, httpService, xennConfig.getSdkKey(), jsonDeserializerService);
+        this.recommendationProcessorHandler = new RecommendationProcessorHandler(applicationContextHolder, sessionContextHolder, httpService, xennConfig.getSdkKey(), jsonDeserializerService, encodingService);
         this.browsingHistoryProcessorHandler = new BrowsingHistoryProcessorHandler(applicationContextHolder, sessionContextHolder, httpService, xennConfig.getSdkKey(), jsonDeserializerService);
         this.inAppNotificationProcessorHandler = new InAppNotificationProcessorHandler(
                 eventProcessorHandler, applicationContextHolder, sessionContextHolder, httpService, jsonDeserializerService, xennConfig);
         this.pushMessagesHistoryProcessorHandler = new PushMessagesHistoryProcessorHandler(sessionContextHolder, httpService, xennConfig.getSdkKey(), jsonDeserializerService);
-        this.memberSummaryProcessorHandler = new MemberSummaryProcessorHandler(applicationContextHolder, sessionContextHolder,httpService,xennConfig.getSdkKey(),jsonDeserializerService);
+        this.memberSummaryProcessorHandler = new MemberSummaryProcessorHandler(applicationContextHolder, sessionContextHolder, httpService, xennConfig.getSdkKey(), jsonDeserializerService);
         this.xennPluginRegistry = new XennPluginRegistry();
 
-        if(xennConfig.getInAppNotificationHandlerStrategy() == InAppNotificationHandlerStrategy.PageViewEvent){
+        if (xennConfig.getInAppNotificationHandlerStrategy() == InAppNotificationHandlerStrategy.PageViewEvent) {
             chainProcessorHandler.addHandler(inAppNotificationProcessorHandler);
         }
 
